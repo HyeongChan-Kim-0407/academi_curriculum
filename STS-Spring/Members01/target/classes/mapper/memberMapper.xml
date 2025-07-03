@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ykd.members.dao.MemberDao">
+
+  <select id="selectMember" resultType="ykd.members.dto.Member">
+    SELECT * FROM MEMBER 
+  </select>
+  
+  <insert id="insertMember" >
+  	INSERT INTO MEMBER(MID,MPW,MNAME,MBIRTH)
+  	VALUES( #{mid}, #{mpw}, #{mname}, #{mbirth} )
+  </insert>	
+  
+  <select id="selectMemberByMidAndMpw"  resultType="ykd.members.dto.Member" >
+  	SELECT *
+  	FROM MEMBER
+  	WHERE MID = #{mid} AND MPW = #{mpw}
+  </select>
+  
+  <select id="selectMemberByMid" resultType="ykd.members.dto.Member">
+  	SELECT mid, mpw, mname, to_char(mbirth,'yyyy-mm-dd') as mbirth
+  	FROM MEMBER
+  	WHERE MID = #{mid}
+  </select>
+  
+  <delete id="deleteMember">
+  	DELETE FROM MEMBER
+  	WHERE MID = #{mid}
+  </delete>
+  
+  <update id="updateMember">
+  	UPDATE MEMBER
+  	SET MPW = #{mpw}, MNAME = #{mname}, MBIRTH = #{mbirth}
+  	WHERE MID = #{mid}
+  </update>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

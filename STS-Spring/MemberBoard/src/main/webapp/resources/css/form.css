@@ -1,0 +1,49 @@
+@charset "UTF-8";
+/* 테이블을 대상으로 */
+#pageContents > form > table {
+  width: 100%; /* 폭 100% */
+  max-width: 600px; /* 최대 폭 600px */
+  margin: 0 auto; /* 중앙으로 */
+}
+
+/* 테이블 tbody의 td를 대상으로 */
+#pageContents > form > table > tbody td {
+  padding: 10px 3px;
+  font-size: 20px;
+}
+/* 테이블의 th를 대상으로 */
+#pageContents > form > table th {
+  font-size: 30px;
+}
+/* form 안에 위치한 <input type="submit"> 을 대상으로 */
+#pageContents > form input[type="submit"] {
+  padding: 10px;
+  width: 100%;
+  font-weight: bold;
+  font-size: 25px;
+}
+/* form 안에 위치한 <input type="text"> 을 대상으로 */
+#pageContents > form input[type="text"] {
+  border: 0; /* 경계선을 0으로 */
+  border-bottom: 1px solid black; /* 아래쪽 경계선 */
+  outline: none; /* 태그 선택시 나오는 외곽선 */
+  width: 100%;
+  font-size: 25px;
+}
+/* form 안에 위치한 <input type="password"> 을 대상으로 */
+#pageContents > form input[type="password"] {
+  border: 0; /* 경계선을 0으로 */
+  border-bottom: 1px solid black; /* 아래쪽 경계선 */
+  outline: none; /* 태그 선택시 나오는 외곽선 */
+  width: 100%;
+  font-size: 25px;
+}
+/* form 안에 위치한 <input type="date"> 을 대상으로 */
+#pageContents > form input[type="date"] {
+  border: 0;
+  border-bottom: 1px solid black;
+  width: 100%;
+  outline: none;
+  font-size: 25px; /* inherit: 상위 요소에 적용된 값으로 */
+  font-weight: bold;
+}

@@ -1,0 +1,59 @@
+@charset "UTF-8";
+/* main.css */
+div.container>div {
+	border: 1px solid black;
+}
+/* container 크기 */
+div.container {
+	max-width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+}
+/* pageMenu */
+#pageMenu {
+	display: flex;
+	padding: 10px;
+	background-color: #171717;
+}
+
+#pageMenu>ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	margin-left: auto;
+}
+
+#pageMenu>ul>li {
+	display: inline-block;
+	margin: 0 10px;
+}
+
+#pageMenu>div {
+	color: white;
+	font-weight: bold;
+}
+
+#pageMenu > div > a{
+	color: white;
+	text-decoration: none;
+}
+
+#pageMenu>ul>li>a {
+	color: white;
+	text-decoration: none;
+}
+
+#pageTitle {
+	background-color: #ebebeb;
+}
+
+#pageTitle>h1 {
+	text-align: center;
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+
+#pageContents {
+	min-height: 500px;
+	padding: 20px;
+}

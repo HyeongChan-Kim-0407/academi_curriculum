@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="khc.memberBoard.dao.BoardDao">
+
+	<insert id="insertBoard">
+		INSERT INTO BOARD(BNO, BWRITER, BTITLE, BCONTENTS, BHITS, BDATE, BFILENAME, BSTATE)
+		VALUES( (SELECT NVL(MAX(BNO), 0) + 1 AS BNO FROM BOARD), #{bwriter}, #{btitle}, #{bcontents}, #{bhits}, DEFAULT, #{bfilename,jdbcType=NULL}, DEFAULT )
+	</insert>
+	
+	<select id="selectBoardList" resultType="khc.memberBoard.dto.Board">
+		SELECT * FROM BOARD WHERE BSTATE NOT IN('D') ORDER BY BNO DESC
+	</select>
+	
+</mapper>

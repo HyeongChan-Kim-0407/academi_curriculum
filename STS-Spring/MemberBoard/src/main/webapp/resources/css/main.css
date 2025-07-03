@@ -1,0 +1,52 @@
+/* main.css */
+div.container>div {
+	border: 1px solid black;
+}
+
+#pageMenu {
+	display: flex; /* 하위 태그들 한 가로선에 정렬 */
+	padding: 10px;
+	background-color: black;
+}
+
+#pageMenu>div {
+	font-weight: bold;
+	font-size: 20px;
+}
+
+#pageMenu>div>a {
+	text-decoration: none;
+	color: yellow;
+}
+
+#pageMenu>ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	margin-left: auto;
+}
+
+#pageMenu>ul>li {
+	display: inline-block;
+	padding: 0 5px;
+}
+
+#pageMenu>ul>li>a {
+	color: white;
+	text-decoration: none;
+}
+
+#pageTitle {
+	background-color: lightgray;
+}
+
+#pageTitle>h1 {
+	text-align: center;
+	padding: 50px 0;
+}
+
+#pageContents {
+	min-height: 500px;
+	padding: auto;
+}
+

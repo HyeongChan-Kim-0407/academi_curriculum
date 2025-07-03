@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+#memberInfo {
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+
+#memberInfo>thead th {
+	border-bottom: 3px solid black;
+	padding: 7px 10px;
+}
+
+#memberInfo>tbody td {
+	padding: 7px 10px;
+	border-bottom: 2px solid rgb(211, 211, 211);
+}
