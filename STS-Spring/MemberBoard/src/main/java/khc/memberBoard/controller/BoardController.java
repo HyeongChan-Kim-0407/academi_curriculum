@@ -74,5 +74,18 @@ public class BoardController {
 		/* 글 등록 결과에 따라 글 목록 페이지로 이동 요청 및 결과 메시지 응답 */
 		return "redirect:/boardList";		
 	}
+	
+	@GetMapping("/boardView")
+	public String boardViewPage(int bno, Model model) {
+		System.out.println("/boardView(get) 게시글 상세 페이지 이동 요청");
+		
+		int updateResult = boardsvc.updateBoardBhits(bno); // 요청한 게시글 조회수 증가
+		
+		Board board = boardsvc.findBoardView(bno); // 요청한 게시글 select
+		
+		model.addAttribute("board", board);
+		return "/board/boardView";
+	}
+	
 
 }

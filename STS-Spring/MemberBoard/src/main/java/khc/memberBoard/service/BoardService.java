@@ -57,7 +57,8 @@ public class BoardService {
 			
 			File file = new File(path, bfilename);
 			bfile.transferTo(file);
-			board.setBfilename(bfilename);
+			board.setBfilename("resources/boardFileUpload/" + bfilename);
+			System.out.println(board.getBfilename());
 		}
 		
 		boardDao.insertBoard(board);
@@ -69,6 +70,21 @@ public class BoardService {
 		ArrayList<Board> boardList = boardDao.selectBoardList();
 		
 		return boardList;
+	}
+
+	public Board findBoardView(int bno) {
+		System.out.println("BoardService - findBoardView() 호출");
+		
+		Board board = boardDao.selectBoardByBno(bno);
+		
+		return board;
+	}
+
+	public int updateBoardBhits(int bno) {
+		
+		int updateResult = boardDao.updateBhitsByBno(bno);
+		
+		return updateResult;
 	}
 	
 	

@@ -13,7 +13,7 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         text-align: center;
         margin: 0 auto;
         width: 100%;
-        height: 100%;
+        /* height: 100%; */
         max-height: 500px;
       }
     </style>
@@ -43,7 +43,7 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <h2>게시판</h2>
         <table border="1">
           <thead>
-          <tr>
+            <tr>
               <td colspan="5">
                 <select name="" id="">
                   <option>제목</option>
@@ -69,22 +69,28 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>글작성</td>
-              <td>테스트</td>
-              <td>11</td>
-              <td>2025-07-02 15:37:00</td>
-            </tr>
-            <c:forEach var="board" items="${boardList}">
+            <c:if test="${not empty boardList}">
+              <c:forEach var="board" items="${boardList}">
+                <tr>
+                  <td>${board.bno}</td>
+                  <td>
+                    <a
+                      href="/boardView?bno=${board.bno}"
+                      style="text-decoration: none; color: black"
+                      >${board.btitle}</a
+                    >
+                  </td>
+                  <td>${board.bwriter}</td>
+                  <td>${board.bhits}</td>
+                  <td>${board.bdate}</td>
+                </tr>
+              </c:forEach>
+            </c:if>
+            <c:if test="${empty boardList}">
               <tr>
-                <td>${board.bno}</td>
-                <td><a href="/viewBoard">${board.btitle}</a></td>
-                <td>${board.bwriter}</td>
-                <td>${board.bhits}</td>
-                <td>${board.bdate}</td>
+                <th colspan="5">등록된 글이 없습니다.</th>
               </tr>
-            </c:forEach>
+            </c:if>
           </tbody>
           <tfoot>
             <tr>

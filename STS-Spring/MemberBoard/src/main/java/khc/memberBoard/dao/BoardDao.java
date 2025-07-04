@@ -10,4 +10,8 @@ public interface BoardDao {
 
 	ArrayList<Board> selectBoardList();
 
+	int updateBhitsByBno(int bno);
+	
+	Board selectBoardByBno(int bno);
+
 }

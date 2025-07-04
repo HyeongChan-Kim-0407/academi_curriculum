@@ -13,4 +13,12 @@
 		SELECT * FROM BOARD WHERE BSTATE NOT IN('D') ORDER BY BNO DESC
 	</select>
 	
+	<update id="updateBhitsByBno">
+		UPDATE BOARD SET BHITS = BHITS + 1 WHERE BNO = #{bno}
+	</update>
+	
+	<select id="selectBoardByBno" resultType="khc.memberBoard.dto.Board">
+		SELECT * FROM BOARD WHERE BNO = #{bno}
+	</select>
+	
 </mapper>
