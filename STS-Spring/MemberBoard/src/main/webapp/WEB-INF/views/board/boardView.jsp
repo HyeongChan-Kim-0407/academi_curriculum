@@ -44,25 +44,67 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
           <thead>
             <tr>
               <th>${board.bno}</th>
-              <th>${board.btitle}</th>
+              <th colspan="2">${board.btitle}</th>
               <th>${board.bhits}</th>
             </tr>
             <tr>
               <th>${board.bwriter}</th>
-              <th colspan="3" id="bdate">${board.bdate}</th>
+              <th colspan="4" id="bdate">${board.bdate}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td colspan="3">${board.bcontents}</td>
+              <td colspan="4">${board.bcontents}</td>
             </tr>
             <tr>
-              <td colspan="3"><img src="${board.bfilename}" alt="" /></td>
+              <td colspan="4"><img src="${board.bfilename}" alt="" /></td>
+            </tr>
+            <tr>
+              <c:if test="${board.bwriter != sessionScope.loginId}">
+                <td colspan="4">
+                  <button
+                    type="button"
+                    onclick="location.href='/boardList'"
+                    style="background-color: lightblue; color: white"
+                  >
+                    게시판
+                  </button>
+                </td>
+              </c:if>
+              <c:if test="${sessionScope.loginId == board.bwriter}">
+                <td colspan="2">
+                  <button
+                    type="button"
+                    onclick="location.href='/boardList'"
+                    style="background-color: lightblue; color: white"
+                  >
+                    게시판
+                  </button>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    onclick="location.href='/boardModify?bno=${board.bno}'"
+                    style="background-color: lightgreen; color: white"
+                  >
+                    글수정
+                  </button>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    onclick="location.href='/boardDelete'"
+                    style="background-color: lightgreen; color: white"
+                  >
+                    글삭제
+                  </button>
+                </td>
+              </c:if>
             </tr>
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="3">
+              <td colspan="4">
                 <select name="" id="">
                   <option>제목</option>
                   <option>내용</option>

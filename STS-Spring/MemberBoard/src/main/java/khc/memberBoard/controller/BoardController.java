@@ -31,6 +31,8 @@ public class BoardController {
 		ArrayList<Board> boardList = boardsvc.findBoardList();
 		/* 조회된 글 목록을 model에 저장 */
 		model.addAttribute("boardList", boardList);
+//		String loginId = (String) session.getAttribute("loginId");
+//		model.addAttribute("loginId",loginId );
 		/* model에 저장된 정보를 boardList 페이지와 같이 응답 */
 		return "board/boardList";
 	}
@@ -87,5 +89,21 @@ public class BoardController {
 		return "/board/boardView";
 	}
 	
+	@GetMapping("/boardModify")
+	public String boardModifyPage(int bno, Model model) {
+		System.out.println("/boardModify(get) 수정 페이지 이동 요청");
+		
+		Board board = boardsvc.findBoardView(bno);
+		
+		model.addAttribute("board", board);
+		return "/board/boardModifyForm";
+	}
+	
+	@PostMapping("/boardModify")
+	public String boardModify(Board board) {
+		
+		
+		return "redirect:/boardList";
+	}
 
 }
