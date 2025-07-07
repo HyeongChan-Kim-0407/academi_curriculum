@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="div1">
+      <!-- <h2>아이디 : testID1, 비밀번호 : 1234</h2>
+        <h2>아이디 : testID2, 비밀번호 : 5678</h2> -->
+    </div>
+
+    <hr />
+    <table id="userInfo" border="1">
+      <thead>
+        <tr>
+          <th>아이디</th>
+          <th>비밀번호</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      // JSON Java Script Object Notation
+      // {key (=문자) : value}
+
+      let id = "testID1";
+      let a = { id: id, pw: "1234", id: "abcd" }; // 동일한 key가 다수 생성시 덮어쓰기 처리 (= 키 중복 X)
+      let b = { id: "testID2", pw: "5678" };
+      let c = [{ a }, { b }]; // 하나의 변수명에 여러 오브젝트를 담을 때는 배열의 형태로 저장
+      let response = [
+        { id: id, pw: "1234" },
+        { id: "testID2", pw: "5678" },
+      ];
+      console.log(a);
+      console.log(a.id);
+      console.log(a.pw);
+      console.log(response);
+      // [{…}, {…}]
+      console.log(response[0]);
+      console.log(response[0].id);
+      console.log(response[0].pw);
+      console.log(response[1]);
+      for (let i = 0; i < response.length; i++) {
+        // for문
+        console.log(response[i]);
+        console.log(response[i].id);
+        console.log(response[i].pw);
+      }
+      const divEl = document.getElementById("div1"); // 데이터를 출력할 공간 선택
+      for (res of response) {
+        // of = 객체 (= 확장 for문)
+        console.log(res);
+        console.log(res.id);
+        console.log(res.pw);
+        let childEl = document.createElement("h2"); // <h2> 태그 생성
+        childEl.innerHTML = "아이디 : " + res.id + "비밀번호 : " + res.pw; //<h2> 아이디 : (res.id) 비밀번호 : (res.pw)
+        divEl.appendChild(childEl); // divEl 내에 childEl 삽입
+      }
+      printUserInfo(response);
+      function printUserInfo(userInfo) {
+        // 데이터를 출력할 요소 선택
+        const tbodyEl = document.querySelector("#userInfo > tbody"); // userInfo라는 id를 가진 요소 내의 tobdy 요소 선택
+        for (user of userInfo) {
+          const trEl = document.createElement("tr"); // <tr>태그 생성
+          trEl.innerHTML = `<td>${user.id}</td> <td>${user.pw}</td>`; // innerHTML과 back tick 사용, jsp에서는 $앞에 \ 추가
+          tbodyEl.appendChild(trEl);
+        }
+      }
+      //   for (res in response) { // in = 인덱스 번호 출력
+      //     console.log(res);
+      //   }
+    </script>
+  </body>
+</html>

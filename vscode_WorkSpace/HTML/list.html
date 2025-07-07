@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* 
+        선택자 : 태그 : 태그명, id : #, class : .클래스명
+        선택자{
+            속성 : 값;
+        }
+        */
+      li.d-inlineBlock {
+        display: inline-block;
+      }
+      .fontRed {
+        color: red; /* color : 글자색 */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>list.html</h1>
+    <h2>순서가 없는 목록</h2>
+    <ul>
+      <li class="fontRed">리스트1</li>
+      <li>리스트2</li>
+      <li>리스트3</li>
+    </ul>
+    <hr />
+    <h2>순서가 있는 목록</h2>
+    <ol>
+      <li>리스트1</li>
+      <li class="fontRed">리스트2</li>
+      <li>리스트3</li>
+    </ol>
+    <hr />
+    <h3 class="fontRed">가로 구성 메뉴</h3>
+    <ul>
+      <!-- 클래스 여러개 선언시 공백으로 구분 -->
+      <li class="d-inlineBlock fontRed">회원가입</li>
+      <li class="d-inlineBlock fontRed">로그인</li>
+    </ul>
+  </body>
+</html>

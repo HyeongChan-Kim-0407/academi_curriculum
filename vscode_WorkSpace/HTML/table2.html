@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      table {
+        border-collapse: collapse; /* 패딩, 보더 등 결합 - 여백없이 구분선 하나로, 상위 요소에 지정*/
+        /* 속성을 따로따로 지정 가능 */
+        /* border: 1px solid black; */
+        /* width: 200px;
+        height: 200px; */
+      }
+      td {
+        border: 1px solid black;
+        text-align: center;
+        /* padding : 경계선 기준 안쪽 여백 */
+        padding: 5px;
+      }
+      #divBox1 {
+        border: 1px solid black;
+        /* 사방 패딩 10px 지정*/
+        /* padding: 10px; */
+
+        /* (상,하)패딩 10px (좌,우)패딩 50px */
+        /* padding: 10px 50px; */
+
+        /* 상측 패딩 5px 좌우 패딩 50px 하측 패딩 30px */
+        /* padding: 5px 50px 30px; */
+
+        /* 시계방향으로 상측 패딩 1px 우측 패딩 50px 하측 패딩 100px 좌측 패딩 300px */
+        /* padding: 1px 50px 100px 300px; */
+
+        /* padding-방향: 값; */
+        /* padding-top: 100px; */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="divBox1">경계선 안쪽 여백</div>
+    <hr />
+    <table>
+      <tr>
+        <td>1행1열</td>
+        <td>1행2열</td>
+        <td>1행3열</td>
+      </tr>
+
+      <tr>
+        <td>2행1열</td>
+        <!-- 열병합 colspan -->
+        <td colspan="2">2행2열</td>
+      </tr>
+      <tr>
+        <td colspan="3">3행1열</td>
+      </tr>
+      <tr>
+        <td>4행1열</td>
+        <td colspan="2">4행2열</td>
+        <!-- <td>4행3열</td> -->
+      </tr>
+      <tr>
+        <td rowspan="3">5행1열</td>
+        <td>5행2열</td>
+        <td>5행3열</td>
+      </tr>
+      <tr>
+        <!-- <td>6행1열</td> -->
+        <td>6행2열</td>
+        <td>6행3열</td>
+      </tr>
+      <tr>
+        <!-- <td>7행1열</td> -->
+        <td>7행2열</td>
+        <td>7행3열</td>
+      </tr>
+    </table>
+  </body>
+</html>

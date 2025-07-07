@@ -1,0 +1,77 @@
+<!-- html은 문법적 오류가 있어도 실행이 가능할 수 있음 다만 의도한 방향과는 다를 가능성 농후 -->
+<!-- 일부 태그는 태그가 갖고 있어야 하는 속성 존재 ex) a태그 : <a href=""> -->
+<!-- head태그는 body에 대한 설정, body태그는 화면에 출력할 내용 -->
+<!-- html5 사용 선언 -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* 이미지 크기 조절 */
+      /*
+        선택자{
+            속성:값;
+            속성:값;
+        }
+        */
+      /* 선택자를 태그 이름으로 */
+      /* img {
+        width: 200px;
+        height: 100px;
+      } */
+      /* 선택자를 id로 */
+      #dog {
+        width: 400px;
+      }
+      h1 {
+        text-align: center;
+      }
+      #imgBox {
+        text-align: center;
+      }
+      #img0 {
+        /* display: 값 */
+        display: block; /* id가 img0인 요소를 블럭으로 설정 */
+        /* margin 위아래여백 좌우여백 */
+        margin: 0 auto; /* 위아래여백은 0 좌우여백은 auto 좌우 여백이 같은 값이 설정돼서 가운데 정렬됨 */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- heading 태그 -->
+    <h1>제목태그(h1~h6)</h1>
+    <!-- paragraph 태그 -->
+    <p>문장태그</p>
+    <!-- anchor 태그 -->
+    <a href="URL">링크태그 아마 따옴표 안에 주소 필요한 것으로 보임</a>
+    <img src="이미지소스(URL, 파일경로)" alt="src 대체 텍스트"/ >
+    <!-- horizon 태그 -->
+    <hr />
+    <!-- 기본적으로 src는 필수 다만 스크립트를 이용해서 src 속성 대체 가능 -->
+    <img
+      id="img0"
+      src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTAyMjhfMjMz%2FMDAxNzQwNzE1OTE5NDk2.c_qxnQLlqtkCve8XJmmB6fZFEL4T83e80jAlJLx016Eg.NIhBCrSp6eP3DQvYbUvbu5HHVJzH1_Ue-qC_cahADxgg.JPEG%2FDALL%25A1%25A4E_2025-02-28_13.11.15_-_A_high-quality_image_of_a_fluffy_Corgi_eating_a.jpg&type=a340"
+      width="400"
+      alt=""
+    />
+    <hr />
+    <div id="imgBox">
+      <!-- 상대경로 -->
+      <img id="img1" src="고양이.jfif" alt="" />
+      <hr />
+      <img id="img2" src="../샴.jfif" alt="" />
+      <hr />
+      <img id="dog" src="image/dog.jpg" alt="" />
+      <hr />
+      <!-- 절대경로 -->
+      <img src="D:\랙돌.jfif" alt="" />
+    </div>
+    <script>
+      // id가 img1인 요소의 src 속성을 변경
+      document.getElementById("img1").src =
+        "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzAzMTZfMTMx%2FMDAxNjc4OTM1MjA5Njk1.kd7dckoniItTN-AYib9_0FZf42Ocvw55Y9gZLZB6XwYg.TJ6gxz_Tdg6Swo5EMb0uyNzN367-ji8icaZsjQnTpRgg.JPEG.jini1466%2F%25B0%25ED%25BE%25E7%25C0%25CC-17.jpeg&type=sc960_832";
+    </script>
+  </body>
+</html>

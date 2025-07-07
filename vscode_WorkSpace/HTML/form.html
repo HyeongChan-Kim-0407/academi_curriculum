@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>form.html</h1>
+    <!-- form : 사용자 입력 양식 태그 내의 사용자 입력 태그를 전송 -->
+    <!-- action은 반드시 작성 필요 -->
+    <!-- enctype은 input 타입이 파일일 때 명시 필요 -->
+    <!-- method는 전송방법 (get or post) 기본값 get -->
+    <!-- ? : 파라미터 시작점 (이름=값 & 이름=값 & 이름&값) -->
+    <!-- http://192.168.0.44:5500/HTML/URL?userid=abcd&userpw=1234 -->
+    <form action="URL" method="get" onsubmit="return checkform(this)">
+      <!-- 사용자 입력 태그 -->
+      아이디 : <input type="text" name="userid" placeholder="아이디입력" />
+      <button type="submit">중복확인</button>
+      <br />
+      비밀번호 : <input type="password" name="userpw" placeholder="4자리이상" />
+      <br />
+      영화<input type="checkbox" name="interest" value="movie" /> <br />
+      드라마<input type="checkbox" name="interest" value="drama" /> <br />
+      콘서트<input type="checkbox" name="interest" value="concert" />
+      <!-- http://192.168.0.44:5500/HTML/URL?userid=&userpw=&interest=drama&interest=concert&subject=oracle -->
+      <br />
+      자바<input type="radio" name="subject" value="java" />
+      <br />
+      오라클<input type="radio" name="subject" value="oracle" />
+      <br />
+      HTML<input type="radio" name="subject" value="html" />
+      <!-- http://192.168.0.44:5500/HTML/URL?userid=&userpw=&subject=oracle -->
+      <hr />
+      <select name="domain">
+        <option value="naver.com">네이버</option>
+        <option value="google.com">구글</option>
+      </select>
+      <hr />
+      <input type="date" name="birth" />
+      <hr />
+      <input type="file" name="userfile" id="" />
+      <hr />
+      <input type="submit" value="회원가입" />
+    </form>
+
+    <script>
+      function checkform(formobj) {
+        if (formobj.userid.value == "") {
+          alert("아이디를 입력 해주세요");
+          return false;
+        }
+      }
+    </script>
+  </body>
+</html>

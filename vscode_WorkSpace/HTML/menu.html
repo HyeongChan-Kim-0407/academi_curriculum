@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #menu > li {
+        display: inline-block;
+        border: 1px solid black;
+        padding: 5px;
+        margin-right: 20px;
+      }
+      /* li 태그에 마우스 커서가 올라가면 배경색을 검은색으로 글씨색을 흰색으로 변경 */
+      #menu > li:hover {
+        /* hover : 커서가 올라가 있을 때 */
+        color: white;
+        background-color: black;
+        cursor: pointer;
+      }
+      #menu {
+        padding-left: 0;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="menu">
+      <li>회원가입</li>
+      <li>로그인</li>
+    </ul>
+  </body>
+</html>

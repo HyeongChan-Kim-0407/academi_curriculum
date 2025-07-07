@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* 선택자 - 태그 : 태그명, id : #, class : .클래스명 */
+      #p1 {
+        font-weight: bold;
+      }
+      #p1:hover {
+        /* 커서가 올라가 있을 때 */
+        color: blue;
+      }
+      .font50 {
+        font-size: 50px;
+      }
+      p.fontRed {
+        color: red;
+      }
+      div > p {
+        /* div태그 밑에 있는 p태그에만 적용 */
+        color: blue;
+        font-weight: bold;
+        text-align: end;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="fontRed">style.html</h1>
+    <p id="p1">id선택자</p>
+    <p class="font50">class선택자</p>
+    <p class="font50 fontRed">class선택자</p>
+    <p class="font50">class선택자</p>
+    <div class="font50 fontRed">div태그</div>
+    <hr />
+    <div>
+      <p>div > p 태그</p>
+      <p>div > p 태그</p>
+    </div>
+    <div>
+      <form>
+        <p>div > form > p 태그</p>
+      </form>
+    </div>
+  </body>
+</html>

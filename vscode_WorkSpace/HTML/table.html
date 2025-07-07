@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>table.html</h1>
+    <!-- table : 표, row:행, col:열 -->
+    <!-- table, tr: table row(행), td: table data(열) -->
+    <table border="1">
+      <tr>
+        <td>1행 1열</td>
+        <td>1행 2열</td>
+        <td>1행 3열</td>
+      </tr>
+
+      <tr>
+        <td>2행 1열</td>
+        <td>2행 2열</td>
+        <td>2행 3열</td>
+      </tr>
+    </table>
+    <hr />
+    <!-- thead, tbody, tfoot 테이블 위치 태그 -->
+    <table border="1">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>PW</th>
+          <th>EMAIL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ID1</td>
+          <td>1234</td>
+          <td>ID1@naver.com</td>
+        </tr>
+      </tbody>
+      <tr>
+        <td>ID2</td>
+        <td>1111</td>
+        <td>ID2@naver.com</td>
+      </tr>
+      <tfoot>
+        <tr>
+          <!-- colspan 셀 병합 -->
+          <td colspan="3" align="center">총: 2명</td>
+        </tr>
+      </tfoot>
+    </table>
+  </body>
+</html>

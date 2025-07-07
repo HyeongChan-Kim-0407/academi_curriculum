@@ -1,0 +1,50 @@
+<!-- 
+1. 기본적인 태그 형식 -> <태그이름>내용</태그이름>
+2. 열리고 닫히는게 없는 형식의 태그 -> <태그/> = 하나의 이루어지는 태그도 있다
+html = 태그로 이루어짐 
+-->
+<!--  html5 문서임을 선언 -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- 브라우저가 알아야하는 정보 -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello</title>
+    <!-- style : 문서의 Style(css)요소 작성  -->
+    <style>
+      /* 스타일 문법 */
+      /*선택자 {
+        속성: 값;
+      }*/
+      h1 {
+        color: rgb(31, 38, 113);
+      }
+    </style>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- 브라우저 화면(viewport)에 표시되는 부분 -->
+    <!-- 
+        <태그 속성 = "속성값" >내용</태그>
+    -->
+    <!-- h = heading : 제목  ex> h1,h2,h3... -->
+    <h1 id="h1Tag" class="" title="">안녕하세요!</h1>
+    <a href="https://www.naver.com/">네이버</a>
+    <img src="" alt="" />
+    <input type="checkbox" placeholder="" />
+    <!-- javaScript (문서의 기능) -->
+    <script>
+      //  스크립트 문법
+      let number = 0;
+      let userName = "이름";
+      let h1Element = document.getElementById("h1Tag");
+      h1Element.innerText = "스크립트!!";
+      for (let i = 0; i < 10; i++) {}
+      if (number > 0) {
+      }
+      function showInfo() {}
+    </script>
+  </body>
+</html>
