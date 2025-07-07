@@ -66,7 +66,7 @@ public class BoardService {
 	}
 
 	public ArrayList<Board> findBoardList() {
-		
+		System.out.println("BoardList - findBoardList() 호출");
 		ArrayList<Board> boardList = boardDao.selectBoardList();
 		
 		return boardList;
@@ -85,6 +85,23 @@ public class BoardService {
 		int updateResult = boardDao.updateBhitsByBno(bno);
 		
 		return updateResult;
+	}
+
+	public ArrayList<Board> searchBoardList(String searchType, String searchText) {
+		
+		ArrayList<Board> searchList = boardDao.searchBoardByTypeAndText(searchType, searchText); 
+		
+		return searchList;
+	}
+
+	public void modifyBoard(Board modifyBoard) {
+		boardDao.updateBoard(modifyBoard);
+	}
+
+	public void deleteBoardByBno(int bno) {
+		
+		boardDao.updateBoardState(bno);
+		
 	}
 	
 	

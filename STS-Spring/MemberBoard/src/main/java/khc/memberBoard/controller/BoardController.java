@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import khc.memberBoard.dto.Board;
@@ -90,20 +91,86 @@ public class BoardController {
 	}
 	
 	@GetMapping("/boardModify")
-	public String boardModifyPage(int bno, Model model) {
+	public String boardModifyPage(int bno, Model model, RedirectAttributes ra) {
 		System.out.println("/boardModify(get) 수정 페이지 이동 요청");
 		
+		String loginId = (String) session.getAttribute("loginId");
+		if(loginId == null) {
+			ra.addFlashAttribute("msg", "잘못된 접근입니다.");
+			return "redirect:/";
+		}
+		
 		Board board = boardsvc.findBoardView(bno);
+		if( !loginId.equals(board.getBwriter())) {
+			ra.addFlashAttribute("msg", "잘못된 접근입니다.");
+			return "redirect:/";
+		}
 		
 		model.addAttribute("board", board);
 		return "/board/boardModifyForm";
 	}
 	
 	@PostMapping("/boardModify")
-	public String boardModify(Board board) {
+	public String boardModify(Board modifyBoard, RedirectAttributes ra) {
+		System.out.println("/boardModify(post) 글 수정 요청");
+		
+		String loginId = (String)session.getAttribute("loginId");
+		if(loginId == null) {
+			ra.addFlashAttribute("msg", "잘못된 접근입니다.");
+			return "redirect:/";
+		}
+		
+		Board checkBoard = boardsvc.findBoardView(modifyBoard.getBno());
+		if( !loginId.equals(checkBoard.getBwriter())) {
+			ra.addFlashAttribute("msg", "잘못된 접근입니다.");
+			return "redirect:/";
+		}
+		
+		boardsvc.modifyBoard(modifyBoard);
 		
 		
 		return "redirect:/boardList";
 	}
-
+	
+	@GetMapping("/boardDelete")
+	public String deleteBoard(int bno, RedirectAttributes ra) {
+		System.out.println("/boardDelete(get) 글 삭제 요청");
+		
+		String loginId = (String)session.getAttribute("loginId");
+		if(loginId == null) {
+			ra.addFlashAttribute("msg", "잘못된 접근입니다.");
+			return "redirect:/";
+		}
+		
+		Board checkBoard = boardsvc.findBoardView(bno);
+		if(!loginId.equals(checkBoard.getBwriter())) {
+			ra.addFlashAttribute("msg", "잘못된 접근입니다.");
+			return "redirect:/";
+		}
+		
+		boardsvc.deleteBoardByBno(bno);
+		
+		ra.addFlashAttribute("msg", bno+"번 글이 삭제되었습니다.");
+		
+		return "redirect:/boardList";
+	}
+	
+	@GetMapping("/getBoardList")
+	@ResponseBody
+	public ArrayList<Board> getBoardList() {
+		System.out.println("ajax - /getBoardLists");
+		ArrayList<Board> boardList = boardsvc.findBoardList();
+		
+		return boardList;
+	}
+	
+	@GetMapping("/searchBoard")
+	@ResponseBody
+	public ArrayList<Board> searchBoardList(String searchType, String searchText){
+		System.out.println("ajax - /searchBoard");
+		ArrayList<Board> boardList = boardsvc.searchBoardList(searchType, searchText);
+		
+		return boardList;
+	}
+	
 }

@@ -134,8 +134,8 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         $.ajax({
           url: "/midCheck", //요청주소
           type: "get", //요청방식
-          data: { userid: inputIdEl.value }, //요청 파라미터 { key:value }
-          // dataType: "" << 목록을 받아올 때 사용
+          data: { userid: inputIdEl.value }, //요청시 보내는 파라미터 { key:value }
+          // dataType: "" << 응답을 받아올 때 사용
           success: function (response) {
             if (response == "y") {
               // 사용가능

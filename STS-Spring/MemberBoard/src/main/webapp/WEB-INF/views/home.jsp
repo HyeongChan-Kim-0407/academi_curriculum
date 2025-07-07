@@ -15,6 +15,10 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         alert("${msg}");
       </script>
     </c:if>
+    <script
+      src="https://kit.fontawesome.com/af375df1cb.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <!-- 메뉴, 설명, 컨텐츠를 감싸는 컨테이너로 div 생성 -->

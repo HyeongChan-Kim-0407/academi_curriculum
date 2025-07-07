@@ -93,7 +93,7 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
                 <td>
                   <button
                     type="button"
-                    onclick="location.href='/boardDelete'"
+                    onclick="location.href='/boardDelete?bno=${board.bno}'"
                     style="background-color: lightgreen; color: white"
                   >
                     글삭제

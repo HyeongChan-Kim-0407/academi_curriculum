@@ -62,7 +62,7 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
                 </td>
               </tr>
               <tr>
-                <td>첨부이미지</td>
+                <td>첨부이미지 <i class="fa-solid fa-camera"></i></td>
                 <td><input type="file" name="bfile" /></td>
               </tr>
               <tr>

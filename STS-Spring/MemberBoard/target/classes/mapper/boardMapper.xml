@@ -10,7 +10,7 @@
 	</insert>
 	
 	<select id="selectBoardList" resultType="khc.memberBoard.dto.Board">
-		SELECT * FROM BOARD WHERE BSTATE NOT IN('D') ORDER BY BNO DESC
+		SELECT BNO, BWRITER, BTITLE, BCONTENTS, BHITS, TO_CHAR(BDATE, 'YYYY-MM-DD') AS BDATE, BFILENAME, BSTATE FROM BOARD WHERE BSTATE NOT IN('D') ORDER BY BNO DESC
 	</select>
 	
 	<update id="updateBhitsByBno">
@@ -19,6 +19,18 @@
 	
 	<select id="selectBoardByBno" resultType="khc.memberBoard.dto.Board">
 		SELECT * FROM BOARD WHERE BNO = #{bno}
+	</select>
+	
+	<update id="updateBoard">
+		UPDATE BOARD SET BTITLE = #{btitle}, BCONTENTS = #{bcontents}, BSTATE = 'M' WHERE BNO = ${bno}
+	</update>
+	
+	<update id="updateBoardState">
+		UPDATE BOARD SET BSTATE = 'D' WHERE BNO = ${bno}
+	</update>
+	
+	<select id="searchBoardByTypeAndText" resultType="khc.memberBoard.dto.Board">
+		SELECT * FROM BOARD WHERE ${searchType} LIKE '%${searchText}%' 
 	</select>
 	
 </mapper>

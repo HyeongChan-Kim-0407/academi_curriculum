@@ -44,10 +44,12 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <h2>글 수정</h2>
         <form
           id="boardForm"
-          action="/boardWrite"
+          action="/boardModify"
           method="post"
           enctype="multipart/form-data"
         >
+          <input type="hidden" name="bno" value="${board.bno}" />
+          <!-- 사용자에게 보이지 않지만 데이터 처리를 위한 글 번호 삽입 -->
           <table border="1">
             <thead></thead>
             <tbody>
@@ -64,7 +66,9 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
               </tr>
               <tr>
                 <td>첨부이미지</td>
-                <td><input type="file" name="bfile" /></td>
+                <td>
+                  <input type="file" name="bfile" value="${board.bfilename}" />
+                </td>
               </tr>
               <tr>
                 <td>내용</td>
@@ -87,6 +91,9 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
               <tr>
                 <td>
                   <input type="submit" value="등록하기" />
+                  <button type="button" onclick="location.href='/boardList'">
+                    글목록
+                  </button>
                 </td>
               </tr>
             </tfoot>
