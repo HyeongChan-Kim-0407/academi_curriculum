@@ -10,7 +10,7 @@ prefix="c" %>
     <!-- http://localhost:8080/controller/join -->
   </c:if>
   <c:if test="${sessionScope.loginId != null }">
-    <li><a href="memberInfo">회원정보</a></li>
-    <li><a href="logout">로그아웃</a></li>
+    <li><a href="/memberInfo">${sessionScope.loginId}</a></li>
+    <li><a href="/logout">로그아웃</a></li>
   </c:if>
 </ul>

@@ -173,4 +173,16 @@ public class BoardController {
 		return boardList;
 	}
 	
+	@GetMapping("/getMemberBoardList")
+	@ResponseBody
+	public ArrayList<Board> getMemberBoardList(){
+		System.out.println("ajax - /getMemberBoardList() 호출");
+		
+		String loginId = (String) session.getAttribute("loginId");
+		
+		ArrayList<Board> boardList = boardsvc.findBoardListByMid(loginId);
+		
+		return boardList;
+	}
+	
 }

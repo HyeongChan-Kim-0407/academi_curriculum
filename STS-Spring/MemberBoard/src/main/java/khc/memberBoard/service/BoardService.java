@@ -103,6 +103,14 @@ public class BoardService {
 		boardDao.updateBoardState(bno);
 		
 	}
+
+	public ArrayList<Board> findBoardListByMid(String loginId) {
+		System.out.println("BoardService - findBoardListByMid()호출");
+		
+		ArrayList<Board> boardList = boardDao.selectBoardListByBwriter(loginId);
+		
+		return boardList;
+	}
 	
 	
 	/* 글 조회 기능 */

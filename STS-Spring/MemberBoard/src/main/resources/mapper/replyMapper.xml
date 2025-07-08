@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="khc.memberBoard.dao.ReplyDao">
+	
+	<select id="selectReplyListByBno" resultType="khc.memberBoard.dto.Reply">
+		SELECT * FROM REPLY WHERE RBNO = ${rbno} AND RSTATE NOT IN ('D')
+	</select>
+	
+	<insert id="insertReply">
+		INSERT INTO REPLY
+		VALUES( (SELECT NVL(MAX(RNO), 0) + 1 AS RNO FROM REPLY), #{rwriter}, #{rbno}, #{rcontents}, DEFAULT, DEFAULT )
+	</insert>
+	
+</mapper>

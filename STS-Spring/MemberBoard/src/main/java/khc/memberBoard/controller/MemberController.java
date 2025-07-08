@@ -90,7 +90,7 @@ public class MemberController {
 		return result;
 	}
 	
-	@GetMapping("logout")
+	@GetMapping("/logout")
 	public String logoutMember() {
 		
 		session.removeAttribute("loginId");
@@ -98,5 +98,24 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	@GetMapping("/memberInfo")
+	public String memberInfoPage() { 
+		// 비실시간 데이터를 이용하기에 model 방식이 편하지만 ajax 연습을 위해 ajax 사용
+		System.out.println("/memberInfo(get) 회원 정보 페이지 이동 요청");
+		
+		
+		return "member/memberInfo";
+	}
+	
+	@GetMapping("/getMemberInfo")
+	@ResponseBody
+	public Member getMemberInfo() {
+		System.out.println("ajax /getMemberInfo (get) 회원 정보 조회 요청");
+		String loginId = (String) session.getAttribute("loginId");
+		
+		Member member = membersvc.findMemberByMid(loginId);
+		
+		return member; 
+	}
 	
 }

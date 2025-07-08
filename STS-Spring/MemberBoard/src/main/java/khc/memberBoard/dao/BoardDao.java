@@ -22,4 +22,6 @@ public interface BoardDao {
 
 	int updateBoardState(int bno);
 
+	ArrayList<Board> selectBoardListByBwriter(String loginId);
+
 }

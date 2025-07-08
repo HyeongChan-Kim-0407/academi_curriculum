@@ -37,6 +37,14 @@ public class MemberService {
 			return "n";
 		}
 	}
+
+	public Member findMemberByMid(String loginId) {
+		System.out.println("MemberService - findMemberByMid 호출");
+		
+		Member member = memberDao.selectMemberByMid(loginId);
+		
+		return member;
+	}
 	
 	/* 회원 조회 기능 */
 	

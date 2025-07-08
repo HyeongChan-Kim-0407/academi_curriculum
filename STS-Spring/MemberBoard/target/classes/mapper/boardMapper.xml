@@ -33,4 +33,9 @@
 		SELECT * FROM BOARD WHERE ${searchType} LIKE '%${searchText}%' 
 	</select>
 	
+	<select id="selectBoardListByBwriter" resultType="khc.memberBoard.dto.Board">
+		SELECT * FROM BOARD WHERE BWRITER = #{loginId} AND BSTATE NOT IN ('D') ORDER BY BNO DESC
+	</select>
+	
+	
 </mapper>
