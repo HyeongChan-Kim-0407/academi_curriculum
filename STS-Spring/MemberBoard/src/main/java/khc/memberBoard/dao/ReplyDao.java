@@ -12,4 +12,8 @@ public interface ReplyDao {
 
 	void insertReply(@Param("rwriter") String loginId, @Param("rbno") int rbno, @Param("rcontents") String rcontents);
 
+	int updateRstateByRno(int rno);
+
+	Reply selectReplyByRno(int rno);
+
 }

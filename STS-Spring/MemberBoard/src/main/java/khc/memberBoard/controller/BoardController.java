@@ -2,6 +2,7 @@ package khc.memberBoard.controller;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ import khc.memberBoard.service.BoardService;
 
 @Controller
 public class BoardController {
-
+	
+	@Autowired
+	private HttpServletRequest request;
+	
 	@Autowired
 	private BoardService boardsvc;
 
@@ -29,9 +33,9 @@ public class BoardController {
 		System.out.println("/boardList(get) 게시판 페이지 이동요청");
 		
 		/* Board 테이블의 글 목록 조회 */
-		ArrayList<Board> boardList = boardsvc.findBoardList();
+//		ArrayList<Board> boardList = boardsvc.findBoardList();
 		/* 조회된 글 목록을 model에 저장 */
-		model.addAttribute("boardList", boardList);
+//		model.addAttribute("boardList", boardList);
 //		String loginId = (String) session.getAttribute("loginId");
 //		model.addAttribute("loginId",loginId );
 		/* model에 저장된 정보를 boardList 페이지와 같이 응답 */
@@ -40,8 +44,12 @@ public class BoardController {
 
 	@GetMapping("/boardWrite")
 	public String boardWriteForm(RedirectAttributes ra) {
-		System.out.println("/boardWirte(get) 글 작성 페이지 이동요청");
+		System.out.println("/boardWrite(get) 글 작성 페이지 이동요청");
 		if (session.getAttribute("loginId") == null) {
+			//클라이언트가 보낸 요청 URL
+			System.out.println(request.getRequestURI());
+			String afterURL = request.getRequestURI();
+			session.setAttribute("afterURL", afterURL);
 			System.out.println("잘못된 접근");
 			ra.addFlashAttribute("msg", "잘못된 접근입니다. 로그인 후 이용해주세요.");
 			return "redirect:/login";
@@ -55,8 +63,11 @@ public class BoardController {
 		System.out.println("/boardWrite(post) 글 등록 요청");
 		/* 세션에 로그인 아이디 확인 */
 		if (session.getAttribute("loginId") == null) {
+			String afterURL = request.getRequestURI();
+			session.setAttribute("afterURL", afterURL);
 			/* 로그인이 안돼있다면 로그인화면으로 이동 */
 			System.out.println("잘못된 접근 : 로그인 안됨");
+			ra.addFlashAttribute("msg", "로그인 후 이용 가능합니다");
 			return "redirect:/";
 		}
 		/* 로그인 상태면 세션의 로그인 아이디를 board 객체의 bwriter로 설정 */
@@ -157,9 +168,9 @@ public class BoardController {
 	
 	@GetMapping("/getBoardList")
 	@ResponseBody
-	public ArrayList<Board> getBoardList() {
+	public ArrayList<Board> getBoardList(int offset, int fetch) {
 		System.out.println("ajax - /getBoardLists");
-		ArrayList<Board> boardList = boardsvc.findBoardList();
+		ArrayList<Board> boardList = boardsvc.findBoardList(offset, fetch);
 		
 		return boardList;
 	}

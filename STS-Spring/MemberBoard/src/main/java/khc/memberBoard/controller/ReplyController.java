@@ -37,10 +37,43 @@ public class ReplyController {
 		System.out.println("ajax - /registReply(get) 댓글 작성 요청");
 		
 		String loginId = (String) session.getAttribute("loginId");
+		if(loginId == null) {
+			String afterURL = "/boardView?bno="+rbno;
+			session.setAttribute("afterURL", afterURL);
+			return "L";
+		}
+		try {
+			replysvc.registReply(loginId, rbno, rcontents);
+			return "Y";
+		} catch (Exception e) {
+			return "N";
+		}
+	}
+	
+	@GetMapping("/deleteReply")
+	@ResponseBody
+	public String deleteReply(int rno) {
+		System.out.println("/replyDelete(get) 댓글 삭제 요청");
 		
-		replysvc.registReply(loginId, rbno, rcontents);
+		String loginId = (String) session.getAttribute("loginId");
+		Reply reply = replysvc.findReplyByrno(rno); 
+		int rbno = reply.getRbno();
+		if(loginId == null) {
+			System.out.println("로그인 필요");
+			String afterURL = "/boardView?bno="+rbno;
+			session.setAttribute("afterURL", afterURL);
+			return "L";
+		}
 		
-		return null;
+		int result = replysvc.deleteReply(rno);
+		
+		if(result != 1) {
+			System.out.println("삭제 과정 중 오류 발생");
+			return "N";
+		}
+		
+		
+		return "Y";
 	}
 	
 }

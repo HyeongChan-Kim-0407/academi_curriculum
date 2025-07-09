@@ -10,7 +10,7 @@ public interface BoardDao {
 
 	void insertBoard(Board board);
 
-	ArrayList<Board> selectBoardList();
+	ArrayList<Board> selectBoardList(@Param("offset") int offset, @Param("fetch") int fetch);
 
 	int updateBhitsByBno(int bno);
 	

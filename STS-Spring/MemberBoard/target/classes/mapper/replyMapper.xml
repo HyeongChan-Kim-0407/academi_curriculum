@@ -5,12 +5,20 @@
 <mapper namespace="khc.memberBoard.dao.ReplyDao">
 	
 	<select id="selectReplyListByBno" resultType="khc.memberBoard.dto.Reply">
-		SELECT * FROM REPLY WHERE RBNO = ${rbno} AND RSTATE NOT IN ('D')
+		SELECT * FROM REPLY WHERE RBNO = ${rbno} AND RSTATE NOT IN ('D') ORDER BY RNO
 	</select>
 	
 	<insert id="insertReply">
 		INSERT INTO REPLY
 		VALUES( (SELECT NVL(MAX(RNO), 0) + 1 AS RNO FROM REPLY), #{rwriter}, #{rbno}, #{rcontents}, DEFAULT, DEFAULT )
 	</insert>
+	
+	<update id="updateRstateByRno">
+		UPDATE REPLY SET RSTATE = 'D' WHERE RNO = ${rno}
+	</update>
+	
+	<select id="selectReplyByRno" resultType="khc.memberBoard.dto.Reply">
+		SELECT * FROM REPLY WHERE RNO = ${rno}
+	</select>
 	
 </mapper>

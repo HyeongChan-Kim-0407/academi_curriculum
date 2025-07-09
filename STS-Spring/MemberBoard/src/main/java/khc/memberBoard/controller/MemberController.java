@@ -69,6 +69,11 @@ public class MemberController {
 		if(loginMember != null) {
 			System.out.println("로그인 성공");
 			session.setAttribute("loginId", loginMember.getMid());
+			String afterURL = (String)session.getAttribute("afterURL");
+			if(afterURL != null) {
+				session.removeAttribute("afterURL");
+				return "redirect:"+afterURL;
+			}
 			return "redirect:/";
 		}else {
 			System.out.println("로그인 실패");

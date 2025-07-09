@@ -11,6 +11,8 @@
 	
 	<select id="selectBoardList" resultType="khc.memberBoard.dto.Board">
 		SELECT BNO, BWRITER, BTITLE, BCONTENTS, BHITS, TO_CHAR(BDATE, 'YYYY-MM-DD') AS BDATE, BFILENAME, BSTATE FROM BOARD WHERE BSTATE NOT IN('D') ORDER BY BNO DESC
+		OFFSET ${offset} ROWS
+		FETCH NEXT ${fetch} ROWS ONLY
 	</select>
 	
 	<update id="updateBhitsByBno">

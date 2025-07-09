@@ -45,7 +45,7 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
       <div id="pageContents">
         <!-- 페이지 컨텐츠 -->
         <h2>게시판</h2>
-        <!-- model을 통한 데이터 출력 -->
+        <!-- model을 통한 데이터 출력 
         <table border="1">
           <thead>
             <tr>
@@ -61,7 +61,7 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
                   <button type="button" onclick="location.href='/boardWrite'">
                     글작성
                   </button>
-                  <!-- http://localhost:8080/boardWrite -->
+                   http://localhost:8080/boardWrite 
                 </c:if>
               </td>
             </tr>
@@ -111,14 +111,13 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
                   <button type="button" onclick="location.href='/boardWrite'">
                     글작성
                   </button>
-                  <!-- http://localhost:8080/boardWrite -->
+                   http://localhost:8080/boardWrite
                 </c:if>
               </td>
             </tr>
           </tfoot>
-        </table>
+        </table> -->
 
-        <hr />
         <!-- ajax를 통한 데이터 출력 -->
         <table border="1">
           <thead>
@@ -132,11 +131,11 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
                 <input type="text" placeholder="검색어를 입력해주십시오" />
                 <button>검색</button>
                 <c:if test="${sessionScope.loginId != null}">
-                  <button type="button" onclick="location.href='/boardWrite'">
-                    글작성
-                  </button>
                   <!-- http://localhost:8080/boardWrite -->
                 </c:if>
+                <button type="button" onclick="location.href='/boardWrite'">
+                  글작성
+                </button>
               </td>
             </tr>
             <tr>
@@ -151,11 +150,6 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
           <tfoot>
             <tr>
               <td colspan="5">
-                <button onclick="getBoardList()">더보기</button>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="5">
                 <select name="" id="searchType">
                   <option value="BTITLE">제목</option>
                   <option value="BCONTNETS">내용</option>
@@ -168,11 +162,11 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
                 />
                 <button onclick="search()">검색</button>
                 <c:if test="${sessionScope.loginId != null}">
-                  <button type="button" onclick="location.href='/boardWrite'">
-                    글작성
-                  </button>
                   <!-- http://localhost:8080/boardWrite -->
                 </c:if>
+                <button type="button" onclick="location.href='/boardWrite'">
+                  글작성
+                </button>
               </td>
             </tr>
           </tfoot>
@@ -183,16 +177,20 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
       /* 서버에 글 목록 데이터 조회 요청 */
+      let offsetNumber = 0;
+      let fetchNumber = 5;
       function getBoardList() {
         // 1. 데이터 조회 요청(ajax)
         $.ajax({
           url: "/getBoardList",
           type: "get",
+          data: { offset: offsetNumber, fetch: fetchNumber },
           dataType: "json",
           success: function (response) {
             console.log("글목록 조회");
             console.log(response); // [{board}, {board}, ...]
             printBoardList(response);
+            offsetNumber += fetchNumber;
           },
         });
       }
@@ -201,7 +199,7 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         // response 출력
         console.log("printBoardList() 호출");
         const tbodyEl = document.getElementById("ajaxTbody");
-        tbodyEl.innerHTML = ""; // tbodyEl의 하위요소 초기화
+        // tbodyEl.innerHTML = ""; // tbodyEl의 하위요소 초기화
         for (board of boardList) {
           console.log(board.bfilename);
           let imageIcon = ``;
@@ -221,6 +219,19 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
           <td>\${board.bdate}</td>`;
           tbodyEl.appendChild(trEl);
         }
+        const tableRow = document.createElement("tr");
+        tableRow.id = "addRow";
+        if (boardList.length >= fetchNumber) {
+          tableRow.innerHTML =
+            '<td colspan="5"> <button onclick="addBoardList()">더보기</button> </td>';
+          tbodyEl.appendChild(tableRow);
+        }
+      }
+
+      function addBoardList() {
+        const removeTableRow = document.getElementById("addRow");
+        removeTableRow.remove();
+        getBoardList();
       }
 
       /* 글 목록 데이터를 화면에 출력 (tbody태그 내의 요소 생성) */

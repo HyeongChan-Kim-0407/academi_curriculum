@@ -65,9 +65,9 @@ public class BoardService {
 	
 	}
 
-	public ArrayList<Board> findBoardList() {
+	public ArrayList<Board> findBoardList(int offset, int fetch) {
 		System.out.println("BoardList - findBoardList() 호출");
-		ArrayList<Board> boardList = boardDao.selectBoardList();
+		ArrayList<Board> boardList = boardDao.selectBoardList(offset, fetch);
 		
 		return boardList;
 	}

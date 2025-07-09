@@ -25,5 +25,16 @@ public class ReplyService {
 		System.out.println("ReplyService - registReply() 호출");
 		replyDao.insertReply(loginId, rbno, rcontents);
 	}
+
+	public int deleteReply(int rno) {
+		System.out.println("ReplyService - deleteReply() 호출");
+		int result = replyDao.updateRstateByRno(rno);
+		
+		return result;
+	}
+
+	public Reply findReplyByrno(int rno) {
+		return replyDao.selectReplyByRno(rno);
+	}
 	
 }

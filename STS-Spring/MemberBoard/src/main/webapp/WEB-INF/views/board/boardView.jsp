@@ -31,22 +31,38 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         margin-bottom: 5px;
         border-bottom: 1px solid black;
         padding: 10px;
-      }
-      .reply > * {
-        display: inline-block;
+        position: relative;
       }
       .rwriter {
         font-weight: bold;
         font-size: 15px;
-        text-align: start;
       }
       .rcontents {
-        text-align: center;
+        width: 100%;
+        outline: none;
+        border: 0;
+        font-family: inherit;
+        height: fit-content;
       }
       .rdate {
         font-size: 10px;
         color: grey;
+      }
+      .replyDelBtn {
+        position: absolute;
+        right: 10px;
+        top: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      #replyWrite {
         text-align: end;
+      }
+      #replyWrite > textarea {
+        width: 100%;
+        height: 60px;
+        margin-bottom: 10px;
       }
     </style>
   </head>
@@ -155,15 +171,26 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         <hr />
         <div id="replys">
           <div id="replyList">
-            <div>
-              <div>테스트1</div>
-              <div>테스트2</div>
-              <div>테스트3</div>
+            <div class="reply">
+              <div class="rwriter">테스트1</div>
+              <div class="rdate">테스트1</div>
+              <div class="rcontents">테스트1</div>
+              <button class="replyDelBtn" onfocus="">삭제</button>
+            </div>
+            <div class="reply">
+              <div class="rwriter">테스트2</div>
+              <div class="rdate">테스트2</div>
+              <div class="rcontents">테스트2</div>
+              <button class="replyDelBtn">삭제</button>
+            </div>
+            <div class="reply">
+              <div class="rwriter">테스트3</div>
+              <div class="rdate">테스트3</div>
+              <div class="rcontents">테스트3</div>
+              <button class="replyDelBtn">삭제</button>
             </div>
           </div>
-          <hr />
-          <c:if test="${not empty sessionScope.loginId}">
-            <div id="leplyWrite">
+            <div id="replyWrite">
               <textarea
                 name=""
                 id="rcontents"
@@ -173,6 +200,7 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
               ></textarea>
               <button onclick="registReply()">댓글 등록</button>
             </div>
+          <c:if test="${not empty sessionScope.loginId}">
           </c:if>
         </div>
       </div>
@@ -194,6 +222,7 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
         });
       }
       function printReplyList(replyList) {
+        const loginId = "${sessionScope.loginId}";
         console.log("printReply 호출");
         console.log(replyList);
         const replyListEl = document.getElementById("replyList");
@@ -203,13 +232,15 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
           const divEl = document.createElement("div");
           divEl.setAttribute("class", "reply");
           divEl.innerHTML = `<div class="rwriter">\${reply.rwriter}</div>
-              <div class="rcontents">\${reply.rcontents}</div>
-              <div class="rdate">\${reply.rdate}</div>`;
+          <div class="rdate">\${reply.rdate}</div>
+              <textarea class="rcontents">\${reply.rcontents}</textarea>`;
+          if (reply.rwriter == loginId) {
+            divEl.innerHTML += `<button class="replyDelBtn" onclick="replyDelete('\${reply.rno}')">삭제</button>`;
+          }
           replyListEl.appendChild(divEl);
-          console.log("댓글 작성");
         }
       }
-      getReplyList();
+
       function registReply() {
         const contentsEl = document.getElementById("rcontents");
         $.ajax({
@@ -217,12 +248,41 @@ language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
           type: "get",
           data: { rbno: bno, rcontents: contentsEl.value },
           success: function (response) {
-            contentsEl.value = "";
-            /* 댓글 목록 조회 및 출력 함수 호출 */
-            getReplyList();
+            if (response == "L") {
+              alert("로그인 후 이용 가능합니다.");
+              location.href = "/login";
+            } else if (response == "N") {
+              alert("댓글 등록에 실패했습니다.");
+            } else {
+              alert("댓글이 등록 되었습니다.");
+              contentsEl.value = "";
+              /* 댓글 목록 조회 및 출력 함수 호출 */
+              getReplyList();
+            }
           },
         });
       }
+
+      function replyDelete(rno) {
+        $.ajax({
+          url: "/deleteReply",
+          type: "get",
+          data: { rno: rno },
+          success: function (response) {
+            if (response == "L") {
+              alert("잘못된 접근입니다. 로그인 후 이용해주십시오.");
+              location.href = "/login";
+            } else if (response == "N") {
+              alert("댓글 삭제 과정에서 오류가 발생하였습니다.");
+            } else {
+              alert("댓글이 삭제되었습니다.");
+              getReplyList();
+            }
+          },
+        });
+      }
+
+      getReplyList();
     </script>
   </body>
 </html>
