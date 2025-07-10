@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1 id="id01">script01.html</h1>
+    <script>
+      /* 변수 */
+      let num = 10;
+      console.log(typeof num);
+      let text = "문자";
+      let isTrue = true;
+      let arr = []; // 하나의 배열 안에 여러 타입 저장 가능
+      let objVal = {};
+      let undefinedVal;
+      console.log(undefinedVal);
+      console.log(undefinedVal == undefined); // True : 조건의 값으로도 사용 가능
+      let nullVal = null;
+      console.log(nullVal); // 값이 null
+      let elVal = document.getElementById("id01");
+      console.log(elVal);
+
+      const constVal = 10;
+      //constVal = 100; // constVal에 100을 저장 시도
+      let letVal = 10;
+      letVal = 100;
+      console.log(letVal);
+
+      //var, let, const
+      if (true) {
+        let ifVal = "if문 안쪽 변수";
+      }
+      //   console.log(ifVal);
+      if (true) {
+        var var_ifVal = "if문 안쪽 var";
+      }
+      console.log(var_ifVal);
+      //object 타입
+      let members = { mid: "ABC", mpw: "1234" };
+      //members의 mid 출력
+      console.log(members.mid);
+      //members의 mname 값 저장
+      members.mname = "테스트";
+      //members의 mname 출력
+      console.log(members.mname);
+    </script>
+    <script>
+      for (let i = 0; i < 10; i++) {
+        console.log(i);
+      }
+      let isFalse = false;
+      if (isFalse) {
+        console.log("true 이면 실행");
+      } else {
+        console.log("false이면 실행");
+      }
+      let switchVal = "A";
+      switch (switchVal) {
+        case "A":
+          console.log("A");
+          break;
+        case "B":
+          console.log("B");
+          break;
+      }
+    </script>
+    <script>
+      let numberArr = ["A", "B", "C", "D", "E"];
+      for (let i = 0; i < numberArr.length; i++) {
+        console.log(numberArr[i]);
+      }
+      console.log("num of numberArr");
+      for (num of numberArr) {
+        console.log(num);
+      }
+      console.log("num of numberArr");
+      console.log("num in numberArr");
+      for (num in numberArr) {
+        console.log(num);
+      }
+      console.log("num in numberAr");
+    </script>
+  </body>
+</html>

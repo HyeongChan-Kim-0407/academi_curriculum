@@ -1,0 +1,20 @@
+/* 1px의 경계선을 지정하는 class */
+.border1 {
+  border: 1px solid black;
+}
+/* 5px의 경계선을 지정하는 class */
+.border5 {
+  border: 5px solid black;
+}
+.colorRed {
+  color: red;
+}
+.colorBlue {
+  color: blue;
+}
+.padding5 {
+  padding: 5px;
+}
+.padding-bottom {
+  padding-bottom: 20px;
+}

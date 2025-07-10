@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="div1">1</div>
+    <div id="div2">
+      2
+      <img src="" alt="" />
+    </div>
+    <div id="div3" class="box">3</div>
+    <div id="div4" class="box">4</div>
+    <div id="div5" class="box">5</div>
+
+    <script>
+      let divBoxs = document.getElementsByClassName("box");
+      for (divBox of divBoxs) {
+        console.log(divBox);
+        divBox.innerText = "div";
+      }
+      console.log(divBoxs[0]);
+      let divList = document.querySelectorAll(".box");
+      console.log("===forEach===");
+      divList.forEach(function (val, idx) {
+        console.log(val);
+        console.log(idx);
+      });
+    </script>
+
+    <script>
+      /* 요소 선택 방식 */
+      // querySelector("css 선택자")
+      let imgEl = document.querySelector("#div2 img");
+      imgEl.src =
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNC9bdUpL1xLjGkDgw177qdrD9pY4F98-GkQ&s";
+      let div1El = document.getElementById("div1");
+      console.log(div1El);
+      let strVal = "div태그";
+      //   div1El.innerText = "<h1>div1태그</h1>";
+      // String 표기 : '문자', "문자", `문자`
+      //   div1El.innerHTML = "<h1>" + strVal + "</h1>"; // "<h1>div태그</h1>"
+      div1El.innerHTML = `<h1>${strVal}</h1>`;
+    </script>
+  </body>
+</html>
