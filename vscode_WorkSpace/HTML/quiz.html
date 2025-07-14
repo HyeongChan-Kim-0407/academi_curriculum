@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="container" style="max-width: 600px">
+      <h1 class="my-3 text-center fw-bold">영화 초성 퀴즈</h1>
+      <div
+        class="row border border-success-subtle border-5 rounded align-items-center"
+        style="min-height: 500px"
+      >
+        <div id="quizBox" class="mb-3">
+          <div id="quiz" class="fw-bold fs-1 text-center p-3"></div>
+          <div class="input-group my-3 mx-auto" style="width: 300px">
+            <input
+              id="answerInput"
+              type="text"
+              class="form-control"
+              placeholder="정답을 입력 해주세요..."
+            />
+          </div>
+        </div>
+        <div id="answerBox" class="d-none">
+          <div id="result" class="my-2 fs-1 fw-bold text-center"></div>
+          <div id="answer" class="my-2 fs-1 fw-bold text-center">
+            <img id="moviePoster" src="" alt="" style="height: 400px" />
+            <div id="movieName"></div>
+          </div>
+          <div class="text-center my-3">
+            <button class="btn btn-success" onclick="nextQuiz()">
+              다음 문제
+            </button>
+          </div>
+        </div>
+
+        <div id="quizResult" class="d-none text-center fw-bold fs-1"></div>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+  <script>
+    // 문제 : 영화 초성, 정답 : 영화이름, 포스터
+    let quizData = [
+      {
+        quiz: "ㅅㅍㅁ",
+        answer: {
+          name: "슈퍼맨",
+          poster:
+            "https://img.cgv.co.kr/Movie/Thumbnail/Poster/000089/89800/89800_1000.jpg?_gl=1*1b4jdit*_ga*ODM1OTUzOTkxLjE3NTIyMDg5MjY.*_ga_559DE9WSKZ*czE3NTIyMDg5MjYkbzEkZzEkdDE3NTIyMDkwNDEkajYwJGwwJGgw",
+        },
+      },
+      {
+        quiz: "ㅈㄹㄱㅇㄷ ㅅㄹㅇ ㅅㅈ",
+        answer: {
+          name: "쥬라기월드 새로운 시작",
+          poster:
+            "https://img.cgv.co.kr/Movie/Thumbnail/Poster/000089/89462/89462_1000.jpg?_gl=1*43gi5j*_ga*ODM1OTUzOTkxLjE3NTIyMDg5MjY.*_ga_559DE9WSKZ*czE3NTIyMDg5MjYkbzEkZzEkdDE3NTIyMDkxODgkajQ5JGwwJGgw",
+        },
+      },
+      {
+        quiz: "ㄴㅇㅈ",
+        answer: {
+          name: "노이즈",
+          poster:
+            "https://img.cgv.co.kr/Movie/Thumbnail/Poster/000089/89717/89717_1000.jpg",
+        },
+      },
+      {
+        quiz: "ㅈㅈㅈ ㄷㅈ ㅅㅈ",
+        answer: {
+          name: "전지적 독자 시점",
+          poster:
+            "https://img.cgv.co.kr/Movie/Thumbnail/Poster/000089/89478/89478_1000.jpg?_gl=1*1ae726l*_ga*ODM1OTUzOTkxLjE3NTIyMDg5MjY.*_ga_559DE9WSKZ*czE3NTIyMTM1MjkkbzIkZzEkdDE3NTIyMTM1NzUkajE0JGwwJGgw",
+        },
+      },
+      {
+        quiz: "ㅋ ㅇㅂ ㅋㅅ",
+        answer: {
+          name: "킹 오브 킹스",
+          poster:
+            "https://img.cgv.co.kr/Movie/Thumbnail/Poster/000089/89830/89830_1000.jpg?_gl=1*mvth3c*_ga*ODM1OTUzOTkxLjE3NTIyMDg5MjY.*_ga_559DE9WSKZ*czE3NTIyMTM1MjkkbzIkZzEkdDE3NTIyMTM3NjIkajYwJGwwJGgw",
+        },
+      },
+    ];
+    quizData = _.shuffle(quizData);
+    let quizIndex = 0; // quiz번호
+
+    //정답수를 저장할 변수
+    let correctCount = 0; // 정답수
+    //오답수를 저장할 변수
+    let incorrectCount = 0; // 오답수
+
+    // 문제가 출제되는 BOX 선택
+    const quizBoxEl = document.getElementById("quizBox");
+    // 정답 결과가 나타나는 BOX 선택
+    const answerBoxEl = document.getElementById("answerBox");
+
+    // quiz가 출제되는 태그 선택
+    const quizEl = document.getElementById("quiz");
+    // 정답을 입력하는 입력 태그
+    const answerInputEl = document.getElementById("answerInput");
+    // 결과를 출력하는 태그 선택
+    const resultEl = document.getElementById("result");
+    // 영화 이름을 출력할 태그 선택
+    const nameEl = document.getElementById("movieName");
+    // 포스터를 출력할 태그 선택
+    const posterEl = document.getElementById("moviePoster");
+
+    // 최종 결과를 출력하는 태그 선택
+    const quizResultEl = document.getElementById("quizResult");
+
+    // 정답 입력 태그에 이벤트
+    answerInputEl.addEventListener("keyup", function (e) {
+      console.log(e.key);
+      console.log(e.keyCode);
+      /*
+      if (e.ke == "Enter") {
+        checkAnswer();
+      }
+        */
+      if (e.keyCode == 13) {
+        checkAnswer();
+      }
+    });
+
+    // 정답 확인
+    function checkAnswer() {
+      // 문제 출제 화면을 숨김
+      quizBoxEl.classList.add("d-none");
+      // 정답 결과 화면을 나타냄
+      answerBoxEl.classList.remove("d-none");
+
+      // 사용자가 입력한 답
+      const answerValue = answerInputEl.value;
+      const movieName = quizData[quizIndex].answer.name;
+      const moviePoster = quizData[quizIndex].answer.poster;
+
+      nameEl.innerText = movieName;
+      posterEl.src = moviePoster;
+      if (answerValue.replaceAll(" ", "") == movieName.replaceAll(" ", "")) {
+        resultEl.innerText = "정답입니다!";
+        correctCount++;
+      } else {
+        resultEl.innerText = "틀렸습니다!";
+        incorrectCount++;
+      }
+      answerInputEl.value = ""; // 정답 입력 태그 초기화
+      quizIndex++;
+    }
+    // 퀴즈 출제
+    function quizStart() {
+      // 문제 출제 화면을 나타냄
+      quizBoxEl.classList.remove("d-none");
+      // 정답 결과 화면을 숨김
+      answerBoxEl.classList.add("d-none");
+      //quiz 화면에 quiz를 출제 하는 기능
+      quizEl.innerText = quizData[quizIndex].quiz;
+    }
+    //다음 문제
+    function nextQuiz() {
+      // 다음 문제가 있는지 확인
+      if (quizIndex < quizData.length) {
+        // 출제할 문제가 있으면 문제를 출제
+        quizStart();
+      } else {
+        // 출제할 문제가 없으면 최종결과 출력
+        alert("더 이상 문제가 없습니다.");
+        // 문제 출제 화면을 숨김
+        quizBoxEl.classList.add("d-none");
+        // 정답 결과 화면을 숨김
+        answerBoxEl.classList.add("d-none");
+
+        // 최종 결과 화면을 나타냄
+        quizResultEl.classList.remove("d-none");
+        quizResultEl.innerHTML = ""; // 최종 결과를 초기화
+        // 정답수 출력
+        let correctDiv = document.createElement("div");
+        correctDiv.innerText = "정답수 : " + correctCount + "개";
+        quizResultEl.appendChild(correctDiv);
+        // 오답수 출력
+        let incorrectDiv = document.createElement("div");
+        incorrectDiv.innerText = "오답수 : " + incorrectCount + "개";
+        quizResultEl.appendChild(incorrectDiv);
+      }
+    }
+    quizStart();
+  </script>
+</html>
