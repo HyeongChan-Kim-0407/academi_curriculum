@@ -1,11 +1,13 @@
 package khc.springboot.project2.orders.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import khc.springboot.project2.orders.dto.MemberForm;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,10 +27,19 @@ public class Member {
 	private String mpw; // 비밀번호
 	
 	private String mname; // 이름
-	private String maddr; // 주소
+	
+	private String mpostcode; 		// 우편번호
+	private String mroadAddress; 	// 도로명 주소
+	private String mjibunAddress; 	// 지번 주소
+	private String mdetailAddress; 	// 상세 주소
+	private String mextraAddress; 	// 참고 항목
+	
 	private String memail; // 이메일
 	
 	private LocalDateTime mjoindate; // 가입일
+	
+	@OneToMany(mappedBy = "member")
+	private List<Product> productList; // 회원이 등록한 상품 목록
 	
 	public Member() {
 		
@@ -37,7 +48,11 @@ public class Member {
 		this.mid = memberForm.getMid();
 		this.mpw = memberForm.getMpw();
 		this.mname = memberForm.getMname();
-		this.maddr = memberForm.getMaddr();
+		this.mpostcode = memberForm.getMpostcode();
+		this.mroadAddress = memberForm.getMroadAddress();
+		this.mjibunAddress = memberForm.getMjibunAddress();
+		this.mdetailAddress = memberForm.getMdetailAddress();
+		this.mextraAddress = memberForm.getMextraAddress();
 		this.memail = memberForm.getMemail();
 		this.mjoindate = LocalDateTime.now(); // 현재 시간으로 가입일 설정
 	}

@@ -8,4 +8,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	Member findByMidAndMpw(String mid, String mpw);
 
+	Member findByMid(String loginId);
+
 }

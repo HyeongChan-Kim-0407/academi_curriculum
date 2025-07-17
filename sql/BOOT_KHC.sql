@@ -10,3 +10,7 @@ GRANT DBA TO BOOT_KHC; -- 관리자 권한 부여
 desc testboard;
 
 select * from testboard;
+
+select * from member;
+
+select * from product;
