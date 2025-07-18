@@ -1,5 +1,7 @@
 package khc.springboot.project2.orders.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -20,6 +22,6 @@ public class ProductForm {
 	private String ptype;
 	private String pinfo;
 	
-	
+	private MultipartFile[] pfiles;
 	
 }

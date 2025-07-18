@@ -27,6 +27,23 @@ public class MemberService {
 		
 		Member member = memberRepository.findByMidAndMpw(mid, mpw);
 		
+		if(member == null) {
+			return null;
+		}
+		
+		MemberDto memberDto = new MemberDto(member);
+		
+		return memberDto;
+	}
+
+	public MemberDto findByMid(String mid) {
+		System.out.println("MemberService - findByMid() 호출");
+		
+		Member member = memberRepository.findByMid(mid);
+		
+		if(member == null) {
+			return null; // 회원이 존재하지 않으면 null 반환
+		}
 		MemberDto memberDto = new MemberDto(member);
 		
 		return memberDto;

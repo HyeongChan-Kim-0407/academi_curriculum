@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${productDto.pname} + ' - 상세보기'">제품 상세보기</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container my-5">
+    <!-- 제품 이름 -->
+    <h1 class="mb-4" th:text="${productDto.pname}">제품 이름</h1>
+
+    <div class="row">
+        <!-- 제품 이미지 -->
+        <div class="col-md-6 text-center" th:each="pfilename : ${productDto.pfilenameList}">
+            <img th:src="${pfilename}"
+                 class="img-fluid rounded"
+                 alt="제품 이미지">
+        </div>
+
+        <!-- 제품 정보 -->
+        <div class="col-md-6">
+            <h3 class="text-danger mb-3" th:text="'₩' + ${productDto.pprice}"></h3>
+
+            <!-- 제품 설명 -->
+            <p class="mb-4" th:text="${productDto.pinfo}">제품 상세 설명...</p>
+
+            <!-- 재고 여부 -->
+            <!-- <p class="text-muted mb-4" th:if="${product.stock > 0}" th:text="'재고: ' + ${product.stock} + '개'">재고: 0개</p>
+            <p class="text-danger mb-4" th:if="${product.stock == 0}">재고 없음</p> -->
+
+            <!-- 버튼들 -->
+            <!-- <div class="d-flex gap-2">
+                <button class="btn btn-primary"
+                        th:attr="onclick=|location.href='/order?productId=${product.id}'|">
+                    구매하기
+                </button>
+                <button class="btn btn-outline-secondary"
+                        th:attr="onclick=|location.href='/cart/add?productId=${product.id}'|">
+                    장바구니 담기
+                </button>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

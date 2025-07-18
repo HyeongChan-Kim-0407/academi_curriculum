@@ -11,7 +11,7 @@
     />
     <script th:inline="javascript">
       const msg = /*[[${msg != null ? msg : 'null'}]]*/ null;
-      if (msg != null && msg.value != 'null') {
+      if (msg != null && msg != 'null') {
         alert(msg);
       }
     </script>
@@ -74,9 +74,11 @@
           <a href="/product/regist" class="btn btn-primary w-100 py-3 fs-2">상품등록</a>
         </div>
         <div class="col">
-          <a class="btn btn-primary w-100 py-3 fs-2">상품목록</a>
+          <a href="/product/list" class="btn btn-primary w-100 py-3 fs-2">상품목록</a>
         </div>
       </div>
+      <div class="row mt-5">
+        <!-- <img alt="" src="/productImage/efe323cc-13df-4362-8656-2bcae0df130d.jpg"> -->
     </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"

@@ -33,7 +33,7 @@
 		<!-- 메뉴 버튼 -->
 		<div class="row mt-5">
 			<h1 class="text-center mb-4 fw-bold">상품 등록</h1>
-			<form action="/product/regist" method="post"
+			<form action="/product/regist" method="post" enctype="multipart/form-data"
 				th:object="${productForm}">
 				<div class="mb-3">
 					<label for="pname" class="form-label">상품명</label>
@@ -70,6 +70,12 @@
 					<!-- th:field = "*{필드명}" >> id, name, value 속성을 자동으로 추가 -->
 					<!-- is-invalid : 오류가 있을 때 추가할 class -->
 					<input type="text" class="form-control" th:field="*{pinfo}" />
+				</div>
+				<div class="mb-3">
+					<label for="pfiles" class="form-label">상품 이미지</label>
+					<!-- th:field = "*{필드명}" >> id, name, value 속성을 자동으로 추가 -->
+					<!-- is-invalid : 오류가 있을 때 추가할 class -->
+					<input type="file" id="pfiles" name="pfiles" multiple="multiple" class="form-control" />
 				</div>
 				<button type="submit" class="btn btn-primary w-100">상품등록</button>
 			</form>

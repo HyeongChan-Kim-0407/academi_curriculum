@@ -1,7 +1,6 @@
 package khc.springboot.project2.orders.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.AbstractBindingResult;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
@@ -66,7 +66,7 @@ public class MemberController {
 	}
 	
 	@PostMapping("/login")
-	public String login(@RequestParam("mid") String mid, @RequestParam("mpw") String mpw) {
+	public String login(@RequestParam("mid") String mid, @RequestParam("mpw") String mpw, RedirectAttributes ra) {
 		System.out.println("/member/login (post) - 로그인 요청");
 		
 		MemberDto memberdto = membersvc.findByMidAndMpw(mid, mpw);
@@ -74,10 +74,12 @@ public class MemberController {
 		if(memberdto != null) {
 			System.out.println("로그인 성공");
 			session.setAttribute("loginId", memberdto.getMid());
+			ra.addFlashAttribute("msg", "환영합니다 " + memberdto.getMname() + "님");
 			return "redirect:/";
 		} else {
 			System.out.println("로그인 실패: 아이디 또는 비밀번호가 일치하지 않습니다.");
-			return "redirect:/member/join"; // 로그인 실패 시 회원 가입 페이지로 리다이렉트
+			ra.addFlashAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
+			return "redirect:/member/login";
 		}
 		
 	}
@@ -87,6 +89,24 @@ public class MemberController {
 		System.out.println("/member/logout(get) - 로그아웃 요청");
 		session.removeAttribute("loginId"); // 세션에서 로그인 정보 제거
 		return "redirect:/";
+	}
+	
+	@GetMapping("checkId")
+	@ResponseBody
+	public String checkId(@RequestParam("mid") String mid) {
+		System.out.println("/member/checkId (post) - 아이디 중복 확인 요청");
+		System.out.println("입력한 아이디: " + mid);
+		
+		MemberDto memberdto = membersvc.findByMid(mid);
+		
+		if(memberdto != null) {
+			System.out.println("중복된 아이디");
+			return "N";
+		}else {
+			System.out.println("사용 가능한 아이디");
+			return "Y";
+		}
+		
 	}
 	
 }
