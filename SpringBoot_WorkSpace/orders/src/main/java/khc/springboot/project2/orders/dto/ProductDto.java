@@ -3,7 +3,7 @@ package khc.springboot.project2.orders.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import khc.springboot.project2.orders.domain.Member;
+import khc.springboot.project2.orders.domain.OrderRequest;
 import khc.springboot.project2.orders.domain.Product;
 import khc.springboot.project2.orders.domain.ProductImage;
 import lombok.Getter;
@@ -21,6 +21,7 @@ public class ProductDto {
 	private String pinfo;
 	private List<String> pfilenameList = new ArrayList<>(); // 상품 이미지 파일명 목록
 	private String pstate;
+	private List<OrderRequestDto> odRequestDtoList = new ArrayList<>(); // 거래 신청 목록
 	
 	public ProductDto() {
 		
@@ -40,6 +41,15 @@ public class ProductDto {
 			filenames.add(image.getPfilename());
 		}
 		this.pfilenameList = filenames;
+		
+		for(OrderRequest orderRequest : product.getRequestList()) {
+			OrderRequestDto ordto = new OrderRequestDto();
+			ordto.setProductId(orderRequest.getProduct().getId());
+			ordto.setMemberId(orderRequest.getMember().getId());
+			ordto.setMid(orderRequest.getMember().getMid());
+			ordto.setRequestState(orderRequest.getRequestState());
+			odRequestDtoList.add(ordto);
+		}
 	}
 
 }

@@ -83,7 +83,15 @@ public class ProductController {
 		ProductDto productDto = productsvc.getProductById(id);
 		
 		model.addAttribute("productDto", productDto);
-		return "product/productView";
+		return "product/detail";
+	}
+	
+	@PostMapping("/requestOrder/{id}")
+	public String requestOrder(@PathVariable("id") Long id, RedirectAttributes ra) {
+		System.out.println("/product/requestOrder/(post) - 거래 신청 요청");
+		System.out.println("상품 번호 : " + id);
+		
+		return "redirect:/product/view/" + id;
 	}
 	
 }

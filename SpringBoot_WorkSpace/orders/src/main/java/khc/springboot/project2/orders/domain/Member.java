@@ -41,6 +41,12 @@ public class Member {
 	@OneToMany(mappedBy = "member")
 	private List<Product> productList; // 회원이 등록한 상품 목록
 	
+	@OneToMany(mappedBy = "member")
+	private List<OrderRequest> orderRequestList; // 회원이 신청한 거래 목록
+	
+	@OneToMany(mappedBy = "member")
+	private List<Orders> orderList; // 회원이 완료한 거래 목록
+	
 	public Member() {
 		
 	}

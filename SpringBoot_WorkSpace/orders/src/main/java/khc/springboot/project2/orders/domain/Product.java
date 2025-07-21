@@ -39,6 +39,9 @@ public class Product {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL) // cascade = CascadeType.ALL : 연관된 Entity도 함께 save
 	private List<ProductImage> imageList = new ArrayList<>(); // 상품 이미지 목록
 	
+	@OneToMany(mappedBy = "product")
+	private List<OrderRequest> requestList = new ArrayList<>(); // 상품에 대한 거래 신청 목록
+	
 	public Product() {
 		
 	}

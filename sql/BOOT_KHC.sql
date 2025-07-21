@@ -14,3 +14,9 @@ select * from testboard;
 select * from member;
 
 select * from product;
+
+select * from product_image;
+
+delete from product_image;
+
+delete from product;
