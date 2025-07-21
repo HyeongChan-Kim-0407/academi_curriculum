@@ -19,49 +19,53 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet" />
   </head>
+
   <body>
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <!-- 상단 바 -->
+      <!-- 상단 바 -->
 
-        <div class="container p-3">
-          <a class="navbar-brand" href="/">Orders Project</a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a
-                  class="nav-link active"
-                  href="#"
-                  th:text="${session.loginId}"
-                ></a>
-              </li>
-              <li class="nav-item" th:if="${session.loginId == null}">
-                <a class="nav-link" href="/member/login">로그인</a>
-              </li>
-              <li class="nav-item" th:if="${session.loginId == null}">
-                <a class="nav-link" href="/member/join">회원가입</a>
-              </li>
-              <li class="nav-item" th:if="${session.loginId != null}">
-                <a class="nav-link" href="/member/logout">로그아웃</a>
-              </li>
-            </ul>
-          </div>
+      <div class="container p-3">
+        <a class="navbar-brand" href="/">Orders Project</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                href="#"
+                th:text="${session.loginId}"
+              ></a>
+            </li>
+            <li class="nav-item" th:if="${session.loginId == null}">
+              <a class="nav-link" href="/member/login">로그인</a>
+            </li>
+            <li class="nav-item" th:if="${session.loginId == null}">
+              <a class="nav-link" href="/member/join">회원가입</a>
+            </li>
+            <li class="nav-item" th:if="${session.loginId != null}">
+              <a class="nav-link" href="/member/logout">로그아웃</a>
+            </li>
+          </ul>
         </div>
-      </nav>
+      </div>
+    </nav>
     <!-- Product section-->
     <section class="py-5">
-      <form action="/product/requestOrder/{id}(id=${product.id})" method="post">
+      <form
+        th:action="@{/product/requestOrder/{id}(id=${productDto.id})}"
+        method="post"
+      >
         <div class="container px-4 px-lg-5 my-5">
           <div class="row gx-4 gx-lg-5 align-items-center">
             <div class="col-md-6">
@@ -72,10 +76,7 @@
                 alt="상품이미지"
                 style="width: 600px; height: 700px"
               />
-              <div
-                class="mt-3 d-flex justify-content-between"
-                
-              >
+              <div class="mt-3 d-flex justify-content-between">
                 <button
                   class="btn btn-outline-dark"
                   type="button"
@@ -93,7 +94,7 @@
               </div>
             </div>
             <div class="col-md-6">
-              <div class="small mb-1" th:text=${productDto.mid}></div>
+              <div class="small mb-1" th:text="${productDto.mid}"></div>
               <h1
                 class="display-5 fw-bolder"
                 th:text="${productDto.pname}"
@@ -102,26 +103,104 @@
                 <span class="" th:text="'₩' + ${productDto.pprice}"></span>
               </div>
               <p class="lead" th:text="${productDto.pinfo}"></p>
-              <div class="d-flex"  th:if="${session.loginId != null}">
-                <input
-                  class="form-control text-center me-3"
-                  id="inputQuantity"
-                  type="num"
-                  value="1"
-                  style="max-width: 3rem"
-                />
-                <button
-                  class="btn btn-outline-dark flex-shrink-0"
-                  type="submit"
-                 
-                >
-                  <i class="bi-cart-fill me-1"></i>
-                  거래 신청
-                </button>
+              <div>
+                <p>
+                  현재 신청자 <span th:text="${odRequestList.size()}"></span>명
+                </p>
+              </div>
+              <div th:if="${session.loginId != null}">
+                <div th:if="${!productDto.isSeller}">
+                  <div class="d-flex" th:if="${!productDto.isRequest}">
+                    <input
+                      class="form-control text-center me-3"
+                      id="inputQuantity"
+                      type="num"
+                      value="1"
+                      style="max-width: 3rem"
+                    />
+                    <button
+                      class="btn btn-outline-dark flex-shrink-0"
+                      type="submit"
+                    >
+                      <i class="bi-cart-fill me-1"></i>
+                      거래 신청
+                    </button>
+                  </div>
+                  <div class="d-flex" th:if="${productDto.isRequest}">
+                    <input
+                      class="form-control text-center me-3"
+                      id="inputQuantity"
+                      type="num"
+                      value="1"
+                      style="max-width: 3rem; display: none"
+                    />
+                    <p class="btn btn-outline-dark flex-shrink-0" type="button">
+                      <i class="bi-cart-fill me-1"></i>
+                      신청 완료
+                    </p>
+                  </div>
                 </div>
-                <div >
-                <p >현재 신청자 <span th:text="${productDto.odRequestDtoList.size()}"></span>명</p>
+                <div class="card bg-white" th:if="${productDto.isSeller}">
+                  <div class="card-body">
+                    <div>
+                      <p class="card-text fw-bold mb-0">
+                        현재 신청자
+                        <span th:text="${odRequestList.size()}"></span> 명
+                      </p>
+                      <hr />
+                      <!-- 거래 신청자 반복 시작 -->
+                      <div th:each="request : ${odRequestList}">
+                        <div
+                          class="d-flex justify-content-between align-items-center justify-items-center mb-3"
+                        >
+                          <p
+                            class="card-text fw-bold mb-0"
+                            th:text="${request.mid}"
+                          ></p>
+
+                          <div class="btn-group">
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-success"
+                            >
+                              승인
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-danger"
+                            >
+                              거절
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- 거래 신청자 반복 종료 -->
+                      <!-- 거래 신청자 샘플 -->
+                      <div
+                        class="d-flex justify-content-between align-items-center justify-items-center"
+                      >
+                        <p class="card-text fw-bold mb-0">신청자 아이디2</p>
+
+                        <div class="btn-group">
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-success"
+                          >
+                            승인
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-danger"
+                          >
+                            거절
+                          </button>
+                        </div>
+                      </div>
+                      <!-- 거래 신청자 샘플 -->
+                    </div>
+                  </div>
                 </div>
+              </div>
             </div>
           </div>
         </div>

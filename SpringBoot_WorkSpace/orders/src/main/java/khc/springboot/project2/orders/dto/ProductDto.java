@@ -21,7 +21,10 @@ public class ProductDto {
 	private String pinfo;
 	private List<String> pfilenameList = new ArrayList<>(); // 상품 이미지 파일명 목록
 	private String pstate;
-	private List<OrderRequestDto> odRequestDtoList = new ArrayList<>(); // 거래 신청 목록
+//	private List<OrderRequestDto> odRequestDtoList = new ArrayList<>(); // 거래 신청 목록
+	private boolean isRequest; // 거래 신청 여부
+	private boolean isSeller; // 판매자 여부
+	
 	
 	public ProductDto() {
 		
@@ -42,14 +45,10 @@ public class ProductDto {
 		}
 		this.pfilenameList = filenames;
 		
-		for(OrderRequest orderRequest : product.getRequestList()) {
-			OrderRequestDto ordto = new OrderRequestDto();
-			ordto.setProductId(orderRequest.getProduct().getId());
-			ordto.setMemberId(orderRequest.getMember().getId());
-			ordto.setMid(orderRequest.getMember().getMid());
-			ordto.setRequestState(orderRequest.getRequestState());
-			odRequestDtoList.add(ordto);
-		}
+//		for(OrderRequest orderRequest : product.getRequestList()) {
+//			OrderRequestDto ordto = new OrderRequestDto(orderRequest);
+//			odRequestDtoList.add(ordto);
+//		}
 	}
 
 }

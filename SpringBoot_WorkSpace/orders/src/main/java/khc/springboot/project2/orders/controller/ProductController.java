@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import khc.springboot.project2.orders.dto.OrderRequestDto;
 import khc.springboot.project2.orders.dto.ProductDto;
 import khc.springboot.project2.orders.dto.ProductForm;
 import khc.springboot.project2.orders.service.ProductService;
@@ -79,19 +80,45 @@ public class ProductController {
 	public String productViewPage(@PathVariable("id") Long id, Model model) {
 		System.out.println("/product/view/(get) - 상품 상세 페이지 이동 요청");
 		System.out.println("상품 번호 : " + id);
+		String loginId = (String) session.getAttribute("loginId");
 		
-		ProductDto productDto = productsvc.getProductById(id);
+		ProductDto productDto = productsvc.getProductById(id, loginId);
+		
+		List<OrderRequestDto> odRequestDtoList = productsvc.findOdRequestListByProductId(id);
 		
 		model.addAttribute("productDto", productDto);
+		
+		model.addAttribute("odRequestList", odRequestDtoList);
 		return "product/detail";
 	}
 	
 	@PostMapping("/requestOrder/{id}")
 	public String requestOrder(@PathVariable("id") Long id, RedirectAttributes ra) {
 		System.out.println("/product/requestOrder/(post) - 거래 신청 요청");
-		System.out.println("상품 번호 : " + id);
+		System.out.println("거래 신청 상품 번호 : " + id);
 		
-		return "redirect:/product/view/" + id;
+		String loginId = (String) session.getAttribute("loginId");
+		
+		if(loginId == null) {
+			System.out.println("비정상적인 접근입니다.");
+			ra.addFlashAttribute("msg", "로그인이 필요합니다.");
+			return "redirect:/member/login";
+		}
+		
+		try {
+			productsvc.requestOrder(id, loginId);
+			ra.addFlashAttribute("msg", "거래 신청이 완료되었습니다.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("거래 신청 실패: " + e.getMessage());
+			ra.addFlashAttribute("msg", e.getMessage());
+			return "redirect:/product/view/" + id;
+		} catch (Exception e) {
+			System.out.println("거래 신청 중 오류 발생: " + e.getMessage());
+			ra.addFlashAttribute("msg", "거래 신청에 실패하였습니다.");
+			return "redirect:/product/view/" + id;}
+		
+		ra.addFlashAttribute("msg", "거래 요청이 완료되었습니다.");
+		return "redirect:/";
 	}
 	
 }

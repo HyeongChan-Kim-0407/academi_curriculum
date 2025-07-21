@@ -33,4 +33,11 @@ public class OrderRequest {
 	public OrderRequest() {
 		
 	}
+	
+	public OrderRequest(Member member, Product product) {
+		this.member = member;
+		this.product = product;
+		this.requestdate = LocalDateTime.now(); // 거래 신청 날짜는 현재 시간으로 설정
+		this.requestState = "신청완료"; // 기본 상태는 신청 완료
+	}
 }

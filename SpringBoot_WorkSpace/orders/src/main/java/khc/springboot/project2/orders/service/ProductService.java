@@ -11,11 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import khc.springboot.project2.orders.domain.Member;
+import khc.springboot.project2.orders.domain.OrderRequest;
 import khc.springboot.project2.orders.domain.Product;
 import khc.springboot.project2.orders.domain.ProductImage;
+import khc.springboot.project2.orders.dto.OrderRequestDto;
 import khc.springboot.project2.orders.dto.ProductDto;
 import khc.springboot.project2.orders.dto.ProductForm;
 import khc.springboot.project2.orders.repository.MemberRepository;
+import khc.springboot.project2.orders.repository.OrderRequestRepository;
 import khc.springboot.project2.orders.repository.ProductRepository;
 
 @Service
@@ -26,6 +29,9 @@ public class ProductService {
 	
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private OrderRequestRepository orderRequestRepository;
 	
 	private final String PFILEPATH = "C:/productImages";
 	
@@ -80,14 +86,59 @@ public class ProductService {
 		return productDtoList;
 	}
 
-	public ProductDto getProductById(Long id) {
+	public ProductDto getProductById(Long id, String loginId) {
 		System.out.println("ProductService - getProductById() 호출");
 		
 		Product product = productRepository.findById(id).orElse(null);
 		
 		ProductDto productDto = new ProductDto(product);
 		
+		productDto.setSeller(product.getMember().getMid().equals(loginId)); // 판매자 여부 설정
+		
+		Member member = memberRepository.findByMid(loginId);
+		OrderRequest orderRequest = orderRequestRepository.findByProductAndMember(product, member);
+		if(orderRequest == null) {
+			productDto.setRequest(false); // 거래 신청 여부 설정
+		} else {
+			productDto.setRequest(true);
+		}
+		
 		return productDto;
+	}
+
+	public void requestOrder(Long id, String loginId) {
+		System.out.println("ProductService - requestOrder() 호출");
+		
+		Member member = memberRepository.findByMid(loginId);
+		
+		if (member == null) {
+			throw new IllegalArgumentException("로그인된 회원이 아닙니다.");
+		}
+		Product product = productRepository.findById(id).orElse(null);
+		
+		if (product == null) {
+			throw new IllegalArgumentException("존재하지 않는 상품입니다.");
+		}
+		
+		OrderRequest orderRequest = new OrderRequest(member, product);
+		
+		orderRequestRepository.save(orderRequest);
+		
+	}
+
+	public List<OrderRequestDto> findOdRequestListByProductId(Long id) {
+		System.out.println("ProductService - findOdRequestListByProductId() 호출");
+		
+		Product product = productRepository.findById(id).orElse(null);
+		
+		List<OrderRequest> odRequestList = orderRequestRepository.findByProduct(product);
+		
+		List<OrderRequestDto> odRequestDtoList = new ArrayList<>();
+		for (OrderRequest orderRequest : odRequestList) {
+			OrderRequestDto orderRequestDto = new OrderRequestDto(orderRequest);
+			odRequestDtoList.add(orderRequestDto);
+		}		
+		return odRequestDtoList;
 	}
 	
 }
