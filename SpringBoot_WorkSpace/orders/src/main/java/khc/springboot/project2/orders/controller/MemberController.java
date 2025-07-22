@@ -91,7 +91,7 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
-	@GetMapping("checkId")
+	@PostMapping("idCheck")
 	@ResponseBody
 	public String checkId(@RequestParam("mid") String mid) {
 		System.out.println("/member/checkId (post) - 아이디 중복 확인 요청");

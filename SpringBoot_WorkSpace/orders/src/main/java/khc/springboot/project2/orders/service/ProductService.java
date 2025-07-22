@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import khc.springboot.project2.orders.domain.Member;
 import khc.springboot.project2.orders.domain.OrderRequest;
+import khc.springboot.project2.orders.domain.Orders;
 import khc.springboot.project2.orders.domain.Product;
 import khc.springboot.project2.orders.domain.ProductImage;
 import khc.springboot.project2.orders.dto.OrderRequestDto;
@@ -19,6 +20,7 @@ import khc.springboot.project2.orders.dto.ProductDto;
 import khc.springboot.project2.orders.dto.ProductForm;
 import khc.springboot.project2.orders.repository.MemberRepository;
 import khc.springboot.project2.orders.repository.OrderRequestRepository;
+import khc.springboot.project2.orders.repository.OrdersRepository;
 import khc.springboot.project2.orders.repository.ProductRepository;
 
 @Service
@@ -32,6 +34,9 @@ public class ProductService {
 	
 	@Autowired
 	private OrderRequestRepository orderRequestRepository;
+	
+	@Autowired
+	private OrdersRepository ordersRepository;
 	
 	private final String PFILEPATH = "C:/productImages";
 	
@@ -139,6 +144,50 @@ public class ProductService {
 			odRequestDtoList.add(orderRequestDto);
 		}		
 		return odRequestDtoList;
+	}
+
+	public void registOrders(Long productId, Long memberId) {
+		System.out.println("ProductService - registOrders() 호출");
+		
+		Product product = productRepository.findById(productId).orElse(null);
+		
+		List<OrderRequest> odRequestList = orderRequestRepository.findByProduct(product);
+		
+		for(OrderRequest odRequest : odRequestList) {
+			if(odRequest.getMember().getId().equals(memberId)) {
+				odRequest.setRequestState("승인"); // 거래 신청 상태를 승인으로 변경
+			}else {
+				odRequest.setRequestState("거절"); // 거래 신청 상태를 거절로 변경
+			}
+			orderRequestRepository.save(odRequest); // 변경된 거래 신청 상태를 저장
+		}
+		
+		OrderRequest odRequest = orderRequestRepository.findByProductAndRequestState(product, "승인");
+		
+		Orders orders = new Orders(odRequest);
+		
+		ordersRepository.save(orders); // 거래 체결 정보 저장
+		
+		product.setPstate("판매완료"); // 상품 상태를 거래완료로 변경
+		productRepository.save(product); // 변경된 상품 상태 저장
+		
+	}
+
+	public void rejectOrders(Long productId, Long memberId) {
+		System.out.println("ProductService - rejectOrders() 호출");
+		
+		Product product = productRepository.findById(productId).orElse(null);
+		
+		List<OrderRequest> odRequestList = orderRequestRepository.findByProduct(product);
+		
+		for(OrderRequest odRequest : odRequestList) {
+			if(odRequest.getMember().getId().equals(memberId)) {
+				odRequest.setRequestState("거절"); // 거래 신청 상태를 거절로 변경
+			}
+		}
+		
+		orderRequestRepository.saveAll(odRequestList); // 변경된 거래 신청 상태를 저장
+		
 	}
 	
 }

@@ -71,6 +71,9 @@
               th:errors="*{mid}"
             ></p>
           </div>
+          <div>
+            <small class="mb-100" id="checkMsg"></small>
+          </div>
           <div class="mb-3">
             <label for="mpw" class="form-label">비밀번호</label>
             <input
@@ -233,21 +236,57 @@
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script type="text/javascript">
+      let isDuplicated;
+
+      document.getElementById("mid").addEventListener("input", function () {
+        isDuplicated = false;
+        document.getElementById("checkMsg").innerHTML = "";
+        document.getElementById("mid").classList.remove("is-invalid");
+        document.getElementById("mid").classList.remove("is-valid");
+      });
+
+      function checkEl(form) {
+        const inputId = form.mid;
+
+        if (!isDuplicated) {
+          alert("아이디를 확인해주십시오.");
+          return false;
+        }
+        return true;
+      }
+
       function checkDuplicateId() {
+        const checkMsg = document.getElementById("checkMsg");
         const mid = document.getElementById("mid");
         const midError = document.getElementById("midError");
+        if (mid.value.trim() <= 0) {
+          checkMsg.innerHTML = "아이디를 입력해주십시오.";
+          mid.classList.add("is-invalid");
+          mid.classList.remove("is-valid");
+          checkMsg.classList.remove("text-green");
+          checkMsg.classList.add("text-red");
+          return;
+        }
         console.log(mid.value);
         $.ajax({
-          url: "/member/checkId",
-          type: "get",
-          data: { mid: mid.value },
+          url: "/member/idCheck",
+          type: "post",
+          data: { mid: mid.value.trim() },
           success: function (response) {
             if (response == "Y") {
               mid.classList.add("is-valid");
               mid.classList.remove("is-invalid");
+              checkMsg.innerHTML = "사용 가능한 아이디입니다.";
+              checkMsg.classList.add("text-green");
+              checkMsg.classList.remove("text-red");
+              isDuplicated = true;
             } else if (response == "N") {
               mid.classList.add("is-invalid");
               mid.classList.remove("is-valid");
+              checkMsg.innerHTML = "사용할 수 없는 아이디입니다.";
+              checkMsg.classList.remove("text-green");
+              checkMsg.classList.add("text-red");
+              isDuplicated = false;
             }
           },
         });

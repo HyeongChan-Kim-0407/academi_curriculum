@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
@@ -89,7 +90,7 @@ public class ProductController {
 		model.addAttribute("productDto", productDto);
 		
 		model.addAttribute("odRequestList", odRequestDtoList);
-		return "product/detail";
+		return "product/detail"; 
 	}
 	
 	@PostMapping("/requestOrder/{id}")
@@ -121,4 +122,30 @@ public class ProductController {
 		return "redirect:/";
 	}
 	
+	@GetMapping("/acceptOrder")
+	public String aceptOrder(@RequestParam("pId") Long productId, @RequestParam("mId") Long memberId, RedirectAttributes ra) {
+		System.out.println("/product/acceptOrder - 거래 승인 처리 요청");
+		System.out.println("상품 번호: " + productId + ", 회원 번호: " + memberId);
+		try {
+			productsvc.registOrders(productId, memberId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ra.addFlashAttribute("msg", "승인 완료되었습니다.");
+		return "redirect:/product/view/" + productId;
+	}
+	
+	@GetMapping("/rejectOrder")
+	public String rejectOrder(@RequestParam("pId") Long productId, @RequestParam("mId") Long memberId, RedirectAttributes ra) {
+		System.out.println("/product/rejectOrder - 거래 거절 처리 요청");
+		System.out.println("상품 번호: " + productId + ", 회원 번호: " + memberId);
+		
+		try {
+			productsvc.rejectOrders(productId, memberId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "redirect:/product/view/" + productId;
+	}
 }

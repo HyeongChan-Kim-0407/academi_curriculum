@@ -20,3 +20,9 @@ select * from product_image;
 delete from product_image;
 
 delete from product;
+
+select * from orders;
+
+select * from order_request;
+
+update product set pstate = '판매완료' where ID = 1;

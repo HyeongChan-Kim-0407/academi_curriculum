@@ -103,80 +103,114 @@
                 <span class="" th:text="'₩' + ${productDto.pprice}"></span>
               </div>
               <p class="lead" th:text="${productDto.pinfo}"></p>
-              <div>
+              <div th:if="${productDto.pstate == '판매완료'}">
                 <p>
-                  현재 신청자 <span th:text="${odRequestList.size()}"></span>명
+                  이 상품은
+                  <span
+                    class="text-danger"
+                    th:text="${productDto.pstate}"
+                  ></span
+                  >된 상품입니다.
                 </p>
               </div>
-              <div th:if="${session.loginId != null}">
-                <div th:if="${!productDto.isSeller}">
-                  <div class="d-flex" th:if="${!productDto.isRequest}">
-                    <input
-                      class="form-control text-center me-3"
-                      id="inputQuantity"
-                      type="num"
-                      value="1"
-                      style="max-width: 3rem"
-                    />
-                    <button
-                      class="btn btn-outline-dark flex-shrink-0"
-                      type="submit"
-                    >
-                      <i class="bi-cart-fill me-1"></i>
-                      거래 신청
-                    </button>
-                  </div>
-                  <div class="d-flex" th:if="${productDto.isRequest}">
-                    <input
-                      class="form-control text-center me-3"
-                      id="inputQuantity"
-                      type="num"
-                      value="1"
-                      style="max-width: 3rem; display: none"
-                    />
-                    <p class="btn btn-outline-dark flex-shrink-0" type="button">
-                      <i class="bi-cart-fill me-1"></i>
-                      신청 완료
-                    </p>
-                  </div>
+              <div th:if="${productDto.pstate != '판매완료'}">
+                <div th:if="${session.loginId == null}">
+                  <p>
+                    현재 신청자
+                    <span th:text="${odRequestList.size()}"></span>명
+                  </p>
                 </div>
-                <div class="card bg-white" th:if="${productDto.isSeller}">
-                  <div class="card-body">
-                    <div>
-                      <p class="card-text fw-bold mb-0">
-                        현재 신청자
-                        <span th:text="${odRequestList.size()}"></span> 명
+                <div th:if="${session.loginId != null}">
+                  <div th:if="${!productDto.isSeller}">
+                    <p>
+                      현재 신청자
+                      <span th:text="${odRequestList.size()}"></span>명
+                    </p>
+                    <div class="d-flex" th:if="${!productDto.isRequest}">
+                      <input
+                        class="form-control text-center me-3"
+                        id="inputQuantity"
+                        type="num"
+                        value="1"
+                        style="max-width: 3rem"
+                      />
+                      <button
+                        class="btn btn-outline-dark flex-shrink-0"
+                        type="submit"
+                      >
+                        <i class="bi-cart-fill me-1"></i>
+                        거래 신청
+                      </button>
+                    </div>
+                    <div class="d-flex" th:if="${productDto.isRequest}">
+                      <input
+                        class="form-control text-center me-3"
+                        id="inputQuantity"
+                        type="num"
+                        value="1"
+                        style="max-width: 3rem; display: none"
+                      />
+                      <p
+                        class="btn btn-outline-dark flex-shrink-0"
+                        type="button"
+                      >
+                        <i class="bi-cart-fill me-1"></i>
+                        신청 완료
                       </p>
-                      <hr />
-                      <!-- 거래 신청자 반복 시작 -->
-                      <div th:each="request : ${odRequestList}">
-                        <div
-                          class="d-flex justify-content-between align-items-center justify-items-center mb-3"
-                        >
-                          <p
-                            class="card-text fw-bold mb-0"
-                            th:text="${request.mid}"
-                          ></p>
+                    </div>
+                  </div>
+                  <div class="card bg-white" th:if="${productDto.isSeller}">
+                    <div class="card-body">
+                      <div>
+                        <p class="card-text fw-bold mb-0">
+                          현재 신청자
+                          <span th:text="${odRequestList.size()}"></span> 명
+                        </p>
+                        <hr />
+                        <!-- 거래 신청자 반복 시작 -->
+                        <div th:each="request : ${odRequestList}">
+                          <div
+                            class="d-flex justify-content-between align-items-center justify-items-center mb-3"
+                          >
+                            <p
+                              class="card-text fw-bold mb-0"
+                              th:text="${request.mid}"
+                            ></p>
 
-                          <div class="btn-group">
-                            <button
-                              type="button"
-                              class="btn btn-sm btn-outline-success"
+                            <div
+                              class="btn-group"
+                              th:if="${request.requestState == '신청완료'}"
                             >
-                              승인
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-sm btn-outline-danger"
+                              <a
+                                th:href="@{/product/acceptOrder(pId=${request.productId}, mId=${request.memberId})}"
+                                class="btn btn-sm btn-outline-success"
+                              >
+                                승인
+                              </a>
+                              <a
+                                th:href="@{/product/rejectOrder(pId=${request.productId}, mId=${request.memberId})}"
+                                class="btn btn-sm btn-outline-danger"
+                              >
+                                거절
+                              </a>
+                            </div>
+                            <div
+                              class="btn-group"
+                              th:if="${request.requestState != '신청완료'}"
                             >
-                              거절
-                            </button>
+                              <p
+                                th:text="${request.requestState} + '됨'"
+                                th:classappend="${request.requestState == '승인'} ? 'btn-outline-success' : 'btn-outline-danger'"
+                                class="btn btn-sm"
+                              >
+                                거래상태
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <!-- 거래 신청자 반복 종료 -->
-                      <!-- 거래 신청자 샘플 -->
-                      <div
+                        <!-- 거래 신청자 반복 종료 -->
+                        <!-- 거래 신청자 샘플 -->
+                        <!-- <div
                         class="d-flex justify-content-between align-items-center justify-items-center"
                       >
                         <p class="card-text fw-bold mb-0">신청자 아이디2</p>
@@ -195,8 +229,9 @@
                             거절
                           </button>
                         </div>
+                      </div> -->
+                        <!-- 거래 신청자 샘플 -->
                       </div>
-                      <!-- 거래 신청자 샘플 -->
                     </div>
                   </div>
                 </div>

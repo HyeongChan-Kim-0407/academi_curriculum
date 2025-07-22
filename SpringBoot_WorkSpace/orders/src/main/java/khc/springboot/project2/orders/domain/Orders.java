@@ -35,4 +35,10 @@ public class Orders {
 		
 	}
 	
+	public Orders(OrderRequest orderRequest) {
+		this.member = orderRequest.getMember();
+		this.product = orderRequest.getProduct();
+		this.orderdate = LocalDateTime.now(); // 거래 날짜는 생성자 호출 시간으로 설정
+	}
+	
 }

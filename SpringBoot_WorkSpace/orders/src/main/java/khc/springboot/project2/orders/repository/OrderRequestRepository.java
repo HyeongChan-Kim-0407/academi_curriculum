@@ -13,5 +13,7 @@ public interface OrderRequestRepository extends JpaRepository<OrderRequest, Long
 	OrderRequest findByProductAndMember(Product product, Member member);
 
 	List<OrderRequest> findByProduct(Product product);
+
+	OrderRequest findByProductAndRequestState(Product product, String string);
 	
 }
