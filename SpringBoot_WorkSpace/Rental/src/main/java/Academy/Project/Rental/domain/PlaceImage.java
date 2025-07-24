@@ -1,7 +1,6 @@
 package Academy.Project.Rental.domain;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -10,19 +9,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
-public class Request {
-
+@Getter @Setter
+public class PlaceImage {
+	
 	@Id
 	@GeneratedValue
 	private Long id;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "memberId")
-	private Member member; // 요청자
-
-	private String rdate; // 요청 작성일
-	private String rstatus;
-
+	
+	private String pfilename; // 이미지 파일 이름
+	
+	@ManyToOne
+	@JoinColumn(name = "placeId")
+	private Place place; // 해당 이미지가 속한 장소 정보
+	
+	public PlaceImage() {
+		
+	}
+	
 }

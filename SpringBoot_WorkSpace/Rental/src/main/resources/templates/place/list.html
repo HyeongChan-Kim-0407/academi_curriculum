@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Insert title here</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      r
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="container" style="max-width: 700px; min-width: 400px">
+      <!-- 상단 바 -->
+      <nav class="navbar navbar-expand-lg border-bottom">
+        <div class="container p-3">
+          <a class="navbar-brand fw-bold fs-3" href="/">PROJECT</a>
+        </div>
+      </nav>
+
+      <!-- 페이지 컨텐츠 -->
+      <div class="mt-5 p-5 bg-body-tertiary rounded-3">
+        <h2 class="fw-bold mb-4">시설 목록</h2>
+        <div class="row my-3">
+          <!-- 반복 시작 -->
+          <div class="col-sm-6 mb-3 p-2" th:each="pd : ${pdList}">
+            <div class="card shadow-sm">
+              <!-- 상품 대표 이미지 0번 이미지 -->
+              <a
+                class="mx-auto"
+                th:href="@{/place/view/{id}(id=${pd.id})}"
+              >
+                <!-- <img
+                  class="img-fluid object-fit-contain"
+                  th:src="${pd.pfilenameList.get(0)}"
+                  style="height: 200px; cursor: pointer"
+                /> -->
+              </a>
+              <!-- 상품 정보 출력 -->
+              <div class="card-body">
+                <a
+                  th:href="@{/place/view/{id}(id=${pd.id})}"
+                  class="card-text"
+                  th:text="${pd.ptitle}"
+                  style="text-decoration: none; color: inherit"
+                ></a>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <small
+                      class="text-body-secondary"
+                      th:text="${pd.ptype}"
+                    ></small>
+                    <p
+                      class="text-body-secondary"
+                      th:text="${pd.plocation}"
+                    ></p>
+                  </div>
+                  <div class="btn-group">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      th:text="${pd.mid}"
+                    ></button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      th:text="${pd.pprice}"
+                    ></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 반복 종료 -->
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

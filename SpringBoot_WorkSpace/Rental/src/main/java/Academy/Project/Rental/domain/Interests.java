@@ -8,21 +8,29 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
-public class Request {
-
+@Getter @Setter @ToString
+public class Interests {
+	
 	@Id
 	@GeneratedValue
 	private Long id;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
-	private Member member; // 요청자
-
-	private String rdate; // 요청 작성일
-	private String rstatus;
-
+	private Member member;
+	
+	private String interest;
+	
+	public Interests() {
+		
+	}
+	
+	public Interests(Member member, String interest) {
+		this.member = member;
+		this.interest = interest;
+	}
+	
 }

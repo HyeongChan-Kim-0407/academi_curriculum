@@ -81,8 +81,8 @@
     </div>
     <div class="d-flex justify-content-center align-items-center mb-3">
       <form
-        action="/member/join"
-        method="post"
+        action="/member/joinForm"
+        method="get"
         th:object="${memberForm}"
         onsubmit="return checkEl(this)"
       >
@@ -154,31 +154,110 @@
         </div>
         <div class="mb-3">
           <label for="maddress" class="form-label">주소</label>
-          <input type="text" class="form-control" th:field="*{maddress}" />
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              th:field="*{maddress}"
+              id="maddress"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              style="background: #ff6f0f; color: #fff; font-weight: bold"
+              onclick="execDaumPostcode()"
+            >
+              주소검색
+            </button>
+          </div>
+        </div>
+        <p>회원 유형</p>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="mtype"
+            id="org"
+            value="기관 회원"
+          />
+          <label class="form-check-label" for="org"> 기관 회원 </label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="mtype"
+            id="ind"
+            checked
+            value="개인 회원"
+          />
+          <label class="form-check-label" for="ind"> 개인 회원 </label>
         </div>
         <!-- 관심사 (파티룸, 오피스 등등) -->
         <p>선호 시설</p>
         <div class="mt-3 card shadow-sm">
-        <div class="card-body">
-        <div class="form-check mb-3 " style="display: inline-block">
-        <input class="form-check-input" type="checkbox" id="partyroom" value="partyroom" name="interests" >
-        <label class="form-check-label" for="partyroom">
-            파티룸
-        </label>
-        </div>
-        <div class="form-check mb-3 ms-2" style="display: inline-block">
-        <input class="form-check-input" type="checkbox" id="office" value="office" name="interests" >
-        <label class="form-check-label" for="office">
-            오피스
-        </label>
-        </div>
-        <div class="form-check mb-3 ms-2" style="display: inline-block">
-        <input class="form-check-input" type="checkbox" id="practice" value="practice" name="interests" >
-        <label class="form-check-label" for="practice">
-            연습실
-        </label>
-        </div>
-        </div>
+          <div class="card-body">
+            <div class="form-check mb-3" style="display: inline-block">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_partyroom"
+                value="partyroom"
+                name="minterests"
+              />
+              <label class="form-check-label" for="partyroom"> 파티룸 </label>
+            </div>
+            <div class="form-check mb-3 ms-2" style="display: inline-block">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_office"
+                value="office"
+                name="minterests"
+              />
+              <label class="form-check-label" for="office"> 오피스 </label>
+            </div>
+            <div class="form-check mb-3 ms-2" style="display: inline-block">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_practice"
+                value="practice"
+                name="minterests"
+              />
+              <label class="form-check-label" for="practice"> 연습실 </label>
+            </div>
+            <div class="form-check mb-3" style="display: inline-block">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_downtown"
+                value="downtown"
+                name="minterests"
+              />
+              <label class="form-check-label" for="downtown"> 상가 </label>
+            </div>
+            <div class="form-check mb-3" style="display: inline-block">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_studtroom"
+                value="studtroom"
+                name="minterests"
+              />
+              <label class="form-check-label" for="studtroom"> 스터디룸 </label>
+            </div>
+            <div class="form-check mb-3" style="display: inline-block">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_hotel"
+                value="hotel"
+                name="minterests"
+              />
+              <label class="form-check-label" for="hotel"> 숙소 </label>
+            </div>
+          </div>
         </div>
         <button
           type="submit"
@@ -190,7 +269,22 @@
       </form>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- 다음 주소 API 스크립트 -->
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script type="text/javascript">
+      // 다음 주소 검색 API 연동
+      function execDaumPostcode() {
+        new daum.Postcode({
+          oncomplete: function (data) {
+            // 도로명주소, 지번주소, 건물명 등에서 가장 적합한 주소를 선택
+            var fullAddr = data.roadAddress
+              ? data.roadAddress
+              : data.jibunAddress;
+            if (!fullAddr) fullAddr = data.address;
+            document.getElementById("maddress").value = fullAddr;
+          },
+        }).open();
+      }
       let isDuplicated;
 
       document.getElementById("mid").addEventListener("input", function () {

@@ -3,6 +3,7 @@ package Academy.Project.Rental.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,11 +18,13 @@ public class RequestAccept {
 	private Long id;
 
 	@ManyToOne
-	private Request request; // 요청
-	
+	@JoinColumn(name = "placeId")
+	private Place place;
+
 	@ManyToOne
-	private Member amember; // 수락자
-	
+	@JoinColumn(name = "memberId")
+	private Member member; // 수락자
+
 	private String adate; // 수락일
 
 	public RequestAccept() {

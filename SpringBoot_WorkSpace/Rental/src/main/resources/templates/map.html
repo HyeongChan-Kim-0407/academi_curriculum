@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <title>Document</title>
+  </head>
+  <body>
+    <div
+      style="
+        width: 100vw;
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <h2 style="margin-bottom: 24px">주소로 동네 선택</h2>
+      <input
+        id="address-input"
+        type="text"
+        placeholder="주소를 입력하세요 (예: 서울시 중구 신당동)"
+        style="
+          width: 320px;
+          height: 40px;
+          font-size: 1.1rem;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          padding: 8px;
+          margin-bottom: 16px;
+        "
+      />
+      <button
+        id="search-btn"
+        style="
+          height: 40px;
+          width: 120px;
+          font-size: 1rem;
+          border-radius: 8px;
+          background: #ff6f0f;
+          color: white;
+          font-weight: bold;
+          border: none;
+        "
+      >
+        동네 찾기
+      </button>
+      <div
+        id="result-msg"
+        style="margin-top: 18px; color: #222; font-size: 1.05rem"
+      ></div>
+    </div>
+    <script
+      type="text/javascript"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=5fe73c9dc4e522a50f51f878b6b7752a&libraries=services"
+    ></script>
+    <script>
+      document
+        .getElementById("search-btn")
+        .addEventListener("click", function () {
+          var address = document.getElementById("address-input").value.trim();
+          var resultMsg = document.getElementById("result-msg");
+          if (!address) {
+            resultMsg.textContent = "주소를 입력해주세요.";
+            return;
+          }
+          var geocoder = new kakao.maps.services.Geocoder();
+          geocoder.addressSearch(address, function (result, status) {
+            if (status === kakao.maps.services.Status.OK && result.length > 0) {
+              let jibun_address = result[0].address_name;
+              let dong = result[0].region_3depth_name || "";
+              // region_3depth_name이 없으면 address_name에서 마지막 단어(동/읍/면/리 등) 추출
+              if (!dong && jibun_address) {
+                // 예: '인천광역시 부평구' → '부평구', '서울시 중구 신당동' → '신당동'
+                var parts = jibun_address.split(" ");
+                var last = parts[parts.length - 1];
+                // '동', '읍', '면', '리'로 끝나면 동네로 간주
+                if (/([동읍면리])$/.test(last)) {
+                  dong = last;
+                } else if (parts.length >= 2) {
+                  // 구까지만 입력한 경우 구 이름 반환
+                  dong = last;
+                }
+              }
+              if (dong) {
+                window.opener.postMessage({ dong: dong }, "*");
+                window.close();
+              } else {
+                resultMsg.textContent =
+                  "동네 정보를 찾을 수 없습니다. 더 정확한 주소를 입력해주세요.";
+              }
+            } else {
+              resultMsg.textContent =
+                "주소를 찾을 수 없습니다. 다시 입력해주세요.";
+            }
+          });
+        });
+    </script>
+  </body>
+</html>

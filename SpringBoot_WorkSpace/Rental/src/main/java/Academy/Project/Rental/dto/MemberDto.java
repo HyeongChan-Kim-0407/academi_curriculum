@@ -17,6 +17,7 @@ public class MemberDto {
 	private String mphone;
 	private String memail;
 	private String maddress;
+	private String mtype;
 	
 	public MemberDto(Member member) {
 		this.id = member.getId();
@@ -26,5 +27,6 @@ public class MemberDto {
 		this.mphone = member.getMphone();
 		this.memail = member.getMemail();
 		this.maddress = member.getMaddress();
+		this.mtype = member.getMtype();
 	}
 }

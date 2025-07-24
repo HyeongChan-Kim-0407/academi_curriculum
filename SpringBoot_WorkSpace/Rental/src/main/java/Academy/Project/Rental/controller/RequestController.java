@@ -1,5 +1,7 @@
 package Academy.Project.Rental.controller;
 
-public class RequestController {
+import org.springframework.stereotype.Controller;
 
+@Controller
+public class RequestController {
 }
