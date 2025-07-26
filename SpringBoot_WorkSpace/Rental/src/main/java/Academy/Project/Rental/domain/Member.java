@@ -36,9 +36,6 @@ public class Member {
 	private List<Request> requestList; // 회원이 작성한 요청 목록
 	
 	@OneToMany(mappedBy = "member")
-	private List<RequestAccept> AcceptList; // 회원이 수락한 요청 목록
-	
-	@OneToMany(mappedBy = "member")
 	private List<Reply> replyList; // 회원이 작성한 댓글 목록
 	
 	@OneToMany(mappedBy = "pmember")

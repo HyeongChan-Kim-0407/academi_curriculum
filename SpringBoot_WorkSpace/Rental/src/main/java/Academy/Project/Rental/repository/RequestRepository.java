@@ -5,8 +5,12 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import Academy.Project.Rental.domain.Place;
+import Academy.Project.Rental.domain.Request;
 
-public interface PlaceRepository extends JpaRepository<Place, Long> {
+public interface RequestRepository extends JpaRepository<Request, Long> {
 
-	List<Place> findByPtype(String ptype);
+	List<Request> findByPlace(Place place);
+
+
+
 }

@@ -20,6 +20,8 @@ public class PlaceDto {
 	private	int pprice;
 	private List<String> pfilenameList = new ArrayList<>(); // 장소 이미지 파일명 목록
 	
+	private boolean isMine; // 장소 등록자가 현재 로그인한 회원인지 여부
+	
 	public PlaceDto() {
 		
 	}

@@ -1,3 +1,4 @@
+
 package Academy.Project.Rental.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +68,19 @@ public class MemberService {
 
 		return member;
 	}
+
+	public void updateMember(String mid, String mname, String mphone, String mpw) {
+		Member member = memberRepository.findByMid(mid);
+		if (member != null) {
+			member.setMname(mname);
+			member.setMphone(mphone);
+			if (mpw != null && !mpw.isEmpty()) {
+				member.setMpw(mpw);
+			}
+			memberRepository.save(member);
+		}
+	}
+
+	
 
 }

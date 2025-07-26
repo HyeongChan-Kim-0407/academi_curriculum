@@ -1,6 +1,8 @@
 package Academy.Project.Rental.dto;
 
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,5 +26,7 @@ public class PlaceForm {
 	private String plocation; // 장소 위치	
 	
 	private	int pprice; // 대여 가격 (시간당?일당?)
+
+	private MultipartFile[] Pfiles;
 	
 }

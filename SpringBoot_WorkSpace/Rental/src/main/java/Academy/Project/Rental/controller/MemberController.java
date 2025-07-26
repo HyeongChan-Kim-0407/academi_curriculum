@@ -1,3 +1,4 @@
+	
 
 package Academy.Project.Rental.controller;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.AbstractBindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,7 +63,7 @@ public class MemberController {
 			model.addAttribute("dongName", dongName);
 			model.addAttribute("loginMid", mid);
 			model.addAttribute("interests",interests);
-			return "home";
+			return "redirect:/";
 		} else {
 			return "redirect:/member/login";
 		}
@@ -120,5 +122,30 @@ public class MemberController {
 		session.invalidate();
 		return "redirect:/";
 	}
+	
+	 @GetMapping("/edit")
+	public String showEditForm(HttpSession session, Model model ) { 
+		String mid = (String) session.getAttribute("loginMid");
+		if (mid == null) return "redirect:/member/login";
+		Member member = memberService.findByMid(mid);
+		MemberForm form = new MemberForm();
+		form.setMid(member.getMid());
+		form.setMname(member.getMname());
+		form.setMphone(member.getMphone());
+		form.setMpw(""); // 비밀번호는 빈 값
+		model.addAttribute("memberForm", form);
+		return "member/edit";
+	}
+
+		@PostMapping("/edit")
+	public String editMember(@ModelAttribute MemberForm form, HttpSession session) {
+		String mid = (String) session.getAttribute("loginMid");
+		if (mid == null) return "redirect:/member/login";
+		memberService.updateMember(mid, form.getMname(), form.getMphone(), form.getMpw());
+		session.setAttribute("mname", form.getMname());
+		return "redirect:/";
+	}
+		
+		
 
 }

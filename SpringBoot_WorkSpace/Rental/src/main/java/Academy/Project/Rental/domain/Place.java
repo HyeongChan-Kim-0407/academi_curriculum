@@ -40,9 +40,9 @@ public class Place {
 
 	@OneToMany(mappedBy = "place", cascade = CascadeType.ALL) // cascade = CascadeType.ALL : 연관된 Entity도 함께 save
 	private List<PlaceImage> imageList = new ArrayList<>();
-
+	
 	@OneToMany(mappedBy = "place")
-	private List<RequestAccept> raList = new ArrayList<>(); // 수락된 요청 목록
+	private List<Request> requestList = new ArrayList<>(); // 대여 요청 목록
 
 	public Place() {
 
