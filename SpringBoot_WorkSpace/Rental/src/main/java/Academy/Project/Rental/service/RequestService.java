@@ -1,5 +1,6 @@
 package Academy.Project.Rental.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import Academy.Project.Rental.domain.Member;
 import Academy.Project.Rental.domain.Place;
 import Academy.Project.Rental.domain.Request;
 import Academy.Project.Rental.domain.RequestAccept;
+import Academy.Project.Rental.dto.RequestAcceptDto;
 import Academy.Project.Rental.dto.RequestDto;
 import Academy.Project.Rental.dto.RequestForm;
 import Academy.Project.Rental.repository.MemberRepository;
@@ -32,7 +34,7 @@ public class RequestService {
 
 	@Autowired
 	private RequestRepository requestrepository;
-	
+
 	@Autowired
 	private RequestAcceptRepository requestAcceptRepository;
 
@@ -99,25 +101,49 @@ public class RequestService {
 	}
 
 	public void acceptOrder(Long rId) {
-		
+
 		Request request = requestrepository.findById(rId).orElse(null);
-		
+
 		RequestAccept raccept = new RequestAccept(request);
-		
+
 		requestAcceptRepository.save(raccept);
-		
+
 		request.setRstatus("승인됨");
 		requestrepository.save(request);
 
 	}
 
 	public void rejectOrder(Long rId) {
-		
+
 		Request request = requestrepository.findById(rId).orElse(null);
-		
+
 		request.setRstatus("거절됨");
 		requestrepository.save(request);
-		
+
+	}
+
+	public List<Request> getRequestsByMember(Member member) {
+		return requestrepository.findByMember(member);
+	}
+
+	public ArrayList<RequestAcceptDto> findByBdateAndPid(LocalDate bdate, Long pId) {
+		ArrayList<RequestAcceptDto> raList = new ArrayList<>();
+
+		Place place = placerepository.findById(pId).orElse(null);
+
+		List<RequestAccept> requestAcceptList = requestAcceptRepository.findByBdateAndPlace(bdate, place);
+
+		for (RequestAccept ra : requestAcceptList) {
+			RequestAcceptDto raDto = new RequestAcceptDto(ra);
+			raList.add(raDto);
+		}
+
+		return raList;
+	}
+
+	public Request getEntityById(Long id) {
+	    return requestrepository.findById(id)
+	        .orElseThrow(() -> new IllegalArgumentException("해당 예약 정보가 없습니다."));
 	}
 
 }

@@ -9,31 +9,30 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
 		crossorigin="anonymous"></script>
-	<!-- Bootstrap Icons -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 </head>
 
 <body>
-	<!-- 상단바: home.html과 동일한 구조, container 밖에 위치 -->
+	<!-- 상단바 -->
 	<div class="d-flex justify-content-between align-items-center px-5 pt-4" style="background: #fff">
 		<div class="d-flex align-items-center">
 			<div class="d-flex flex-column align-items-start">
-				<a href="/" class="fw-bold"
-					style="font-size: 2rem; color: #ff6f0f; line-height: 1.1; text-decoration: none !important;">PROJECT</a>
-				<span class="ms-1"
-					style="font-size: 0.95rem; color: #444; font-weight: 500; line-height: 1.1; margin-top: 2px; margin-bottom: 0;">공간
-					대여 플랫폼</span>
+				<a href="/" class="fw-bold" style="
+              font-size: 2rem;
+              color: #ff6f0f;
+              line-height: 1.1;
+              text-decoration: none !important;
+            ">PROJECT</a>
+				<span class="ms-1" style="font-size: 0.95rem; color: #444; font-weight: 500">공간 대여 플랫폼</span>
 			</div>
 		</div>
-		<div>
-			<!-- 오른쪽 공간: 필요시 버튼/드롭다운 등 추가 가능 -->
-		</div>
+
 	</div>
 
-	<!-- 검색어 영역: home.html과 동일하게 복사 -->
+	<!-- 검색 영역 -->
 	<div class="d-flex justify-content-center align-items-center mb-3">
 		<div class="d-flex justify-content-center align-items-center w-100" style="gap: 12px">
-			<!-- 커스텀 드롭다운 -->
+			<!-- 드롭다운 -->
 			<div class="dropdown" style="width: 120px">
 				<button class="btn btn-white rounded-pill w-100 d-flex align-items-center justify-content-between"
 					type="button" id="customSelectBtn" data-bs-toggle="dropdown" aria-expanded="false"
@@ -46,55 +45,82 @@
 					<li><a class="dropdown-item custom-option" href="#">오피스</a></li>
 					<li><a class="dropdown-item custom-option" href="#">파티룸</a></li>
 					<li><a class="dropdown-item custom-option" href="#">상가</a></li>
-					<li><a class="dropdown-item custom-option" href="#">스터디룸</a></li>
+					<li>
+						<a class="dropdown-item custom-option" href="#">스터디룸</a>
+					</li>
 					<li><a class="dropdown-item custom-option" href="#">숙소</a></li>
 					<li><a class="dropdown-item custom-option" href="#">기타</a></li>
 				</ul>
 			</div>
-			<input type="text" class="form-control"
-				style="height: 48px; width: 320px; font-size: 1rem; border-radius: 24px;" placeholder="검색어를 입력해주세요" />
-			<button class="btn"
-				style="background: #222; color: #fff; border-radius: 24px; height: 48px; font-size: 1.2rem; padding: 0 24px; display: flex; align-items: center; justify-content: center;">
+			<!-- 검색창 -->
+			<input type="text" class="form-control" style="
+            height: 48px;
+            width: 320px;
+            font-size: 1rem;
+            border-radius: 24px;
+          " placeholder="검색어를 입력해주세요" />
+			<button class="btn" style="
+            background: #222;
+            color: #fff;
+            border-radius: 24px;
+            height: 48px;
+            font-size: 1.2rem;
+            padding: 0 24px;
+          ">
 				→
 			</button>
 		</div>
 	</div>
-	
-	<div class="container" style="max-width: 700px; min-width: 400px">
-		<!-- 페이지 컨텐츠 -->
-		<div class="mt-5 p-5 bg-body-tertiary rounded-3">
-			<h2 class="fw-bold mb-4">시설 목록 <span th:text="${pdList.size()}"></span></pan>
-			</h2>
-			<div class="row my-3">
-				<!-- 반복 시작 -->
-				<div class="col-sm-6 mb-3 p-2" th:each="pd : ${pdList}">
-					<div class="card shadow-sm">
-						<!-- 상품 대표 이미지 0번 이미지 -->
-						<a class="mx-auto" th:href="@{/place/view/{id}(id=${pd.id})}">
-							<img class="img-fluid object-fit-contain" th:src="${pd.pfilenameList.get(0)}"
-								style="height: 200px; cursor: pointer" />
-						</a>
-						<!-- 상품 정보 출력 -->
+
+	<!-- 본문 콘텐츠 -->
+	<div class="container">
+		<div class="d-flex justify-content-between align-items-end mb-4">
+			<h2 class="fw-bold mb-0">시설 목록</h2>
+			<span class="text-secondary" style="font-size: 1.05rem">결과 <span th:text="${pdList.size()}"></span>개</span>
+		</div>
+		<hr />
+		<div class="row my-3">
+			<th:block th:each="pd : ${pdList}">
+				<div class="col-md-4 mb-3 p-2">
+					<div class="card rounded-5 h-100 shadow-sm overflow-hidden">
+						<!-- 이미지 -->
+						<div style="
+                  width: 100%;
+                  height: 200px;
+                  background: #fff;
+                  border-top-left-radius: 2rem;
+                  border-top-right-radius: 2rem;
+                  overflow: hidden;
+                ">
+							<a th:href="@{/place/view/{id}(id=${pd.id})}"
+								style="width: 100%; height: 100%; display: block">
+								<img th:src="${pd.pfilenameList.get(0)}" style="
+                      width: 100%;
+                      height: 100%;
+                      object-fit: cover;
+                      display: block;
+                    " />
+							</a>
+						</div>
+						<!-- 정보 -->
 						<div class="card-body">
-							<a th:href="@{/place/view/{id}(id=${pd.id})}" class="card-text" th:text="${pd.ptitle}"
-								style="text-decoration: none; color: inherit"></a>
-							<div class="d-flex justify-content-between align-items-center">
-								<div>
-									<small class="text-body-secondary" th:text="${pd.ptype}"></small>
-									<p class="text-body-secondary" th:text="${pd.plocation}"></p>
-								</div>
-								<div class="btn-group">
-									<button type="button" class="btn btn-sm btn-outline-secondary"
-										th:text="${pd.mid}"></button>
-									<button type="button" class="btn btn-sm btn-outline-secondary"
-										th:text="${pd.pprice}"></button>
-								</div>
+							<a th:href="@{/place/view/{id}(id=${pd.id})}" class="card-text fw-bold fs-5"
+								th:text="${pd.ptitle}" style="text-decoration: none; color: inherit"></a>
+							<div>
+								<p class="text-body-secondary mb-1">
+									<i class="bi bi-geo-alt-fill" style="font-size: 1rem; margin-right: 4px"></i>
+									<span th:text="${pd.plocation}"></span>
+								</p>
+								<p class="mb-1">
+									<span class="fw-bold fs-6" style="color: #ff6f0f"
+										th:text="${#numbers.formatInteger(pd.pprice, 3, 'COMMA')}"></span>
+									<span style="font-size: 0.95em">원/시간</span>
+								</p>
 							</div>
 						</div>
 					</div>
 				</div>
-
-			</div>
+			</th:block>
 		</div>
 	</div>
 </body>

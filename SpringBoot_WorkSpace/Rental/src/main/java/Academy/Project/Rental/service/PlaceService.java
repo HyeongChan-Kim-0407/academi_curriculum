@@ -21,10 +21,10 @@ import jakarta.servlet.http.HttpSession;
 
 @Service
 public class PlaceService {
-	
+
 	@Autowired
 	private HttpSession session;
-	
+
 	@Autowired
 	private MemberRepository memberrepository;
 
@@ -83,11 +83,11 @@ public class PlaceService {
 		if (place == null) {
 			return null;
 		}
-		
+
 		PlaceDto pd = new PlaceDto(place);
-		
+
 		String loginMid = (String) session.getAttribute("loginMid");
-		
+
 		pd.setMine(pd.getMid().equals(loginMid)); // 현재 로그인한 회원이 장소 등록자인지 여부를 설정
 
 		return pd;
@@ -95,6 +95,17 @@ public class PlaceService {
 
 	public List<PlaceDto> findPlaceListAll() {
 		List<Place> placeList = placerepository.findAll();
+		List<PlaceDto> dtoList = new ArrayList<>();
+		for (Place Place : placeList) {
+			PlaceDto placeDto = new PlaceDto(Place);
+			dtoList.add(placeDto);
+		}
+		return dtoList;
+	}
+
+	public List<PlaceDto> findsearch(String ptitle, String ptype, String plocation) {
+		List<Place> placeList = placerepository.findByPtitleContainingAndPtypeContainingAndPlocationContaining(ptitle,
+				ptype, plocation);
 		List<PlaceDto> dtoList = new ArrayList<>();
 		for (Place Place : placeList) {
 			PlaceDto placeDto = new PlaceDto(Place);

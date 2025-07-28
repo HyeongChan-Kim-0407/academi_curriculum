@@ -19,7 +19,7 @@ public class PlaceForm {
 	@NotBlank(message = "장소 정보는 필수 입니다")
 	private String pinfo; // 장소 정보
 	
-	@NotBlank(message = "장소 유형은 필수 입니다")
+	@NotBlank(message = "선호 장소를 선택 해주세요")
 	private String ptype; // 장소 유형 (예: 파티룸, 연습실 등)
 	
 	@NotBlank(message = "장소 위치는 필수 입니다")

@@ -81,8 +81,7 @@
 			<a href="/member/join"
 				style="color: #ff6f0f; text-decoration: none; font-weight:500; font-size:1.05rem;">회원가입</a>
 		</div>
-
-
+		<div id="message" th:if="${loginError}" th:text="${loginError}" style="display: none;"></div>
 		<script>
 			document.getElementById('nextBtn').onclick = function () {
 				var mid = document.getElementById('mid').value.trim();
@@ -109,6 +108,14 @@
 				}
 				return true;
 			};
+			
+		      onload = function () {
+		      const msg = document.getElementById("message")?.textContent.trim();
+		      if (msg) {
+		        alert(msg);
+		      }
+		    }
+			
 		</script>
 </body>
 

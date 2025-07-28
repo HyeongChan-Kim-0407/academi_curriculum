@@ -1,242 +1,151 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
 
-    <title>상세보기</title>
+<head>
+	<meta charset="UTF-8" />
 
-    <!-- Bootstrap CSS & JS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-      crossorigin="anonymous"
-    ></script>
-    <!-- 스타일 제거, Bootstrap 클래스만 사용 -->
-    <!-- Bootstrap Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-    />
-    <link href="/css/styles.css" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+	<title>상세보기</title>
 
-    <script th:inline="javascript">
-      const msg = /*[[${msg != null ? msg : 'null'}]]*/ null;
-      if (msg != null && msg != "null") {
-        alert(msg);
-      }
-    </script>
-  </head>
+	<!-- Bootstrap CSS & JS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous" />
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+		crossorigin="anonymous"></script>
+	<!-- 스타일 제거, Bootstrap 클래스만 사용 -->
+	<!-- Bootstrap Icons -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+	<link href="/css/styles.css" rel="stylesheet" />
+	<link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
 
-  <body>
-    <!-- Navigation-->
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> -->
-    <!-- 상단 바 -->
+	<script th:inline="javascript">
+		const msg = /*[[${msg != null ? msg : 'null'}]]*/ null;
+		if (msg != null && msg != "null") {
+			alert(msg);
+		}
+	</script>
+</head>
 
-    <div
-      class="d-flex justify-content-between align-items-center px-5 py-3"
-      style="background: #e9ecef"
-    >
-      <div class="d-flex align-items-center">
-        <a href="/" style="text-decoration: none">
-          <span style="font-size: 2rem; color: #ff6f0f; margin-right: 8px"
-            >🍊</span
-          >
-          <span class="fw-bold" style="font-size: 2rem; color: #ff6f0f"
-            >PROJECT</span
-          >
-        </a>
-      </div>
-      <div>
-        <th:block th:if="${session.loginMid != null}">
-          <span
-            style="
+<body>
+	<!-- Navigation-->
+	<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> -->
+	<!-- 상단 바 -->
+
+	<div class="d-flex justify-content-between align-items-center px-5 py-3" style="background: #e9ecef">
+		<div class="d-flex align-items-center">
+			<a href="/" style="text-decoration: none">
+				<span style="font-size: 2rem; color: #ff6f0f; margin-right: 8px">🍊</span>
+				<span class="fw-bold" style="font-size: 2rem; color: #ff6f0f">PROJECT</span>
+			</a>
+		</div>
+		<div>
+			<th:block th:if="${session.loginMid != null}">
+				<span style="
               font-size: 1.05rem;
               font-weight: 500;
               color: #222;
               margin-right: 16px;
-            "
-          >
-            <span th:text="${session.mname}"></span>님 환영합니다!
-          </span>
-          <a
-            href="/member/logout"
-            class="btn"
-            style="
+            ">
+					<span th:text="${session.mname}"></span>님 환영합니다!
+				</span>
+				<a href="/member/logout" class="btn" style="
               background: #ff6f0f;
               color: #fff;
               font-weight: bold;
               border-radius: 8px;
               padding: 10px 24px;
               font-size: 1rem;
-            "
-            >로그아웃</a
-          >
-        </th:block>
-      </div>
-    </div>
-    <!-- Product section-->
-    <section class="py-5">
-      <form
-        th:action="@{/request/requestOrder/{id}(id=${placeDto.id})}"
-        method="post"
-      >
-        <div class="container px-4 px-lg-5 my-5">
-          <div class="row gx-4 gx-lg-5 align-items-center">
-            <div class="col-md-6">
-              <!-- <img
+            ">로그아웃</a>
+			</th:block>
+		</div>
+	</div>
+	<!-- Product section-->
+	<section class="py-5">
+		<form th:action="@{/request/requestOrder/{id}(id=${placeDto.id})}" method="post" onsubmit="return validateCheckboxes()">
+			<div class="container px-4 px-lg-5 my-5">
+				<div class="row gx-4 gx-lg-5 align-items-center">
+					<div class="col-md-6">
+						<!-- <img
                 id="placeImage"
                 class="card-img-top mb-5 mb-md-0"
                 th:src="${palceDto.pfilenameList.get(0)}"
                 alt="상품이미지"
                 style="width: 600px; height: 700px"
               /> -->
-              <div class="mt-3 d-flex justify-content-between">
-                <button
-                  class="btn btn-outline-dark"
-                  type="button"
-                  onclick="showPrevImage()"
-                >
-                  이전
-                </button>
-                <button
-                  class="btn btn-outline-dark"
-                  type="button"
-                  onclick="showNextImage()"
-                >
-                  다음
-                </button>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="small mb-1" th:text="${placeDto.mid}"></div>
-              <h1 class="display-5 fw-bolder" th:text="${placeDto.ptitle}"></h1>
-              <div class="fs-5 mb-5">
-                <span class="" th:text="'₩' + ${placeDto.pprice}"></span>
-              </div>
-              <p class="lead" th:text="${placeDto.pinfo}"></p>
-              <div th:if="${session.loginMid != null}">
-                <div th:if="${!placeDto.isMine}">
-                  <div>
-                    <label for="bdate">예약날짜</label>
-                    <input
-                      type="date"
-                      class="form-control"
-                      id="bdate"
-                      name="bdate"
-                    />
-                  </div>
+						<div class="mt-3 d-flex justify-content-between">
+							<button class="btn btn-outline-dark" type="button" onclick="showPrevImage()">
+								이전
+							</button>
+							<button class="btn btn-outline-dark" type="button" onclick="showNextImage()">
+								다음
+							</button>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="small mb-1" th:text="${placeDto.mid}"></div>
+						<h1 class="display-5 fw-bolder" th:text="${placeDto.ptitle}"></h1>
+						<div class="fs-5 mb-5">
+							<span class="" th:text="'₩' + ${placeDto.pprice}"></span>
+						</div>
+						<p class="lead" th:text="${placeDto.pinfo}"></p>
+						<div th:if="${session.loginMid != null}">
+							<div th:if="${!placeDto.isMine}">
+								<div>
+									<label for="bdate">예약날짜</label>
+									<input type="date" class="form-control" id="bdate" name="bdate"
+										required onchange="getBdateList()" />
+								</div>
 
-                  <div
-                    class="d-flex text-center"
-                    th:if="${session.loginMid != placeDto.mid}"
-                  >
-                    <div
-                      class="form-check mb-3 form-control"
-                      style="display: inline-block"
-                    >
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="11_13"
-                        value="O"
-                        name="r11_13"
-                      />
-                      <label class="form-check-label" for="r11_13">
-                        11시~13시
-                      </label>
-                    </div>
-                    <div
-                      class="form-check mb-3 form-control"
-                      style="display: inline-block"
-                    >
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="r13_15"
-                        value="O"
-                        name="r13_15"
-                      />
-                      <label class="form-check-label" for="r13_15">
-                        13시~15시
-                      </label>
-                    </div>
-                    <div
-                      class="form-check mb-3 form-control"
-                      style="display: inline-block"
-                    >
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="r15_17"
-                        value="O"
-                        name="r15_17"
-                      />
-                      <label class="form-check-label" for="r15_17">
-                        15시~17시
-                      </label>
-                    </div>
-                    <div
-                      class="form-check mb-3 form-control"
-                      style="display: inline-block"
-                    >
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="r17_19"
-                        value="O"
-                        name="r17_19"
-                      />
-                      <label class="form-check-label" for="r17_19">
-                        17시~19시
-                      </label>
-                    </div>
-                    <div
-                      class="form-check mb-3 form-control"
-                      style="display: inline-block"
-                    >
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="r19_21"
-                        value="O"
-                        name="r19_21"
-                      />
-                      <label class="form-check-label" for="r19_21">
-                        19시~21시
-                      </label>
-                    </div>
-                    <div
-                      class="form-check mb-3 form-control"
-                      style="display: inline-block"
-                    >
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="r21_23"
-                        value="O"
-                        name="r21_23"
-                      />
-                      <label class="form-check-label" for="r21_23">
-                        21시-23시
-                      </label>
-                    </div>
-                  </div>
-                  <button
-                    class="btn btn-outline-dark flex-shrink-0"
-                    type="submit"
-                  >
-                    <i class="bi-calendar-check-fill me-1"></i>
-                    거래 신청
-                  </button>
+								<div class="d-flex text-center" th:if="${session.loginMid != placeDto.mid}">
+									<div class="form-check mb-3 form-control" style="display: inline-block">
+										<input class="form-check-input" type="checkbox" id="r11_13" value="O"
+											name="r11_13" />
+										<label class="form-check-label" for="r11_13">
+											11시~13시
+										</label>
+									</div>
+									<div class="form-check mb-3 form-control" style="display: inline-block">
+										<input class="form-check-input" type="checkbox" id="r13_15" value="O"
+											name="r13_15" />
+										<label class="form-check-label" for="r13_15">
+											13시~15시
+										</label>
+									</div>
+									<div class="form-check mb-3 form-control" style="display: inline-block">
+										<input class="form-check-input" type="checkbox" id="r15_17" value="O"
+											name="r15_17" />
+										<label class="form-check-label" for="r15_17">
+											15시~17시
+										</label>
+									</div>
+									<div class="form-check mb-3 form-control" style="display: inline-block">
+										<input class="form-check-input" type="checkbox" id="r17_19" value="O"
+											name="r17_19" />
+										<label class="form-check-label" for="r17_19">
+											17시~19시
+										</label>
+									</div>
+									<div class="form-check mb-3 form-control" style="display: inline-block">
+										<input class="form-check-input" type="checkbox" id="r19_21" value="O"
+											name="r19_21" />
+										<label class="form-check-label" for="r19_21">
+											19시~21시
+										</label>
+									</div>
+									<div class="form-check mb-3 form-control" style="display: inline-block">
+										<input class="form-check-input" type="checkbox" id="r21_23" value="O"
+											name="r21_23" />
+										<label class="form-check-label" for="r21_23">
+											21시-23시
+										</label>
+									</div>
+								</div>
+								<button class="btn btn-outline-dark flex-shrink-0" type="submit">
+									<i class="bi-calendar-check-fill me-1"></i>
+									거래 신청
+								</button>
 
-                  <!-- <div class="d-flex" th:if="${placeDto.isRequest}">
+								<!-- <div class="d-flex" th:if="${placeDto.isRequest}">
                       <input
                         class="form-control text-center me-3"
                         id="inputQuantity"
@@ -252,22 +161,19 @@
                         신청 완료
                       </p>
                     </div> -->
-                </div>
-                <div th:if="${placeDto.isMine}">
-                  <div
-                    class="card bg-white"
-                    th:if="${session.loginMid == placeDto.mid}"
-                  >
-                    <div class="card-body">
-                      <div>
-                        <p class="card-text fw-bold mb-0">
-                          현재 신청자
-                          <span th:text="${rdList.size()}"></span>
-                          명
-                        </p>
-                        <hr />
+							</div>
+							<div th:if="${placeDto.isMine}">
+								<div class="card bg-white" th:if="${session.loginMid == placeDto.mid}">
+									<div class="card-body">
+										<div>
+											<p class="card-text fw-bold mb-0">
+												현재 신청자
+												<span th:text="${rdList.size()}"></span>
+												명
+											</p>
+											<hr />
 
-                        <!-- <div th:each="request : ${odRequestList}">
+											<!-- <div th:each="request : ${odRequestList}">
                           <div
                             class="d-flex justify-content-between align-items-center justify-items-center mb-3"
                           >
@@ -307,122 +213,66 @@
                             </div>
                           </div>
                         </div> -->
-                        <div
-                          class="d-flex justify-content-between align-items-center justify-items-center"
-                          th:each="rd : ${rdList}"
-                        >
-                          <div th:if="${rd.rstatus == '요청완료'}">
-                            <p
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.mid}"
-                            ></p>
-                            <p
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.bdate}"
-                            ></p>
-                            <p
-                              th:if="${rd.r11_13 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r11_13}"
-                            ></p>
-                            <p
-                              th:if="${rd.r13_15 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r13_15}"
-                            ></p>
-                            <p
-                              th:if="${rd.r15_17 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r15_17}"
-                            ></p>
-                            <p
-                              th:if="${rd.r17_19 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r17_19}"
-                            ></p>
-                            <p
-                              th:if="${rd.r19_21 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r19_21}"
-                            ></p>
-                            <p
-                              th:if="${rd.r21_23 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r21_23}"
-                            ></p>
-                            <div class="btn-group">
-                              <a
-                                class="btn btn-sm btn-outline-success"
-                                th:href="@{/request/acceptOrder(rId=${rd.id})}"
-                              >
-                                승인
-                              </a>
-                              <a
-                                class="btn btn-sm btn-outline-danger"
-                                th:href="@{/request/rejectOrder(rId=${rd.id})}"
-                              >
-                                거절
-                              </a>
-                            </div>
-                          </div>
-                          <div th:if="${rd.rstatus != '요청완료'}">
-                            <p
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.mid}"
-                            ></p>
-                            <p
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.bdate}"
-                            ></p>
-                            <p
-                              th:if="${rd.r11_13 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r11_13}"
-                            ></p>
-                            <p
-                              th:if="${rd.r13_15 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r13_15}"
-                            ></p>
-                            <p
-                              th:if="${rd.r15_17 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r15_17}"
-                            ></p>
-                            <p
-                              th:if="${rd.r17_19 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r17_19}"
-                            ></p>
-                            <p
-                              th:if="${rd.r19_21 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r19_21}"
-                            ></p>
-                            <p
-                              th:if="${rd.r21_23 != 'X'}"
-                              class="card-text fw-bold mb-0"
-                              th:text="${rd.r21_23}"
-                            ></p>
-                            <p
-                              th:text="${rd.rstatus}"
-                              th:classappend="${rd.rstatus == '승인'} ? 'btn-outline-success' : 'btn-outline-danger'"
-                              class="btn btn-sm"
-                            ></p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-    </section>
-    <!-- Related items section-->
-    <!-- <section class="py-5 bg-light">
+											<div class="d-flex justify-content-between align-items-center justify-items-center"
+												th:each="rd : ${rdList}">
+												<div th:if="${rd.rstatus == '요청완료'}">
+													<p class="card-text fw-bold mb-0" th:text="${rd.mid}"></p>
+													<p class="card-text fw-bold mb-0" th:text="${rd.bdate}"></p>
+													<p th:if="${rd.r11_13 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r11_13}"></p>
+													<p th:if="${rd.r13_15 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r13_15}"></p>
+													<p th:if="${rd.r15_17 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r15_17}"></p>
+													<p th:if="${rd.r17_19 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r17_19}"></p>
+													<p th:if="${rd.r19_21 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r19_21}"></p>
+													<p th:if="${rd.r21_23 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r21_23}"></p>
+													<div class="btn-group">
+														<a class="btn btn-sm btn-outline-success"
+															th:href="@{/request/acceptOrder(rId=${rd.id})}">
+															승인
+														</a>
+														<a class="btn btn-sm btn-outline-danger"
+															th:href="@{/request/rejectOrder(rId=${rd.id})}">
+															거절
+														</a>
+													</div>
+												</div>
+												<div th:if="${rd.rstatus != '요청완료'}">
+													<p class="card-text fw-bold mb-0" th:text="${rd.mid}"></p>
+													<p class="card-text fw-bold mb-0" th:text="${rd.bdate}"></p>
+													<p th:if="${rd.r11_13 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r11_13}"></p>
+													<p th:if="${rd.r13_15 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r13_15}"></p>
+													<p th:if="${rd.r15_17 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r15_17}"></p>
+													<p th:if="${rd.r17_19 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r17_19}"></p>
+													<p th:if="${rd.r19_21 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r19_21}"></p>
+													<p th:if="${rd.r21_23 != 'X'}" class="card-text fw-bold mb-0"
+														th:text="${rd.r21_23}"></p>
+													<p th:text="${rd.rstatus}"
+														th:classappend="${rd.rstatus == '승인'} ? 'btn-outline-success' : 'btn-outline-danger'"
+														class="btn btn-sm"></p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</section>
+	<!-- Related items section-->
+	<!-- <section class="py-5 bg-light">
       <div class="container px-4 px-lg-5 mt-5">
         <h2 class="fw-bolder mb-4">Related products</h2>
         <div
@@ -579,35 +429,123 @@
         </div>
       </div>
     </section> -->
-    <!-- Footer-->
-    <footer class="py-5">
-      <div class="container">
-        <p class="m-0 text-center">Copyright &copy; Your Website 2023</p>
-      </div>
-    </footer>
-    <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
-    <script src="/js/scripts.js"></script>
-    <!-- <script th:inline="javascript">
-      // Thymeleaf 리스트를 JS 배열로 변환
-      const imageList = /*[[${placeDto.pfilenameList}]]*/ [];
-      let currentIndex = 0;
+	<!-- Footer-->
+	<footer class="py-5">
+		<div class="container">
+			<p class="m-0 text-center">Copyright &copy; Your Website 2023</p>
+		</div>
+	</footer>
+	<!-- Bootstrap core JS-->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- Core theme JS-->
+	<script src="/js/scripts.js"></script>
+	<script th:inline="javascript">
+		// Thymeleaf 리스트를 JS 배열로 변환
+		const imageList = /*[[${placeDto.pfilenameList}]]*/[];
+		let currentIndex = 0;
 
-      function showImage(index) {
-        const imageElement = document.getElementById("productImage");
-        imageElement.src = imageList[index];
-      }
+		function showImage(index) {
+			const imageElement = document.getElementById("productImage");
+			imageElement.src = imageList[index];
+		}
 
-      function showPrevImage() {
-        currentIndex = (currentIndex - 1 + imageList.length) % imageList.length;
-        showImage(currentIndex);
-      }
+		function showPrevImage() {
+			currentIndex = (currentIndex - 1 + imageList.length) % imageList.length;
+			showImage(currentIndex);
+		}
 
-      function showNextImage() {
-        currentIndex = (currentIndex + 1) % imageList.length;
-        showImage(currentIndex);
-      }
-    </script> -->
-  </body>
+		function showNextImage() {
+			currentIndex = (currentIndex + 1) % imageList.length;
+			showImage(currentIndex);
+		}
+	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script th:inline="javascript">
+		function getBdateList() {
+			console.log("check BdateList");
+			const dateEl = document.getElementById("bdate");
+			const selectedDate = new Date(dateEl.value);
+			const today = new Date();
+			today.setHours(0, 0, 0, 0);
+			const pid = "[[${placeDto.id}]]";
+			if (selectedDate < today) {
+				alert("과거 날짜는 예약할 수 없습니다.");
+				//dateEl.value=""
+				return;
+			}
+
+			$.ajax({
+				url: "/request/getBdate",
+				type: "get",
+				data: {bdate: dateEl.value, pId: pid},
+				dataType: "json",
+				success: function (response) {
+					modifyCheckBox(response);
+				},
+			});
+		}
+
+		function modifyCheckBox(raList) {
+			console.log("check raList");
+			const r11_13 = document.getElementById("r11_13");
+			const r13_15 = document.getElementById("r13_15");
+			const r15_17 = document.getElementById("r15_17");
+			const r17_19 = document.getElementById("r17_19");
+			const r19_21 = document.getElementById("r19_21");
+			const r21_23 = document.getElementById("r21_23");
+			r11_13.disabled = false;
+			r13_15.disabled = false;
+			r15_17.disabled = false;
+			r17_19.disabled = false;
+			r19_21.disabled = false;
+			r21_23.disabled = false;
+			for (let ra of raList) {
+				if (ra.r11_13 == "O") {
+					r11_13.disabled = true;
+				}
+				if (ra.r13_15 == "O") {
+					r13_15.disabled = true;
+				}
+				if (ra.r15_17 == "O") {
+					r15_17.disabled = true;
+				}
+				if (ra.r17_19 == "O") {
+					r17_19.disabled = true;
+				}
+				if (ra.r19_21 == "O") {
+					r19_21.disabled = true;
+				}
+				if (ra.r21_23 == "O") {
+					r21_23.disabled = true;
+				}
+			}
+
+			const checkBoxs = document.querySelectorAll(".form-check-input");
+			const allDisabled = Array.from(checkBoxs).every((cb) => cb.disabled);
+			if (allDisabled) {
+				alert("해당 일자는 예약이 불가능 합니다.");
+				window.location.href = "/place/view/" + "[[${placeDto.id}]]";
+			}
+		}
+
+		function validateCheckboxes() {
+			const checkboxes = document.querySelectorAll('.form-check-input');
+			let leastOneChecked = false;
+
+			checkboxes.forEach(function (checkbox) {
+				if (checkbox.checked) {
+					leastOneChecked = true;
+				}
+			});
+
+			if (!leastOneChecked) {
+				alert("시간을 하나 이상 선택해주세요.");
+				return false;
+			}
+			return true;
+		}
+	</script>
+
+</body>
+
 </html>

@@ -1,7 +1,8 @@
-	
 
 package Academy.Project.Rental.controller;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import Academy.Project.Rental.domain.Interests;
 import Academy.Project.Rental.domain.Member;
+import Academy.Project.Rental.domain.Request;
 import Academy.Project.Rental.dto.MemberDto;
 import Academy.Project.Rental.dto.MemberForm;
+import Academy.Project.Rental.dto.ReplyDto.ReplyForm;
 import Academy.Project.Rental.service.MemberService;
+import Academy.Project.Rental.service.ReplyService;
+import Academy.Project.Rental.service.RequestService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -33,6 +38,12 @@ public class MemberController {
 
 	@Autowired
 	private HttpSession session;
+	
+	@Autowired
+	private RequestService requestService;
+	
+	@Autowired
+	private ReplyService replyService;
 
 	@GetMapping("/login")
 	public String login() {
@@ -40,8 +51,10 @@ public class MemberController {
 	}
 
 	@PostMapping("/login")
-	public String login(@RequestParam("mid") String mid, @RequestParam("mpw") String mpw, Model model) {
+	public String login(@RequestParam("mid") String mid, @RequestParam("mpw") String mpw, Model model,
+			RedirectAttributes rs) {
 		MemberDto memberDto = memberService.findByMidAndMpw(mid, mpw);
+
 		if (memberDto != null) {
 			session.setAttribute("loginMid", mid);
 			session.setAttribute("mname", memberDto.getMname());
@@ -52,7 +65,8 @@ public class MemberController {
 				String[] parts = address.split(" ");
 				for (int i = parts.length - 1; i >= 0; i--) {
 					String part = parts[i];
-					if (part.endsWith("구") || part.endsWith("동") || part.endsWith("읍") || part.endsWith("면") || part.endsWith("리")) {
+					if (part.endsWith("구") || part.endsWith("동") || part.endsWith("읍") || part.endsWith("면")
+							|| part.endsWith("리")) {
 						dongName = part;
 						break;
 					}
@@ -62,9 +76,10 @@ public class MemberController {
 			List<Interests> interests = loginMember.getMinterests();
 			model.addAttribute("dongName", dongName);
 			model.addAttribute("loginMid", mid);
-			model.addAttribute("interests",interests);
+			model.addAttribute("interests", interests);
 			return "redirect:/";
 		} else {
+			rs.addFlashAttribute("loginError", "아이디 또는 비밀번호가 틀렸습니다.");
 			return "redirect:/member/login";
 		}
 	}
@@ -80,9 +95,7 @@ public class MemberController {
 	public String joinForm(@Valid MemberForm memberForm, AbstractBindingResult bindingResult, Model model,
 			RedirectAttributes ra, @RequestParam("minterests") String[] minterests) {
 		System.out.println("/member/join(post) 회원가입 요청");
-		
-		
-		
+
 		if (bindingResult.hasErrors()) {
 			System.out.println("유효성 검사 실패");
 			model.addAttribute("memberForm", memberForm);
@@ -122,11 +135,12 @@ public class MemberController {
 		session.invalidate();
 		return "redirect:/";
 	}
-	
-	 @GetMapping("/edit")
-	public String showEditForm(HttpSession session, Model model ) { 
+
+	@GetMapping("/edit")
+	public String showEditForm(HttpSession session, Model model) {
 		String mid = (String) session.getAttribute("loginMid");
-		if (mid == null) return "redirect:/member/login";
+		if (mid == null)
+			return "redirect:/member/login";
 		Member member = memberService.findByMid(mid);
 		MemberForm form = new MemberForm();
 		form.setMid(member.getMid());
@@ -137,15 +151,52 @@ public class MemberController {
 		return "member/edit";
 	}
 
-		@PostMapping("/edit")
+	@PostMapping("/edit")
 	public String editMember(@ModelAttribute MemberForm form, HttpSession session) {
 		String mid = (String) session.getAttribute("loginMid");
-		if (mid == null) return "redirect:/member/login";
+		if (mid == null)
+			return "redirect:/member/login";
 		memberService.updateMember(mid, form.getMname(), form.getMphone(), form.getMpw());
 		session.setAttribute("mname", form.getMname());
 		return "redirect:/";
 	}
-		
-		
+
+	@GetMapping("/myPage")
+	public String reservationForm(Model model) {
+		String mid = (String) session.getAttribute("loginMid");
+		if (mid == null) {
+			return "redirect:/member/login";
+		}
+		Member member = memberService.findByMid(mid);
+		List<Request> requests = requestService.getRequestsByMember(member);
+		model.addAttribute("requests", requests);
+		model.addAttribute("today", LocalDate.now());
+		return "member/myPage";
+	}
+	
+	
+	@GetMapping("/reviewWrite")
+	public String showReviewForm(@RequestParam("requestId") Long requestId,
+	                             HttpSession session, Model model) {
+	    String mid = (String) session.getAttribute("loginMid");
+	    if (mid == null) return "redirect:/member/login";
+	    Request request = requestService.getEntityById(requestId);
+
+	    model.addAttribute("request", request);
+	    model.addAttribute("replyForm", new ReplyForm());
+
+	    return "member/reviewForm";
+	}
+	
+	@PostMapping("/reviewWrite")
+	public String submitReview(@RequestParam("requestId") Long requestId,
+	                           @ModelAttribute ReplyForm replyForm,
+	                           HttpSession session) throws IOException {
+	    String mid = (String) session.getAttribute("loginMid");
+	    if (mid == null) return "redirect:/member/login";
+
+	    replyService.writeReply(replyForm, requestId, mid);
+	    return "redirect:/member/myPage";
+	}
 
 }
