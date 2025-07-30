@@ -1,128 +1,335 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>공간대여목록</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+  </head>
 
-<head>
-	<meta charset="UTF-8" />
-	<title>공간대여목록</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous" />
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-		crossorigin="anonymous"></script>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-</head>
-
-<body>
-	<!-- 상단바 -->
-	<div class="d-flex justify-content-between align-items-center px-5 pt-4" style="background: #fff">
-		<div class="d-flex align-items-center">
-			<div class="d-flex flex-column align-items-start">
-				<a href="/" class="fw-bold" style="
+  <body>
+    <!-- 상단바 -->
+    <div
+      class="d-flex justify-content-between align-items-center px-5 pt-4"
+      style="background: #fff"
+    >
+      <div class="d-flex align-items-center">
+        <div class="d-flex flex-column align-items-start">
+          <a
+            href="/"
+            class="fw-bold"
+            style="
               font-size: 2rem;
               color: #ff6f0f;
               line-height: 1.1;
               text-decoration: none !important;
-            ">PROJECT</a>
-				<span class="ms-1" style="font-size: 0.95rem; color: #444; font-weight: 500">공간 대여 플랫폼</span>
-			</div>
-		</div>
+            "
+            >PROJECT</a
+          >
+          <span
+            class="ms-1"
+            style="font-size: 0.95rem; color: #444; font-weight: 500"
+            >공간 대여 플랫폼</span
+          >
+        </div>
+      </div>
+    </div>
 
-	</div>
+    <!-- 검색 영역 -->
+    <div class="d-flex justify-content-center align-items-center mb-3">
+      <div
+        class="d-flex justify-content-center align-items-center w-100"
+        style="gap: 12px"
+      >
+        <!-- 드롭다운 -->
+        <div class="dropdown" style="width: 120px">
+          <button
+            class="btn btn-white rounded-pill w-100 d-flex align-items-center justify-content-between border border-2"
+            type="button"
+            id="customSelectBtn"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style="height: 48px; font-size: 1rem"
+          >
+            <span id="customSelectValue">유형</span>
+            <i class="bi bi-chevron-down ms-2"></i>
+          </button>
+          <ul
+            class="dropdown-menu w-100"
+            aria-labelledby="customSelectBtn"
+            id="searchType"
+            style="border-radius: 18px"
+          >
+            <li>
+              <a
+                class="dropdown-item custom-option"
+                onclick="selectOption('practice')"
+                >연습실</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item custom-option"
+                onclick="selectOption('office')"
+                >오피스</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item custom-option"
+                onclick="selectOption('partyroom')"
+                >파티룸</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item custom-option"
+                onclick="selectOption('downtown')"
+                >상가</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item custom-option"
+                onclick="selectOption('studyroom')"
+                >스터디룸</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item custom-option"
+                onclick="selectOption('hotel')"
+                >숙소</a
+              >
+            </li>
+          </ul>
+        </div>
+        <!-- 검색창 -->
+        <input
+          type="text"
+          class="form-control rounded-pill px-4"
+          id="searchInput"
+          placeholder="검색어를 입력해주세요"
+          style="height: 48px; width: 320px; font-size: 1rem"
+        />
+        <button
+          class="btn btn-dark rounded-pill d-flex align-items-center justify-content-center px-4 py-2"
+          style="height: 48px; font-size: 1.2rem"
+          onclick="search()"
+        >
+          →
+        </button>
+      </div>
+    </div>
 
-	<!-- 검색 영역 -->
-	<div class="d-flex justify-content-center align-items-center mb-3">
-		<div class="d-flex justify-content-center align-items-center w-100" style="gap: 12px">
-			<!-- 드롭다운 -->
-			<div class="dropdown" style="width: 120px">
-				<button class="btn btn-white rounded-pill w-100 d-flex align-items-center justify-content-between"
-					type="button" id="customSelectBtn" data-bs-toggle="dropdown" aria-expanded="false"
-					style="height: 48px; font-size: 1rem; border: 1.5px solid #e0e0e0">
-					<span id="customSelectValue">공간대여</span>
-					<i class="bi bi-chevron-down ms-2"></i>
-				</button>
-				<ul class="dropdown-menu w-100" aria-labelledby="customSelectBtn" style="border-radius: 18px">
-					<li><a class="dropdown-item custom-option" href="#">연습실</a></li>
-					<li><a class="dropdown-item custom-option" href="#">오피스</a></li>
-					<li><a class="dropdown-item custom-option" href="#">파티룸</a></li>
-					<li><a class="dropdown-item custom-option" href="#">상가</a></li>
-					<li>
-						<a class="dropdown-item custom-option" href="#">스터디룸</a>
-					</li>
-					<li><a class="dropdown-item custom-option" href="#">숙소</a></li>
-					<li><a class="dropdown-item custom-option" href="#">기타</a></li>
-				</ul>
-			</div>
-			<!-- 검색창 -->
-			<input type="text" class="form-control" style="
-            height: 48px;
-            width: 320px;
-            font-size: 1rem;
-            border-radius: 24px;
-          " placeholder="검색어를 입력해주세요" />
-			<button class="btn" style="
-            background: #222;
-            color: #fff;
-            border-radius: 24px;
-            height: 48px;
-            font-size: 1.2rem;
-            padding: 0 24px;
-          ">
-				→
-			</button>
-		</div>
-	</div>
+    <script>
+      let selectedOption = "";
+      function selectOption(selectValue) {
+        selectedOption = selectValue;
+        document.getElementById("customSelectValue").textContent =
+          optionText(selectValue);
+      }
+      function optionText(val) {
+        switch (val) {
+          case "practice":
+            return "연습실";
+          case "office":
+            return "오피스";
+          case "partyroom":
+            return "파티룸";
+          case "downtown":
+            return "상가";
+          case "studyroom":
+            return "스터디룸";
+          case "hotel":
+            return "숙소";
+          default:
+            return "유형";
+        }
+      }
+      function search() {
+        const searchEl = document.getElementById("searchInput").value;
+        let ptype = selectedOption;
+        if (!ptype) {
+          const shown = document
+            .getElementById("customSelectValue")
+            .textContent.trim();
+          switch (shown) {
+            case "연습실":
+              ptype = "practice";
+              break;
+            case "오피스":
+              ptype = "office";
+              break;
+            case "파티룸":
+              ptype = "partyroom";
+              break;
+            case "상가":
+              ptype = "downtown";
+              break;
+            case "스터디룸":
+              ptype = "studyroom";
+              break;
+            case "숙소":
+              ptype = "hotel";
+              break;
+            default:
+              ptype = "";
+          }
+        }
+        // location-name이 없을 수 있으니 빈 값 허용
+        let locationValue = "";
+        const locEl = document.getElementById("location-name");
+        if (locEl) locationValue = locEl.textContent;
+        if (searchEl.length <= 1) {
+          alert("2글자 이상 입력해주세요");
+          return;
+        }
+        location.href = `/place/search?ptitle=${encodeURIComponent(
+          searchEl.trim()
+        )}&ptype=${encodeURIComponent(ptype)}&plocation=${encodeURIComponent(
+          locationValue
+        )}`;
+      }
+      // 드롭다운 텍스트 클릭 시 selectOption 동작 보장
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".custom-option").forEach(function (option) {
+          option.addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("customSelectValue").textContent =
+              this.textContent;
+          });
+        });
+      });
+    </script>
 
-	<!-- 본문 콘텐츠 -->
-	<div class="container">
-		<div class="d-flex justify-content-between align-items-end mb-4">
-			<h2 class="fw-bold mb-0">시설 목록</h2>
-			<span class="text-secondary" style="font-size: 1.05rem">결과 <span th:text="${pdList.size()}"></span>개</span>
-		</div>
-		<hr />
-		<div class="row my-3">
-			<th:block th:each="pd : ${pdList}">
-				<div class="col-md-4 mb-3 p-2">
-					<div class="card rounded-5 h-100 shadow-sm overflow-hidden">
-						<!-- 이미지 -->
-						<div style="
+    <!-- 본문 콘텐츠 -->
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="fw-bold mb-0">시설 목록</h2>
+        <div class="d-flex align-items-center" style="gap: 12px">
+          <span class="text-secondary" style="font-size: 1.05rem">
+            결과 <span th:text="${pdList.size()}"></span>개
+          </span>
+          <div class="dropdown" style="width: 120px">
+            <button
+              class="btn btn-white rounded-3 w-100 d-flex align-items-center justify-content-between border border-2"
+              type="button"
+              id="customSelectBtn2"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="height: 38px; font-size: 0.98rem"
+            >
+              <span id="customSelectValue2">카테고리</span>
+              <i class="bi bi-chevron-down ms-2"></i>
+            </button>
+            <ul class="dropdown-menu w-100" aria-labelledby="customSelectBtn2">
+              <li>
+                <a class="dropdown-item" href="/place/list?ptype=practice"
+                  >연습실</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="/place/list?ptype=office"
+                  >오피스</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="/place/list?ptype=partyroom"
+                  >파티룸</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="/place/list?ptype=downtown"
+                  >상가</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="/place/list?ptype=studyroom"
+                  >스터디룸</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="/place/list?ptype=hotel">숙소</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="row my-3">
+        <th:block th:each="pd : ${pdList}">
+          <div class="col-md-4 mb-3 p-2">
+            <div class="card rounded-5 h-100 shadow-sm overflow-hidden">
+              <!-- 이미지 -->
+              <div
+                style="
                   width: 100%;
                   height: 200px;
                   background: #fff;
                   border-top-left-radius: 2rem;
                   border-top-right-radius: 2rem;
                   overflow: hidden;
-                ">
-							<a th:href="@{/place/view/{id}(id=${pd.id})}"
-								style="width: 100%; height: 100%; display: block">
-								<img th:src="${pd.pfilenameList.get(0)}" style="
+                "
+              >
+                <a
+                  th:href="@{/place/view/{id}(id=${pd.id})}"
+                  style="width: 100%; height: 100%; display: block"
+                >
+                  <img
+                    th:src="${pd.pfilenameList.get(0)}"
+                    style="
                       width: 100%;
                       height: 100%;
                       object-fit: cover;
                       display: block;
-                    " />
-							</a>
-						</div>
-						<!-- 정보 -->
-						<div class="card-body">
-							<a th:href="@{/place/view/{id}(id=${pd.id})}" class="card-text fw-bold fs-5"
-								th:text="${pd.ptitle}" style="text-decoration: none; color: inherit"></a>
-							<div>
-								<p class="text-body-secondary mb-1">
-									<i class="bi bi-geo-alt-fill" style="font-size: 1rem; margin-right: 4px"></i>
-									<span th:text="${pd.plocation}"></span>
-								</p>
-								<p class="mb-1">
-									<span class="fw-bold fs-6" style="color: #ff6f0f"
-										th:text="${#numbers.formatInteger(pd.pprice, 3, 'COMMA')}"></span>
-									<span style="font-size: 0.95em">원/시간</span>
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</th:block>
-		</div>
-	</div>
-</body>
-
+                    "
+                  />
+                </a>
+              </div>
+              <!-- 정보 -->
+              <div class="card-body">
+                <a
+                  th:href="@{/place/view/{id}(id=${pd.id})}"
+                  class="card-text fw-bold fs-5"
+                  th:text="${pd.ptitle}"
+                  style="text-decoration: none; color: inherit"
+                ></a>
+                <div>
+                  <p class="text-body-secondary mb-1">
+                    <i
+                      class="bi bi-geo-alt-fill"
+                      style="font-size: 1rem; margin-right: 4px"
+                    ></i>
+                    <span th:text="${pd.plocation}"></span>
+                  </p>
+                  <p class="mb-1">
+                    <span
+                      class="fw-bold fs-6"
+                      style="color: #ff6f0f"
+                      th:text="${#numbers.formatInteger(pd.pprice, 3, 'COMMA')}"
+                    ></span>
+                    <span style="font-size: 0.95em">원/시간</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </th:block>
+      </div>
+    </div>
+  </body>
 </html>

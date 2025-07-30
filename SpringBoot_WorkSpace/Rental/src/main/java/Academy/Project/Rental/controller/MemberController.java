@@ -1,6 +1,8 @@
 
 package Academy.Project.Rental.controller;
 
+
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,11 +21,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import Academy.Project.Rental.domain.Interests;
 import Academy.Project.Rental.domain.Member;
-import Academy.Project.Rental.domain.Request;
+import Academy.Project.Rental.domain.Place;
+import Academy.Project.Rental.domain.RequestAccept;
 import Academy.Project.Rental.dto.MemberDto;
 import Academy.Project.Rental.dto.MemberForm;
-import Academy.Project.Rental.dto.ReplyDto.ReplyForm;
+import Academy.Project.Rental.dto.ReplyForm;
 import Academy.Project.Rental.service.MemberService;
+import Academy.Project.Rental.service.PlaceService;
 import Academy.Project.Rental.service.ReplyService;
 import Academy.Project.Rental.service.RequestService;
 import jakarta.servlet.http.HttpSession;
@@ -38,12 +42,15 @@ public class MemberController {
 
 	@Autowired
 	private HttpSession session;
-	
+
 	@Autowired
 	private RequestService requestService;
-	
+
 	@Autowired
 	private ReplyService replyService;
+
+	@Autowired
+	private PlaceService placeService;
 
 	@GetMapping("/login")
 	public String login() {
@@ -56,7 +63,7 @@ public class MemberController {
 		MemberDto memberDto = memberService.findByMidAndMpw(mid, mpw);
 
 		if (memberDto != null) {
-			session.setAttribute("loginMid", mid);
+			session.setAttribute("loginMid", memberDto.getMid());
 			session.setAttribute("mname", memberDto.getMname());
 			// 주소에서 행정동 추출 (구/동/읍/면/리)
 			String address = memberDto.getMaddress();
@@ -146,6 +153,7 @@ public class MemberController {
 		form.setMid(member.getMid());
 		form.setMname(member.getMname());
 		form.setMphone(member.getMphone());
+		form.setMaddress(member.getMaddress());
 		form.setMpw(""); // 비밀번호는 빈 값
 		model.addAttribute("memberForm", form);
 		return "member/edit";
@@ -168,35 +176,40 @@ public class MemberController {
 			return "redirect:/member/login";
 		}
 		Member member = memberService.findByMid(mid);
-		List<Request> requests = requestService.getRequestsByMember(member);
-		model.addAttribute("requests", requests);
+		List<RequestAccept> requestAccepts = requestService.getRequestsByMember(member);
+		List<Place> place = placeService.getPlaceByMember(member);
+		model.addAttribute("member", member);
+		model.addAttribute("places", place);
+		model.addAttribute("requestAccepts", requestAccepts);
 		model.addAttribute("today", LocalDate.now());
 		return "member/myPage";
 	}
-	
-	
+
 	@GetMapping("/reviewWrite")
-	public String showReviewForm(@RequestParam("requestId") Long requestId,
-	                             HttpSession session, Model model) {
-	    String mid = (String) session.getAttribute("loginMid");
-	    if (mid == null) return "redirect:/member/login";
-	    Request request = requestService.getEntityById(requestId);
+	public String showReviewForm(@RequestParam("placeId") Long placeId, @RequestParam("memberId") Long memberId,
+			Model model) {
+		String mid = (String) session.getAttribute("loginMid");
+		if (mid == null)
+			return "redirect:/member/login";
+		RequestAccept requestAccept = requestService.getEntityById(placeId, memberId);
 
-	    model.addAttribute("request", request);
-	    model.addAttribute("replyForm", new ReplyForm());
+		model.addAttribute("requestAccept", requestAccept);
+		model.addAttribute("replyForm", new ReplyForm());
 
-	    return "member/reviewForm";
+		return "member/reviewForm";
 	}
-	
+
 	@PostMapping("/reviewWrite")
-	public String submitReview(@RequestParam("requestId") Long requestId,
-	                           @ModelAttribute ReplyForm replyForm,
-	                           HttpSession session) throws IOException {
-	    String mid = (String) session.getAttribute("loginMid");
-	    if (mid == null) return "redirect:/member/login";
+	public String submitReview(@RequestParam("placeId") Long placeId, @ModelAttribute ReplyForm replyForm)
+			throws IOException {
+		String mid = (String) session.getAttribute("loginMid");
+		if (mid == null) {
+			return "redirect:/member/login";
+		}
 
-	    replyService.writeReply(replyForm, requestId, mid);
-	    return "redirect:/member/myPage";
+		replyService.writeReply(replyForm, placeId, mid);
+		return "redirect:/member/myPage";
 	}
+
 
 }

@@ -14,6 +14,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
 	List<Request> findByMember(Member member);
 
+	Request findByPlaceAndMember(Place place, Member member);
+
 
 
 }

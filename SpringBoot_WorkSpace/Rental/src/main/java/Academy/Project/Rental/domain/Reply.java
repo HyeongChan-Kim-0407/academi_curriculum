@@ -20,10 +20,11 @@ public class Reply {
 	@GeneratedValue 
 	private Long id;
 	
+	// 요청
 	@ManyToOne
-	private Request request;	// 요청
+	private Member member;	// 작성자
 	@ManyToOne
-	private Member member;		// 작성자
+	private Place place;
 	private String rcontent;	// 댓글 내용
 	private String rdate;		// 댓글 작성일
 	

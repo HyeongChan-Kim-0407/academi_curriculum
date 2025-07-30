@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -16,6 +15,18 @@
 	<!-- Bootstrap Icons -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 	<link href="/css/styles.css" rel="stylesheet" />
+	<style>
+		/* 체크박스 체크 시 주황색(#ff6f0f)으로 변경 */
+		input.form-check-input:checked {
+			background-color: #ff6f0f;
+			border-color: #ff6f0f;
+		}
+
+		input.form-check-input:focus {
+			box-shadow: 0 0 0 0.2rem rgba(255, 111, 15, 0.25);
+			border-color: #ff6f0f;
+		}
+	</style>
 	<link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
 
 	<script th:inline="javascript">
@@ -27,525 +38,441 @@
 </head>
 
 <body>
-	<!-- Navigation-->
-	<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> -->
-	<!-- 상단 바 -->
-
-	<div class="d-flex justify-content-between align-items-center px-5 py-3" style="background: #e9ecef">
+	<!-- 상단바 -->
+	<div class="d-flex justify-content-between align-items-center px-5 pt-4" style="background: #fff">
 		<div class="d-flex align-items-center">
-			<a href="/" style="text-decoration: none">
-				<span style="font-size: 2rem; color: #ff6f0f; margin-right: 8px">🍊</span>
-				<span class="fw-bold" style="font-size: 2rem; color: #ff6f0f">PROJECT</span>
-			</a>
-		</div>
-		<div>
-			<th:block th:if="${session.loginMid != null}">
-				<span style="
-              font-size: 1.05rem;
-              font-weight: 500;
-              color: #222;
-              margin-right: 16px;
-            ">
-					<span th:text="${session.mname}"></span>님 환영합니다!
-				</span>
-				<a href="/member/logout" class="btn" style="
-              background: #ff6f0f;
-              color: #fff;
-              font-weight: bold;
-              border-radius: 8px;
-              padding: 10px 24px;
-              font-size: 1rem;
-            ">로그아웃</a>
-			</th:block>
+			<div class="d-flex flex-column align-items-start">
+				<a href="/" class="fw-bold" style="
+			  font-size: 2rem;
+			  color: #ff6f0f;
+			  line-height: 1.1;
+			  text-decoration: none !important;
+			">PROJECT</a>
+				<span class="ms-1" style="font-size: 0.95rem; color: #444; font-weight: 500">공간 대여 플랫폼</span>
+			</div>
 		</div>
 	</div>
+
+	<!-- 상단바 바로 아래 제목 -->
+	<div class="container">
+		<h1 class="fw-bold text-start my-4 mb-2" style="font-size: 2.2rem; color: #222">
+			<span th:text="${placeDto.ptitle}"></span>
+		</h1>
+		<!-- 타입(해시태그) + 작성자 한 줄에 좌우 정렬 -->
+		<div class="d-flex justify-content-between align-items-end mb-2">
+			<span class="bg-light text-dark border px-3 py-1" style="
+			font-size: 1rem;
+			border-radius: 6px;
+			font-weight: 500;
+			line-height: 1.2;
+		  ">
+				#<span th:text="${placeDto.ptype}"></span>
+			</span>
+			<span class="text-muted align-self-center" style="font-size: 0.93rem; padding-top: 2px">
+				작성자 <span th:text="${placeDto.mid}"></span>
+			</span>
+		</div>
+		<hr />
+
+	</div>
+
 	<!-- Product section-->
 	<section class="py-5">
-		<form th:action="@{/request/requestOrder/{id}(id=${placeDto.id})}" method="post" onsubmit="return validateCheckboxes()">
-			<div class="container px-4 px-lg-5 my-5">
-				<div class="row gx-4 gx-lg-5 align-items-center">
-					<div class="col-md-6">
-						<!-- <img
-                id="placeImage"
-                class="card-img-top mb-5 mb-md-0"
-                th:src="${palceDto.pfilenameList.get(0)}"
-                alt="상품이미지"
-                style="width: 600px; height: 700px"
-              /> -->
-						<div class="mt-3 d-flex justify-content-between">
-							<button class="btn btn-outline-dark" type="button" onclick="showPrevImage()">
-								이전
-							</button>
-							<button class="btn btn-outline-dark" type="button" onclick="showNextImage()">
-								다음
-							</button>
+		<div class="container py-4">
+			<div class="row justify-content-center align-items-start g-5">
+				<!-- 이미지/캐러셀 영역 -->
+				<div class="col-lg-7 justify-content-center align-items-center">
+					<!-- ...existing code... -->
+					<div class="bg-white shadow rounded-4 w-100 d-flex justify-content-center align-items-center position-relative"
+						style="max-width: 1000px; min-height: 500px; aspect-ratio: 4/3">
+						<!-- 여러 장: 캐러셀 -->
+						<div th:if="${placeDto.pfilenameList != null and #lists.size(placeDto.pfilenameList) > 1}"
+							id="placeImageCarousel" class="carousel slide w-100 h-100" data-bs-ride="carousel" style="
+		  max-width: 1000px;
+		  max-height: 750px;
+		  aspect-ratio: 4/3;
+		  border-radius: 16px;
+		  overflow: hidden;
+		">
+							<div class="carousel-inner w-100 h-100" style="aspect-ratio: 4/3">
+								<th:block th:each="img, iterStat : ${placeDto.pfilenameList}">
+									<div class="carousel-item" th:classappend="${iterStat.index == 0} ? 'active'">
+										<img th:src="${img}" class="d-block w-100 h-100" style="
+				  object-fit: cover;
+				  aspect-ratio: 4/3;
+				  max-width: 1000px;
+				  max-height: 750px;
+				" alt="상품이미지" />
+									</div>
+								</th:block>
+							</div>
+						</div>
+						<!-- 한 장: 단일 이미지 -->
+						<img th:if="${placeDto.pfilenameList != null and #lists.size(placeDto.pfilenameList) == 1}"
+							th:src="${placeDto.pfilenameList[0]}" class="w-100 h-100" style="
+		  object-fit: cover;
+		  aspect-ratio: 4/3;
+		  max-width: 1000px;
+		  max-height: 750px;
+		  border-radius: 16px;
+		" alt="상품이미지" />
+						<!-- 없음: 안내 -->
+						<span th:if="${placeDto.pfilenameList == null or #lists.size(placeDto.pfilenameList) == 0}"
+							class="text-muted">이미지가 없습니다</span>
+						<!-- 이미지 하단 왼쪽 텍스트 -->
+						<!-- 기존 absolute 텍스트 제거 -->
+					</div>
+
+					<!-- 이미지 아래, col 내부에 탭 스타일 상세내용 메뉴 -->
+					<div style="padding: 0; margin-top: 100px; margin-bottom: 18px; border-radius: 0;">
+						<div id="tab-bar"
+							style="position: relative; display: flex; justify-content: flex-start; align-items: center; gap: 0; padding: 0; min-height: 56px; height: 56px;">
+							<div class="tab-btn" id="tab-intro"
+								style="font-size: 1.08rem; font-weight: bold; padding: 0 36px 0 32px; position: relative; height: 56px; line-height: 56px; display: flex; align-items: center; white-space: nowrap; cursor:pointer;">
+								공간소개</div>
+							<div style="width:1px; height: 24px; background: #bcbcf7; margin: 0 4px;"></div>
+							<div class="tab-btn" id="tab-review"
+								style="font-size: 1.08rem; font-weight: bold; padding: 0 32px 0 36px; position: relative; height: 56px; line-height: 56px; display: flex; align-items: center; white-space: nowrap; cursor:pointer;">
+								이용후기</div>
+							<div id="tab-underline"
+								style="height:2px; background: #ff6f0f; position: absolute; bottom: 0; left: 0; transition: width 0.2s, left 0.2s;">
+							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="small mb-1" th:text="${placeDto.mid}"></div>
-						<h1 class="display-5 fw-bolder" th:text="${placeDto.ptitle}"></h1>
-						<div class="fs-5 mb-5">
-							<span class="" th:text="'₩' + ${placeDto.pprice}"></span>
-						</div>
-						<p class="lead" th:text="${placeDto.pinfo}"></p>
-						<div th:if="${session.loginMid != null}">
-							<div th:if="${!placeDto.isMine}">
-								<div>
-									<label for="bdate">예약날짜</label>
-									<input type="date" class="form-control" id="bdate" name="bdate"
-										required onchange="getBdateList()" />
-								</div>
+					<div id="intro-section" style="margin-top: 18px;"></div>
+					<!-- 탭 바로 아래 공간소개 텍스트 추가 -->
+					<div id="intro-anchor"
+						style="white-space: pre-line; font-size: 1.18rem; color: #222; font-weight: bold; margin-bottom: 18px;">
+						공간 소개 </div>
+					<div th:text="${placeDto.pinfo}" id="intro-text"
+						style="white-space: pre-line; font-size: 1.18rem; color: #222;  margin-bottom: 18px;"></div>
 
-								<div class="d-flex text-center" th:if="${session.loginMid != placeDto.mid}">
-									<div class="form-check mb-3 form-control" style="display: inline-block">
-										<input class="form-check-input" type="checkbox" id="r11_13" value="O"
-											name="r11_13" />
-										<label class="form-check-label" for="r11_13">
-											11시~13시
-										</label>
-									</div>
-									<div class="form-check mb-3 form-control" style="display: inline-block">
-										<input class="form-check-input" type="checkbox" id="r13_15" value="O"
-											name="r13_15" />
-										<label class="form-check-label" for="r13_15">
-											13시~15시
-										</label>
-									</div>
-									<div class="form-check mb-3 form-control" style="display: inline-block">
-										<input class="form-check-input" type="checkbox" id="r15_17" value="O"
-											name="r15_17" />
-										<label class="form-check-label" for="r15_17">
-											15시~17시
-										</label>
-									</div>
-									<div class="form-check mb-3 form-control" style="display: inline-block">
-										<input class="form-check-input" type="checkbox" id="r17_19" value="O"
-											name="r17_19" />
-										<label class="form-check-label" for="r17_19">
-											17시~19시
-										</label>
-									</div>
-									<div class="form-check mb-3 form-control" style="display: inline-block">
-										<input class="form-check-input" type="checkbox" id="r19_21" value="O"
-											name="r19_21" />
-										<label class="form-check-label" for="r19_21">
-											19시~21시
-										</label>
-									</div>
-									<div class="form-check mb-3 form-control" style="display: inline-block">
-										<input class="form-check-input" type="checkbox" id="r21_23" value="O"
-											name="r21_23" />
-										<label class="form-check-label" for="r21_23">
-											21시-23시
-										</label>
-									</div>
-								</div>
-								<button class="btn btn-outline-dark flex-shrink-0" type="submit">
-									<i class="bi-calendar-check-fill me-1"></i>
-									거래 신청
-								</button>
-
-								<!-- <div class="d-flex" th:if="${placeDto.isRequest}">
-                      <input
-                        class="form-control text-center me-3"
-                        id="inputQuantity"
-                        type="num"
-                        value="1"
-                        style="max-width: 3rem; display: none"
-                      />
-                      <p
-                        class="btn btn-outline-dark flex-shrink-0"
-                        type="button"
-                      >
-                        <i class="bi-cart-fill me-1"></i>
-                        신청 완료
-                      </p>
-                    </div> -->
+					<!-- 이용 후기 텍스트 -->
+					<div id="review-anchor"
+						style="white-space: pre-line; font-size: 1.18rem; color: #222; font-weight: bold; margin-bottom: 18px;">
+						이용 후기 </div>
+					<!-- 이용후기 댓글 목록 -->
+					<div>
+						<div th:each="rev : ${review}" class="review-comment mb-3 p-0"
+							style="display: flex; align-items: flex-start; gap: 16px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+							<!-- 기본 프로필 아이콘 -->
+							<i class="bi bi-person-circle"
+								style="font-size: 2.5rem; color: #bbb; margin-right: 12px;"></i>
+							<div style="flex:1;">
+								<div class="card-text" th:text="${rev.rcontent}"
+									style="font-size: 1.08rem; color: #222; margin-bottom: 6px;"></div>
+								<div th:text="${rev.member.mid}"
+									style="font-size: 0.95rem; color: #888; margin-bottom: 8px;"></div>
+								<!-- 후기 이미지: 내용 아래, 1:1 비율, 작은 사이즈 -->
+								<img th:if="${rev.imageList != null and rev.imageList.size() > 0}"
+									class="img-fluid object-fit-cover" th:src="${rev.imageList.get(0).getRfilename}"
+									style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; margin-top: 4px;" />
 							</div>
-							<div th:if="${placeDto.isMine}">
-								<div class="card bg-white" th:if="${session.loginMid == placeDto.mid}">
-									<div class="card-body">
-										<div>
-											<p class="card-text fw-bold mb-0">
-												현재 신청자
-												<span th:text="${rdList.size()}"></span>
-												명
-											</p>
-											<hr />
+						</div>
+					</div>
+				</div>
 
-											<!-- <div th:each="request : ${odRequestList}">
-                          <div
-                            class="d-flex justify-content-between align-items-center justify-items-center mb-3"
-                          >
-                            <p
-                              class="card-text fw-bold mb-0"
-                              th:text="${request.mid}"
-                            ></p>
-
-                            <div
-                              class="btn-group"
-                              th:if="${request.requestState == '신청완료'}"
-                            >
-                              <a
-                                th:href="@{/product/acceptOrder(pId=${request.productId}, mId=${request.memberId})}"
-                                class="btn btn-sm btn-outline-success"
-                              >
-                                승인
-                              </a>
-                              <a
-                                th:href="@{/product/rejectOrder(pId=${request.productId}, mId=${request.memberId})}"
-                                class="btn btn-sm btn-outline-danger"
-                              >
-                                거절
-                              </a>
-                            </div>
-                            <div
-                              class="btn-group"
-                              th:if="${request.requestState != '신청완료'}"
-                            >
-                              <p
-                                th:text="${request.requestState} + '됨'"
-                                th:classappend="${request.requestState == '승인'} ? 'btn-outline-success' : 'btn-outline-danger'"
-                                class="btn btn-sm"
-                              >
-                                거래상태
-                              </p>
-                            </div>
-                          </div>
-                        </div> -->
-											<div class="d-flex justify-content-between align-items-center justify-items-center"
-												th:each="rd : ${rdList}">
-												<div th:if="${rd.rstatus == '요청완료'}">
-													<p class="card-text fw-bold mb-0" th:text="${rd.mid}"></p>
-													<p class="card-text fw-bold mb-0" th:text="${rd.bdate}"></p>
-													<p th:if="${rd.r11_13 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r11_13}"></p>
-													<p th:if="${rd.r13_15 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r13_15}"></p>
-													<p th:if="${rd.r15_17 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r15_17}"></p>
-													<p th:if="${rd.r17_19 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r17_19}"></p>
-													<p th:if="${rd.r19_21 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r19_21}"></p>
-													<p th:if="${rd.r21_23 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r21_23}"></p>
-													<div class="btn-group">
-														<a class="btn btn-sm btn-outline-success"
-															th:href="@{/request/acceptOrder(rId=${rd.id})}">
-															승인
-														</a>
-														<a class="btn btn-sm btn-outline-danger"
-															th:href="@{/request/rejectOrder(rId=${rd.id})}">
-															거절
-														</a>
-													</div>
-												</div>
-												<div th:if="${rd.rstatus != '요청완료'}">
-													<p class="card-text fw-bold mb-0" th:text="${rd.mid}"></p>
-													<p class="card-text fw-bold mb-0" th:text="${rd.bdate}"></p>
-													<p th:if="${rd.r11_13 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r11_13}"></p>
-													<p th:if="${rd.r13_15 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r13_15}"></p>
-													<p th:if="${rd.r15_17 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r15_17}"></p>
-													<p th:if="${rd.r17_19 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r17_19}"></p>
-													<p th:if="${rd.r19_21 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r19_21}"></p>
-													<p th:if="${rd.r21_23 != 'X'}" class="card-text fw-bold mb-0"
-														th:text="${rd.r21_23}"></p>
-													<p th:text="${rd.rstatus}"
-														th:classappend="${rd.rstatus == '승인'} ? 'btn-outline-success' : 'btn-outline-danger'"
-														class="btn btn-sm"></p>
-												</div>
-											</div>
+				<!-- 사진 오른쪽에 예약 폼 -->
+				<div class="col-lg-5">
+					<div
+						style="min-width: 220px; max-width: 380px; background: none; box-shadow: none; border: none; border-radius: 0; margin-left: 80px;">
+						<!-- 예약 안내 텍스트 추가 -->
+						<div class="pb-3 mb-3">
+							<hr
+								style="height: 4px; width: 80px; background: #ff6f0f; border: none; border-radius: 2px; margin-bottom: 18px; margin-top: 0; margin-left: auto; margin-right: auto;" />
+							<div class="fw-bold text-center" style="font-size: 1.15rem; color: #ff6f0f">
+								예약 진행 안내
+							</div>
+							<div class="text-center text-muted small mb-2" style="line-height: 1.3">
+								예약 접수 후<br />작성자가 승인 시<br />예약이 확정됩니다.
+							</div>
+						</div>
+						<!-- 작성자(본인)일 때 신청자 목록/승인/거절 UI -->
+						<div th:if="${placeDto.isMine}">
+							<div class="card bg-light border-0 mb-2">
+								<div class="card-body">
+									<div class="fw-bold mb-2">
+										현재 신청자 <span th:text="${rdList.size()}"></span>명
+									</div>
+									<hr />
+									<div th:each="rd : ${rdList}" class="mb-2">
+										<div class="d-flex flex-wrap align-items-center gap-2">
+											<span class="fw-bold" th:text="${rd.mid}"></span>
+											<span class="text-muted small" th:text="${rd.bdate}"></span>
+											<span th:if="${rd.r11_13 != 'X'}" class="badge bg-secondary"
+												th:text="${rd.r11_13}"></span>
+											<span th:if="${rd.r13_15 != 'X'}" class="badge bg-secondary"
+												th:text="${rd.r13_15}"></span>
+											<span th:if="${rd.r15_17 != 'X'}" class="badge bg-secondary"
+												th:text="${rd.r15_17}"></span>
+											<span th:if="${rd.r17_19 != 'X'}" class="badge bg-secondary"
+												th:text="${rd.r17_19}"></span>
+											<span th:if="${rd.r19_21 != 'X'}" class="badge bg-secondary"
+												th:text="${rd.r19_21}"></span>
+											<span th:if="${rd.r21_23 != 'X'}" class="badge bg-secondary"
+												th:text="${rd.r21_23}"></span>
+											<span th:if="${rd.rstatus == '요청완료'}"
+												class="badge bg-warning text-dark">요청완료</span>
+											<span th:if="${rd.rstatus == '승인'}" class="badge bg-success">승인</span>
+											<span th:if="${rd.rstatus == '거절'}" class="badge bg-danger">거절</span>
+										</div>
+										<div class="mt-1">
+											<a th:if="${rd.rstatus == '요청완료'}"
+												th:href="@{/request/acceptOrder(rId=${rd.id})}"
+												class="btn btn-sm btn-outline-success me-1">승인</a>
+											<a th:if="${rd.rstatus == '요청완료'}"
+												th:href="@{/request/rejectOrder(rId=${rd.id})}"
+												class="btn btn-sm btn-outline-danger">거절</a>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+						<!-- 예약 폼: 작성자가 아닐 때만 노출 -->
+						<form th:if="${!placeDto.isMine}" th:action="@{/request/requestOrder/{id}(id=${placeDto.id})}"
+							method="post" onsubmit="return validateCheckboxes()">
+							<div class="fw-bold mb-2" style="font-size: 1.05rem">예약 날짜</div>
+							<div class="mb-3">
+								<input type="date" class="form-control" id="bdate" name="bdate" required
+									onchange="getBdateList()" />
+							</div>
+							<div class="mb-3">
+								<div class="row g-2">
+									<div class="col-12">
+										<div class="form-check border rounded-3 py-2 px-3 h-100">
+											<input class="form-check-input" type="checkbox" id="r11_13" value="O"
+												name="r11_13" />
+											<label class="form-check-label w-100" for="r11_13">11시~13시</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-check border rounded-3 py-2 px-3 h-100">
+											<input class="form-check-input" type="checkbox" id="r13_15" value="O"
+												name="r13_15" />
+											<label class="form-check-label w-100" for="r13_15">13시~15시</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-check border rounded-3 py-2 px-3 h-100">
+											<input class="form-check-input" type="checkbox" id="r15_17" value="O"
+												name="r15_17" />
+											<label class="form-check-label w-100" for="r15_17">15시~17시</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-check border rounded-3 py-2 px-3 h-100">
+											<input class="form-check-input" type="checkbox" id="r17_19" value="O"
+												name="r17_19" />
+											<label class="form-check-label w-100" for="r17_19">17시~19시</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-check border rounded-3 py-2 px-3 h-100">
+											<input class="form-check-input" type="checkbox" id="r19_21" value="O"
+												name="r19_21" />
+											<label class="form-check-label w-100" for="r19_21">19시~21시</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-check border rounded-3 py-2 px-3 h-100">
+											<input class="form-check-input" type="checkbox" id="r21_23" value="O"
+												name="r21_23" />
+											<label class="form-check-label w-100" for="r21_23">21시~23시</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="d-flex align-items-end justify-content-between mb-4">
+								<div>
+									<div class="fw-bold" style="font-size: 1.7rem; color: #222; line-height: 1.1;">
+										<span id="unitPrice" th:text="${placeDto.pprice}"></span>원
+										<span class="fs-6 text-muted" style="font-size: 1rem;">/시간</span>
+									</div>
+									<div class="text-end small text-muted" style="font-size: 0.95rem;">* 시간당 요금
+									</div>
+								</div>
+								<div class="text-end" style="min-width: 210px;">
+									<span class="fw-bold" style="font-size: 1.05rem; color: #ff6f0f">총 결제금액 :
+									</span>
+									<span id="totalPrice" class="fw-bold"
+										style="font-size: 1.05rem; color: #ff6f0f">0</span>원
+								</div>
+							</div>
+							<button class="btn w-100 py-2 fw-bold" type="submit"
+								style="font-size: 1.15rem; background:#ff6f0f; color: #fff; border-radius: 8px;">
+								예약하기
+							</button>
+						</form>
+						<!-- 예약 폼 끝 -->
 					</div>
 				</div>
+
+				</form>
+				<!-- 예약 폼 끝 -->
+
 			</div>
-		</form>
-	</section>
-	<!-- Related items section-->
-	<!-- <section class="py-5 bg-light">
-      <div class="container px-4 px-lg-5 mt-5">
-        <h2 class="fw-bolder mb-4">Related products</h2>
-        <div
-          class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center"
-        >
-          <div class="col mb-5">
-            <div class="card h-100">
-              Product image
-              <img
-                class="card-img-top"
-                src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg"
-                alt="..."
-              />
-              Product details
-              <div class="card-body p-4">
-                <div class="text-center">
-                  Product name
-                  <h5 class="fw-bolder">Fancy Product</h5>
-                  Product price
-                  $40.00 - $80.00
-                </div>
-              </div>
-              Product actions
-              <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                <div class="text-center">
-                  <a class="btn btn-outline-dark mt-auto" href="#"
-                    >View options</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col mb-5">
-            <div class="card h-100">
-              Sale badge
-              <div
-                class="badge bg-dark text-white position-absolute"
-                style="top: 0.5rem; right: 0.5rem"
-              >
-                Sale
-              </div>
-              Product image
-              <img
-                class="card-img-top"
-                src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg"
-                alt="..."
-              />
-              Product details
-              <div class="card-body p-4">
-                <div class="text-center">
-                  Product name
-                  <h5 class="fw-bolder">Special Item</h5>
-                  Product reviews
-                  <div
-                    class="d-flex justify-content-center small text-warning mb-2"
-                  >
-                    <div class="bi-star-fill"></div>
-                    <div class="bi-star-fill"></div>
-                    <div class="bi-star-fill"></div>
-                    <div class="bi-star-fill"></div>
-                    <div class="bi-star-fill"></div>
-                  </div>
-                  Product price
-                  <span class="text-muted text-decoration-line-through"
-                    >$20.00</span
-                  >
-                  $18.00
-                </div>
-              </div>
-              Product actions
-              <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                <div class="text-center">
-                  <a class="btn btn-outline-dark mt-auto" href="#"
-                    >Add to cart</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col mb-5">
-            <div class="card h-100">
-              Sale badge
-              <div
-                class="badge bg-dark text-white position-absolute"
-                style="top: 0.5rem; right: 0.5rem"
-              >
-                Sale
-              </div>
-              Product image
-              <img
-                class="card-img-top"
-                src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg"
-                alt="..."
-              />
-              Product details
-              <div class="card-body p-4">
-                <div class="text-center">
-                  Product name
-                  <h5 class="fw-bolder">Sale Item</h5>
-                  Product price
-                  <span class="text-muted text-decoration-line-through"
-                    >$50.00</span
-                  >
-                  $25.00
-                </div>
-              </div>
-              Product actions
-              <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                <div class="text-center">
-                  <a class="btn btn-outline-dark mt-auto" href="#"
-                    >Add to cart</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col mb-5">
-            <div class="card h-100">
-              Product image
-              <img
-                class="card-img-top"
-                src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg"
-                alt="..."
-              />
-              Product details
-              <div class="card-body p-4">
-                <div class="text-center">
-                  Product name
-                  <h5 class="fw-bolder">Popular Item</h5>
-                  Product reviews
-                  <div
-                    class="d-flex justify-content-center small text-warning mb-2"
-                  >
-                    <div class="bi-star-fill"></div>
-                    <div class="bi-star-fill"></div>
-                    <div class="bi-star-fill"></div>
-                    <div class="bi-star-fill"></div>
-                    <div class="bi-star-fill"></div>
-                  </div>
-                  Product price
-                  $40.00
-                </div>
-              </div>
-              Product actions
-              <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                <div class="text-center">
-                  <a class="btn btn-outline-dark mt-auto" href="#"
-                    >Add to cart</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section> -->
-	<!-- Footer-->
-	<footer class="py-5">
-		<div class="container">
-			<p class="m-0 text-center">Copyright &copy; Your Website 2023</p>
-		</div>
-	</footer>
-	<!-- Bootstrap core JS-->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- Core theme JS-->
-	<script src="/js/scripts.js"></script>
-	<script th:inline="javascript">
-		// Thymeleaf 리스트를 JS 배열로 변환
-		const imageList = /*[[${placeDto.pfilenameList}]]*/[];
-		let currentIndex = 0;
 
-		function showImage(index) {
-			const imageElement = document.getElementById("productImage");
-			imageElement.src = imageList[index];
-		}
 
-		function showPrevImage() {
-			currentIndex = (currentIndex - 1 + imageList.length) % imageList.length;
-			showImage(currentIndex);
-		}
+			<!-- Bootstrap core JS-->
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+			<!-- Core theme JS-->
+			<script src="/js/scripts.js"></script>
+			<script th:inline="javascript">
+				// Thymeleaf 리스트를 JS 배열로 변환
+				const imageList = /*[[${placeDto.pfilenameList}]]*/[];
+				let currentIndex = 0;
 
-		function showNextImage() {
-			currentIndex = (currentIndex + 1) % imageList.length;
-			showImage(currentIndex);
-		}
-	</script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script th:inline="javascript">
-		function getBdateList() {
-			console.log("check BdateList");
-			const dateEl = document.getElementById("bdate");
-			const selectedDate = new Date(dateEl.value);
-			const today = new Date();
-			today.setHours(0, 0, 0, 0);
-			const pid = "[[${placeDto.id}]]";
-			if (selectedDate < today) {
-				alert("과거 날짜는 예약할 수 없습니다.");
-				//dateEl.value=""
-				return;
-			}
-
-			$.ajax({
-				url: "/request/getBdate",
-				type: "get",
-				data: {bdate: dateEl.value, pId: pid},
-				dataType: "json",
-				success: function (response) {
-					modifyCheckBox(response);
-				},
-			});
-		}
-
-		function modifyCheckBox(raList) {
-			console.log("check raList");
-			const r11_13 = document.getElementById("r11_13");
-			const r13_15 = document.getElementById("r13_15");
-			const r15_17 = document.getElementById("r15_17");
-			const r17_19 = document.getElementById("r17_19");
-			const r19_21 = document.getElementById("r19_21");
-			const r21_23 = document.getElementById("r21_23");
-			r11_13.disabled = false;
-			r13_15.disabled = false;
-			r15_17.disabled = false;
-			r17_19.disabled = false;
-			r19_21.disabled = false;
-			r21_23.disabled = false;
-			for (let ra of raList) {
-				if (ra.r11_13 == "O") {
-					r11_13.disabled = true;
+				function showImage(index) {
+					const imageElement = document.getElementById("productImage");
+					imageElement.src = imageList[index];
 				}
-				if (ra.r13_15 == "O") {
-					r13_15.disabled = true;
-				}
-				if (ra.r15_17 == "O") {
-					r15_17.disabled = true;
-				}
-				if (ra.r17_19 == "O") {
-					r17_19.disabled = true;
-				}
-				if (ra.r19_21 == "O") {
-					r19_21.disabled = true;
-				}
-				if (ra.r21_23 == "O") {
-					r21_23.disabled = true;
-				}
-			}
 
-			const checkBoxs = document.querySelectorAll(".form-check-input");
-			const allDisabled = Array.from(checkBoxs).every((cb) => cb.disabled);
-			if (allDisabled) {
-				alert("해당 일자는 예약이 불가능 합니다.");
-				window.location.href = "/place/view/" + "[[${placeDto.id}]]";
-			}
-		}
-
-		function validateCheckboxes() {
-			const checkboxes = document.querySelectorAll('.form-check-input');
-			let leastOneChecked = false;
-
-			checkboxes.forEach(function (checkbox) {
-				if (checkbox.checked) {
-					leastOneChecked = true;
+				function showPrevImage() {
+					currentIndex = (currentIndex - 1 + imageList.length) % imageList.length;
+					showImage(currentIndex);
 				}
-			});
 
-			if (!leastOneChecked) {
-				alert("시간을 하나 이상 선택해주세요.");
-				return false;
-			}
-			return true;
-		}
-	</script>
+				function showNextImage() {
+					currentIndex = (currentIndex + 1) % imageList.length;
+					showImage(currentIndex);
+				}
 
+				// 가격 계산 기능
+				document.addEventListener("DOMContentLoaded", function () {
+					const checkboxes = document.querySelectorAll(".form-check-input");
+					const totalPriceEl = document.getElementById("totalPrice");
+					// 단가를 동적으로 받아옴 (숫자 변환)
+					const unitPrice = parseInt(
+						document.getElementById("unitPrice").innerText.replace(/[^0-9]/g, "")
+					);
+					function updateTotalPrice() {
+						let checkedCount = 0;
+						checkboxes.forEach((cb) => {
+							if (cb.checked) checkedCount++;
+						});
+						// 2시간 단위로 계산
+						totalPriceEl.innerText = unitPrice * checkedCount * 2;
+					}
+					checkboxes.forEach((cb) => {
+						cb.addEventListener("change", updateTotalPrice);
+					});
+					updateTotalPrice(); // 초기화
+				});
+
+				// 탭 밑줄: 활성 탭 아래만 underline
+				function moveUnderlineToTab(tabIdx) {
+					const tabBar = document.getElementById('tab-bar');
+					const tabBtns = tabBar.querySelectorAll('.tab-btn');
+					const underline = document.getElementById('tab-underline');
+					const tab = tabBtns[tabIdx];
+					underline.style.left = tab.offsetLeft + 'px';
+					underline.style.width = tab.offsetWidth + 'px';
+				}
+
+				document.addEventListener('DOMContentLoaded', function () {
+					// 초기: 첫번째 탭(공간소개)에 underline
+					moveUnderlineToTab(0);
+					// 탭 클릭 시 underline 이동 및 스크롤
+					const tabBtns = document.querySelectorAll('.tab-btn');
+					tabBtns.forEach((tab, idx) => {
+						tab.addEventListener('click', function () {
+							moveUnderlineToTab(idx);
+							// 연결된 텍스트 영역으로 스크롤 이동
+							let anchorId = idx === 0 ? 'intro-anchor' : 'review-anchor';
+							const anchor = document.getElementById(anchorId);
+							if (anchor) {
+								anchor.scrollIntoView({behavior: 'smooth', block: 'start'});
+							}
+						});
+					});
+				});
+			</script>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+			<script th:inline="javascript">
+				function getBdateList() {
+					console.log("check BdateList");
+					const dateEl = document.getElementById("bdate");
+					const selectedDate = new Date(dateEl.value);
+					const today = new Date();
+					today.setHours(0, 0, 0, 0);
+					const pid = "[[${placeDto.id}]]";
+					if (selectedDate < today) {
+						alert("과거 날짜는 예약할 수 없습니다.");
+						dateEl.value = "";
+						return;
+					}
+
+					$.ajax({
+						url: "/request/getBdate",
+						type: "get",
+						data: {bdate: dateEl.value, pId: pid},
+						dataType: "json",
+						success: function (response) {
+							modifyCheckBox(response);
+						},
+					});
+				}
+
+				function modifyCheckBox(raList) {
+					console.log("check raList");
+					const r11_13 = document.getElementById("r11_13");
+					const r13_15 = document.getElementById("r13_15");
+					const r15_17 = document.getElementById("r15_17");
+					const r17_19 = document.getElementById("r17_19");
+					const r19_21 = document.getElementById("r19_21");
+					const r21_23 = document.getElementById("r21_23");
+					r11_13.disabled = false;
+					r13_15.disabled = false;
+					r15_17.disabled = false;
+					r17_19.disabled = false;
+					r19_21.disabled = false;
+					r21_23.disabled = false;
+					for (let ra of raList) {
+						if (ra.r11_13 == "O") {
+							r11_13.disabled = true;
+						}
+						if (ra.r13_15 == "O") {
+							r13_15.disabled = true;
+						}
+						if (ra.r15_17 == "O") {
+							r15_17.disabled = true;
+						}
+						if (ra.r17_19 == "O") {
+							r17_19.disabled = true;
+						}
+						if (ra.r19_21 == "O") {
+							r19_21.disabled = true;
+						}
+						if (ra.r21_23 == "O") {
+							r21_23.disabled = true;
+						}
+					}
+
+					const checkBoxs = document.querySelectorAll(".form-check-input");
+					const allDisabled = Array.from(checkBoxs).every((cb) => cb.disabled);
+					if (allDisabled) {
+						alert("해당 일자는 예약이 불가능 합니다.");
+						window.location.href = "/place/view/" + "[[${placeDto.id}]]";
+					}
+				}
+
+				function validateCheckboxes() {
+					const checkboxes = document.querySelectorAll(".form-check-input");
+					let leastOneChecked = false;
+
+					checkboxes.forEach(function (checkbox) {
+						if (checkbox.checked) {
+							leastOneChecked = true;
+						}
+					});
+
+					if (!leastOneChecked) {
+						alert("시간을 하나 이상 선택해주세요.");
+						return false;
+					}
+					return true;
+				}
+			</script>
 </body>
 
 </html>

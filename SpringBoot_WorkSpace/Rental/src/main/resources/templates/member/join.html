@@ -1,94 +1,125 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <style>
+      input:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        border-color: #ff6f0f !important;
+      }
 
-<head>
-	<style>
-		input:focus {
-			outline: none !important;
-			box-shadow: none !important;
-			border-color: #ff6f0f !important;
-		}
+      .step-indicator.active div:first-child {
+        background: #ff6f0f !important;
+        border-color: #ff6f0f !important;
+      }
 
-		.step-indicator.active div:first-child {
-			background: #ff6f0f !important;
-			border-color: #ff6f0f !important;
-		}
+      .step-indicator.active .bi {
+        color: #222 !important;
+      }
 
-		.step-indicator.active .bi {
-			color: #222 !important;
-		}
+      .step-indicator.active div:nth-child(2),
+      .step-indicator.active div:nth-child(3) {
+        color: #222 !important;
+      }
 
-		.step-indicator.active div:nth-child(2),
-		.step-indicator.active div:nth-child(3) {
-			color: #222 !important;
-		}
-	</style>
-	<meta charset="UTF-8" />
+      /* 체크박스 주황색 커스텀 */
+      .form-check-input:checked {
+        background-color: #ff6f0f !important;
+        border-color: #ff6f0f !important;
+      }
+      .form-check-input:focus {
+        border-color: #ff6f0f !important;
+      }
+    </style>
+    <meta charset="UTF-8" />
 
-	<title>회원가입</title>
+    <title>회원가입</title>
 
-	<!-- Bootstrap CSS & JS -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous" />
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-		crossorigin="anonymous"></script>
-	<!-- 스타일 제거, Bootstrap 클래스만 사용 -->
-	<!-- Bootstrap Icons -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-</head>
+    <!-- Bootstrap CSS & JS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+      crossorigin="anonymous"
+    ></script>
+    <!-- 스타일 제거, Bootstrap 클래스만 사용 -->
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+  </head>
 
-<body>
-	<!-- 메인 컨텐츠 -->
-	<div class="d-flex justify-content-between align-items-center px-5 pt-4" style="background: #fff">
-		<div class="d-flex align-items-center">
-			<div class="d-flex flex-column align-items-start">
-				<a href="/" class="fw-bold" style="
+  <body>
+    <!-- 메인 컨텐츠 -->
+    <div
+      class="d-flex justify-content-between align-items-center px-5 pt-4"
+      style="background: #fff"
+    >
+      <div class="d-flex align-items-center">
+        <div class="d-flex flex-column align-items-start">
+          <a
+            href="/"
+            class="fw-bold"
+            style="
               font-size: 2rem;
               color: #ff6f0f;
               line-height: 1.1;
               text-decoration: none !important;
-            ">PROJECT</a>
-				<span class="ms-1" style="
+            "
+            >PROJECT</a
+          >
+          <span
+            class="ms-1"
+            style="
               font-size: 0.95rem;
               color: #444;
               font-weight: 500;
               line-height: 1.1;
               margin-top: 2px;
               margin-bottom: 0;
-            ">공간 대여 플랫폼</span>
-			</div>
-		</div>
-
-		<div>
-			<!-- 로그인 상태에 따라 버튼 표시 -->
-
-			<a href="/member/login" class="btn ms-2" style="
-            background: #222;
-            color: #fff;
-            font-weight: bold;
-            border-radius: 8px;
-            padding: 10px 24px;
-            font-size: 1rem;
-          ">로그인</a>
-		</div>
-	</div>
-	<form action="/member/joinForm" method="get" th:object="${memberForm}" id="myForm">
-		<div style="
+            "
+            >공간 대여 플랫폼</span
+          >
+        </div>
+      </div>
+    </div>
+    <form
+      action="/member/joinForm"
+      method="get"
+      th:object="${memberForm}"
+      id="myForm"
+    >
+      <div
+        style="
           text-align: center;
           font-size: 1.45rem;
           font-weight: 700;
           margin-bottom: 50px;
           color: #222;
-        ">
-			회원가입
-		</div>
+        "
+      >
+        회원가입
+      </div>
 
-		<!-- 3단계 진행바 -->
-		<div id="join-steps" class="d-flex justify-content-center align-items-center mb-3" style="gap: 18px">
-			<div id="step-indicator-1" class="step-indicator active"
-				style="display: flex; flex-direction: column; align-items: center">
-				<div style="
+      <!-- 3단계 진행바 -->
+      <div
+        id="join-steps"
+        class="d-flex justify-content-center align-items-center mb-3"
+        style="gap: 18px"
+      >
+        <div
+          id="step-indicator-1"
+          class="step-indicator active"
+          style="display: flex; flex-direction: column; align-items: center"
+        >
+          <div
+            style="
               width: 64px;
               height: 64px;
               background: #ff6f0f;
@@ -96,31 +127,42 @@
               display: flex;
               align-items: center;
               justify-content: center;
-              border: 2px solid #ffe07a;
-            ">
-					<i class="bi bi-pencil-square" style="font-size: 2rem; color: #222"></i>
-				</div>
-				<div style="
+            "
+          >
+            <i
+              class="bi bi-pencil-square"
+              style="font-size: 2rem; color: #222"
+            ></i>
+          </div>
+          <div
+            style="
               font-weight: 700;
               font-size: 1.08rem;
               color: #222;
               margin-top: 4px;
-            ">
-					step 1
-				</div>
-				<div style="font-size: 0.95rem; color: #888">개인정보 입력</div>
-			</div>
-			<div style="
+            "
+          >
+            step 1
+          </div>
+          <div style="font-size: 0.95rem; color: #888">개인정보 입력</div>
+        </div>
+        <div
+          style="
             font-size: 2rem;
             color: #ccc;
             align-self: flex-end;
             margin-bottom: 18px;
-          ">
-				&gt;
-			</div>
-			<div id="step-indicator-2" class="step-indicator"
-				style="display: flex; flex-direction: column; align-items: center">
-				<div style="
+          "
+        >
+          &gt;
+        </div>
+        <div
+          id="step-indicator-2"
+          class="step-indicator"
+          style="display: flex; flex-direction: column; align-items: center"
+        >
+          <div
+            style="
               width: 64px;
               height: 64px;
               background: #f7f7f7;
@@ -129,30 +171,39 @@
               align-items: center;
               justify-content: center;
               border: 2px solid #eee;
-            ">
-					<i class="bi bi-person" style="font-size: 2rem; color: #bbb"></i>
-				</div>
-				<div style="
+            "
+          >
+            <i class="bi bi-person" style="font-size: 2rem; color: #bbb"></i>
+          </div>
+          <div
+            style="
               font-weight: 700;
               font-size: 1.08rem;
               color: #bbb;
               margin-top: 4px;
-            ">
-					step 2
-				</div>
-				<div style="font-size: 0.95rem; color: #bbb">개인/기관 선택</div>
-			</div>
-			<div style="
+            "
+          >
+            step 2
+          </div>
+          <div style="font-size: 0.95rem; color: #bbb">개인/기관 선택</div>
+        </div>
+        <div
+          style="
             font-size: 2rem;
             color: #ccc;
             align-self: flex-end;
             margin-bottom: 18px;
-          ">
-				&gt;
-			</div>
-			<div id="step-indicator-3" class="step-indicator"
-				style="display: flex; flex-direction: column; align-items: center">
-				<div style="
+          "
+        >
+          &gt;
+        </div>
+        <div
+          id="step-indicator-3"
+          class="step-indicator"
+          style="display: flex; flex-direction: column; align-items: center"
+        >
+          <div
+            style="
               width: 64px;
               height: 64px;
               background: #f7f7f7;
@@ -161,36 +212,57 @@
               align-items: center;
               justify-content: center;
               border: 2px solid #eee;
-            ">
-					<i class="bi bi-card-checklist" style="font-size: 2rem; color: #bbb"></i>
-				</div>
-				<div style="
+            "
+          >
+            <i
+              class="bi bi-card-checklist"
+              style="font-size: 2rem; color: #bbb"
+            ></i>
+          </div>
+          <div
+            style="
               font-weight: 700;
               font-size: 1.08rem;
               color: #bbb;
               margin-top: 4px;
-            ">
-					step 3
-				</div>
-				<div style="font-size: 0.95rem; color: #bbb">선호</div>
-			</div>
-		</div>
+            "
+          >
+            step 3
+          </div>
+          <div style="font-size: 0.95rem; color: #bbb">선호</div>
+        </div>
+      </div>
 
-		<div id="step1" class="container mt-5" style="
+      <div
+        id="step1"
+        class="step-form mt-5"
+        style="
           max-width: 440px;
           margin: auto;
           border-radius: 16px;
+          background: #fff;
           display: block;
-        ">
-			<label for="mid" class="form-label"></label>
-			<div class="input-group mb-2">
-				<input type="text" class="form-control" style="
+        "
+      >
+        <label for="mid" class="form-label"></label>
+        <div class="input-group mb-0">
+          <input
+            type="text"
+            class="form-control"
+            style="
               border-top-left-radius: 16px;
               border-bottom-left-radius: 16px;
               border-top-right-radius: 0;
               border-bottom-right-radius: 0;
-            " th:field="*{mid}" id="mid" placeholder="아이디" />
-				<button type="button" class="btn btn-outline-secondary" style="
+            "
+            th:field="*{mid}"
+            id="mid"
+            placeholder="아이디"
+          />
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            style="
               background: #ff6f0f;
               color: #fff;
               font-weight: bold;
@@ -198,41 +270,88 @@
               border-bottom-right-radius: 16px;
               border-top-left-radius: 0;
               border-bottom-left-radius: 0;
-            " onclick="checkDuplicateId()">
-					중복확인
-				</button>
-			</div>
-			<span id="checkMsg" class="ms-2"></span>
-			<style>
-				.text-danger.small {
-					font-size: 0.9em;
-				}
-			</style>
-			<!-- 아이디 에러 메시지는 checkMsg에만 표시 -->
-			<label for="mpw" class="form-label"></label>
-			<input type="password" class="form-control" style="border-radius: 16px" th:field="*{mpw}" id="mpw"
-				placeholder="비밀번호" />
-			<div><span id="mpwError" class="text-danger small"></span></div>
-			<label for="mname" class="form-label"></label>
-			<input type="text" class="form-control" style="border-radius: 16px" th:field="*{mname}" id="mname"
-				placeholder="이름" />
-			<div><span id="mnameError" class="text-danger small"></span></div>
-			<label for="mphone" class="form-label"></label>
-			<input type="text" class="form-control" style="border-radius: 16px" th:field="*{mphone}" id="mphone"
-				placeholder="연락처" />
-			<div><span id="mphoneError" class="text-danger small"></span></div>
-			<label for="memail" class="form-label"></label>
-			<input type="email" class="form-control" style="border-radius: 16px" th:field="*{memail}" id="memail"
-				placeholder="이메일" />
-			<label for="maddress" class="form-label"></label>
-			<div class="input-group mb-2">
-				<input type="text" class="form-control" style="
+            "
+            onclick="checkDuplicateId()"
+          >
+            중복확인
+          </button>
+        </div>
+        <div class="mb-3" style="min-height: 1.5em">
+          <span id="checkMsg" class="text-danger small"></span>
+        </div>
+        <style>
+          .text-danger.small {
+            font-size: 0.9em;
+          }
+        </style>
+        <!-- 아이디 에러 메시지는 checkMsg에만 표시 -->
+        <label for="mpw" class="form-label"></label>
+        <input
+          type="password"
+          class="form-control"
+          style="border-radius: 16px"
+          th:field="*{mpw}"
+          id="mpw"
+          placeholder="비밀번호"
+        />
+        <div class="mb-3" style="min-height: 1.5em">
+          <span id="mpwError" class="text-danger small"></span>
+        </div>
+        <label for="mname" class="form-label"></label>
+        <input
+          type="text"
+          class="form-control"
+          style="border-radius: 16px"
+          th:field="*{mname}"
+          id="mname"
+          placeholder="이름"
+        />
+        <div class="mb-3" style="min-height: 1.5em">
+          <span id="mnameError" class="text-danger small"></span>
+        </div>
+        <label for="mphone" class="form-label"></label>
+        <input
+          type="text"
+          class="form-control"
+          style="border-radius: 16px"
+          th:field="*{mphone}"
+          id="mphone"
+          placeholder="연락처"
+        />
+        <div class="mb-3" style="min-height: 1.5em">
+          <span id="mphoneError" class="text-danger small"></span>
+        </div>
+        <label for="memail" class="form-label"></label>
+        <input
+          type="email"
+          class="form-control"
+          style="border-radius: 16px"
+          th:field="*{memail}"
+          id="memail"
+          placeholder="이메일"
+        />
+        <div class="mb-3" style="min-height: 1.5em">
+          <span id="memailError" class="text-danger small"></span>
+        </div>
+        <label for="maddress" class="form-label"></label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            style="
               border-top-left-radius: 16px;
               border-bottom-left-radius: 16px;
               border-top-right-radius: 0;
               border-bottom-right-radius: 0;
-            " th:field="*{maddress}" id="maddress" placeholder="주소" />
-				<button type="button" class="btn btn-outline-secondary" style="
+            "
+            th:field="*{maddress}"
+            id="maddress"
+            placeholder="주소"
+          />
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            style="
               background: #ff6f0f;
               color: #fff;
               font-weight: bold;
@@ -240,301 +359,465 @@
               border-bottom-right-radius: 16px;
               border-top-left-radius: 0;
               border-bottom-left-radius: 0;
-            " onclick="execDaumPostcode()">
-					주소검색
-				</button>
-			</div>
-			<div><span id="maddressError" class="text-danger small"></span></div>
-			<button type="button" id="nextBtn1" class="btn w-100 mt-4" style="
+            "
+            onclick="execDaumPostcode()"
+          >
+            주소검색
+          </button>
+        </div>
+        <div class="mb-3" style="min-height: 1.5em">
+          <span
+            id="maddressError"
+            class="text-danger small"
+            style="display: block; line-height: 0"
+          ></span>
+        </div>
+        <button
+          type="button"
+          id="nextBtn1"
+          class="btn w-100 mt-4"
+          style="
             background: #111;
             color: #fff;
             font-size: 1.08rem;
             font-weight: bold;
             border-radius: 20px;
-          ">
-				다음
-			</button>
-		</div>
-		<div id="step2" class="container mt-5" style="
+          "
+        >
+          다음
+        </button>
+      </div>
+      <div
+        id="step2"
+        class="step-form mt-5"
+        style="
           max-width: 440px;
           margin: auto;
           border-radius: 16px;
+          background: #fff;
           display: none;
-        ">
-			<p>회원 유형</p>
-			<div class="form-check">
-				<input class="form-check-input" type="radio" name="mtype" id="org" value="기관 회원" />
-				<label class="form-check-label" for="org"> 기관 회원 </label>
-			</div>
-			<div class="form-check">
-				<input class="form-check-input" type="radio" name="mtype" id="ind" checked value="개인 회원" />
-				<label class="form-check-label" for="ind"> 개인 회원 </label>
-			</div>
-			<button type="button" id="nextBtn2" class="btn w-100 mt-4" style="
+        "
+      >
+        <p>회원 유형</p>
+        <div class="d-flex gap-4 align-items-center mb-3">
+          <div class="form-check mb-0">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="mtype"
+              id="org"
+              value="기관 회원"
+            />
+            <label class="form-check-label" for="org">기관 회원</label>
+          </div>
+          <div class="form-check mb-0">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="mtype"
+              id="ind"
+              checked
+              value="개인 회원"
+            />
+            <label class="form-check-label" for="ind">개인 회원</label>
+          </div>
+        </div>
+        <button
+          type="button"
+          id="nextBtn2"
+          class="btn w-100 mt-4"
+          style="
             background: #111;
             color: #fff;
             font-size: 1.08rem;
             font-weight: bold;
             border-radius: 20px;
-          ">
-				다음
-			</button>
-		</div>
+          "
+        >
+          다음
+        </button>
+      </div>
 
-		<div id="step3" class="container mt-5" style="
+      <div
+        id="step3"
+        class="step-form mt-5"
+        style="
           max-width: 440px;
           margin: auto;
           border-radius: 16px;
+          background: #fff;
           display: none;
-        ">
-			<p>선호 시설</p>
-			<div class="mt-3 card shadow-sm">
-				<div class="card-body">
-					<div class="form-check mb-3" style="display: inline-block">
-						<input class="form-check-input" type="checkbox" id="minterests_partyroom" value="partyroom"
-							name="minterests" />
-						<label class="form-check-label" for="minterests_partyroom">
-							파티룸
-						</label>
-					</div>
-					<div class="form-check mb-3 ms-2" style="display: inline-block">
-						<input class="form-check-input" type="checkbox" id="minterests_office" value="office"
-							name="minterests" />
-						<label class="form-check-label" for="minterests_office">
-							오피스
-						</label>
-					</div>
-					<div class="form-check mb-3 ms-2" style="display: inline-block">
-						<input class="form-check-input" type="checkbox" id="minterests_practice" value="practice"
-							name="minterests" />
-						<label class="form-check-label" for="minterests_practice">
-							연습실
-						</label>
-					</div>
-					<div class="form-check mb-3" style="display: inline-block">
-						<input class="form-check-input" type="checkbox" id="minterests_downtown" value="downtown"
-							name="minterests" />
-						<label class="form-check-label" for="minterests_downtown">
-							상가
-						</label>
-					</div>
-					<div class="form-check mb-3" style="display: inline-block">
-						<input class="form-check-input" type="checkbox" id="minterests_studyroom" value="studyroom"
-							name="minterests" />
-						<label class="form-check-label" for="minterests_studyroom">스터디룸</label>
-					</div>
-					<div class="form-check mb-3" style="display: inline-block">
-						<input class="form-check-input" type="checkbox" id="minterests_hotel" value="hotel"
-							name="minterests" />
-						<label class="form-check-label" for="minterests_hotel">
-							숙소
-						</label>
-					</div>
-				</div>
-			</div>
-			<button type="submit" class="btn w-100 mt-4" style="
+        "
+      >
+        <p class="mb-2">선호 시설</p>
+        <div class="row g-3 mb-0">
+          <div class="col-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_partyroom"
+                value="partyroom"
+                name="minterests"
+              />
+              <label class="form-check-label" for="minterests_partyroom"
+                >파티룸</label
+              >
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_office"
+                value="office"
+                name="minterests"
+              />
+              <label class="form-check-label" for="minterests_office"
+                >오피스</label
+              >
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_practice"
+                value="practice"
+                name="minterests"
+              />
+              <label class="form-check-label" for="minterests_practice"
+                >연습실</label
+              >
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_downtown"
+                value="downtown"
+                name="minterests"
+              />
+              <label class="form-check-label" for="minterests_downtown"
+                >상가</label
+              >
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_studyroom"
+                value="studyroom"
+                name="minterests"
+              />
+              <label class="form-check-label" for="minterests_studyroom"
+                >스터디룸</label
+              >
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="minterests_hotel"
+                value="hotel"
+                name="minterests"
+              />
+              <label class="form-check-label" for="minterests_hotel"
+                >숙소</label
+              >
+            </div>
+          </div>
+        </div>
+        <!-- 전체 선택 체크박스 (약관동의 스타일) -->
+        <div class="form-check mb-2 mt-4" style="text-align: left">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="selectAllInterestsCheck"
+          />
+          <label
+            class="form-check-label fw-semibold"
+            for="selectAllInterestsCheck"
+            style="user-select: none"
+          >
+            모든 선호 시설 선택
+          </label>
+        </div>
+        <button
+          type="submit"
+          class="btn w-100 mt-4"
+          style="
             background: #111;
             color: #fff;
             font-size: 1.08rem;
             font-weight: bold;
             border-radius: 20px;
-          ">
-				회원가입
-			</button>
-		</div>
-	</form>
+          "
+        >
+          회원가입
+        </button>
+        <script>
+          // 스텝 인디케이터 클릭 시 해당 폼으로 이동
+          document.getElementById("step-indicator-1").style.cursor = "pointer";
+          document.getElementById("step-indicator-2").style.cursor = "pointer";
+          document.getElementById("step-indicator-3").style.cursor = "pointer";
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<!-- 다음 주소 API 스크립트 -->
-	<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-	<script type="text/javascript">
-		// 다음 주소 검색 API 연동 (중복 제거)
-		function execDaumPostcode() {
-			new daum.Postcode({
-				oncomplete: function (data) {
-					var fullAddr = data.roadAddress
-						? data.roadAddress
-						: data.jibunAddress;
-					if (!fullAddr) fullAddr = data.address;
-					document.getElementById("maddress").value = fullAddr;
-				},
-			}).open();
-		}
-		let isDuplicated;
+          document.getElementById("step-indicator-1").onclick = function () {
+            document.getElementById("step1").style.display = "block";
+            document.getElementById("step2").style.display = "none";
+            document.getElementById("step3").style.display = "none";
+            document.getElementById("step-indicator-1").classList.add("active");
+            document
+              .getElementById("step-indicator-2")
+              .classList.remove("active");
+            document
+              .getElementById("step-indicator-3")
+              .classList.remove("active");
+          };
+          document.getElementById("step-indicator-2").onclick = function () {
+            document.getElementById("step1").style.display = "none";
+            document.getElementById("step2").style.display = "block";
+            document.getElementById("step3").style.display = "none";
+            document
+              .getElementById("step-indicator-1")
+              .classList.remove("active");
+            document.getElementById("step-indicator-2").classList.add("active");
+            document
+              .getElementById("step-indicator-3")
+              .classList.remove("active");
+          };
+          document.getElementById("step-indicator-3").onclick = function () {
+            document.getElementById("step1").style.display = "none";
+            document.getElementById("step2").style.display = "none";
+            document.getElementById("step3").style.display = "block";
+            document
+              .getElementById("step-indicator-1")
+              .classList.remove("active");
+            document.getElementById("step-indicator-2").classList.add("active");
+            document.getElementById("step-indicator-3").classList.add("active");
+          };
+          // 전체 선택 체크박스 기능
+          document
+            .getElementById("selectAllInterestsCheck")
+            .addEventListener("change", function () {
+              const checkboxes = document.querySelectorAll(
+                "input[name='minterests']"
+              );
+              checkboxes.forEach((cb) => (cb.checked = this.checked));
+            });
+          // 개별 체크박스 변경 시 전체선택 체크박스 상태 동기화
+          document
+            .querySelectorAll("input[name='minterests']")
+            .forEach((cb) => {
+              cb.addEventListener("change", function () {
+                const all = document.querySelectorAll(
+                  "input[name='minterests']"
+                );
+                const allChecked = Array.from(all).every((c) => c.checked);
+                document.getElementById("selectAllInterestsCheck").checked =
+                  allChecked;
+              });
+            });
+        </script>
+      </div>
+    </form>
 
-		document.getElementById("mid").addEventListener("input", function () {
-			isDuplicated = false;
-			document.getElementById("checkMsg").innerHTML = "";
-			document.getElementById("mid").classList.remove("is-invalid");
-			document.getElementById("mid").classList.remove("is-valid");
-		});
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- 다음 주소 API 스크립트 -->
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script type="text/javascript">
+      // 다음 주소 검색 API 연동 (중복 제거)
+      function execDaumPostcode() {
+        new daum.Postcode({
+          oncomplete: function (data) {
+            var fullAddr = data.roadAddress
+              ? data.roadAddress
+              : data.jibunAddress;
+            if (!fullAddr) fullAddr = data.address;
+            document.getElementById("maddress").value = fullAddr;
+          },
+        }).open();
+      }
+      let isDuplicated;
 
-		function checkEl(form) {
-			const inputId = form.mid;
+      document.getElementById("mid").addEventListener("input", function () {
+        isDuplicated = false;
+        document.getElementById("checkMsg").innerHTML = "";
+        document.getElementById("mid").classList.remove("is-invalid");
+        document.getElementById("mid").classList.remove("is-valid");
+      });
 
-			if (!isDuplicated) {
-				alert("아이디를 확인해주십시오.");
-				return false;
-			}
-			return true;
-		}
+      function checkEl(form) {
+        const inputId = form.mid;
 
-		function checkDuplicateId() {
-			const checkMsg = document.getElementById("checkMsg");
-			const mid = document.getElementById("mid");
-			const midError = document.getElementById("midError");
-			if (mid.value.trim() <= 0) {
-				checkMsg.innerHTML = "아이디를 입력해주십시오.";
-				mid.classList.add("is-invalid");
-				mid.classList.remove("is-valid");
-				checkMsg.classList.remove("text-green", "text-red");
-				checkMsg.classList.add("text-danger", "small");
-				return;
-			}
-			console.log(mid.value);
-			$.ajax({
-				url: "/member/idCheck",
-				type: "post",
-				data: {mid: mid.value.trim()},
-				success: function (response) {
-					if (response == "Y") {
-						mid.classList.add("is-valid");
-						mid.classList.remove("is-invalid");
-						checkMsg.innerHTML = "사용 가능한 아이디입니다.";
-						checkMsg.classList.add("text-green");
-						checkMsg.classList.remove("text-red", "text-danger", "small");
-						isDuplicated = true;
-					} else if (response == "N") {
-						mid.classList.add("is-invalid");
-						mid.classList.remove("is-valid");
-						checkMsg.innerHTML = "사용할 수 없는 아이디입니다.";
-						checkMsg.classList.remove("text-green");
-						checkMsg.classList.add("text-red");
-						checkMsg.classList.remove("text-danger", "small");
-						isDuplicated = false;
-					}
-				},
-			});
-		}
-	</script>
-	<script>
-		function execDaumPostcode() {
-			new daum.Postcode({
-				oncomplete: function (data) {
-					var fullAddr = data.roadAddress
-						? data.roadAddress
-						: data.jibunAddress;
-					if (!fullAddr) fullAddr = data.address;
-					document.getElementById("maddress").value = fullAddr;
-				},
-			}).open();
-		}
+        if (!isDuplicated) {
+          alert("아이디를 확인해주십시오.");
+          return false;
+        }
+        return true;
+      }
 
-		document.getElementById("nextBtn1").onclick = function () {
-			// 필수 입력값 개별 유효성 검사 (이메일은 선택)
-			var mid = document.getElementById("mid").value.trim();
-			var mpw = document.getElementById("mpw").value.trim();
-			var mname = document.getElementById("mname").value.trim();
-			var mphone = document.getElementById("mphone").value.trim();
-			var maddress = document.getElementById("maddress").value.trim();
+      function checkDuplicateId() {
+        const checkMsg = document.getElementById("checkMsg");
+        const mid = document.getElementById("mid");
+        if (mid.value.trim() <= 0) {
+          checkMsg.innerHTML = "아이디를 입력해주십시오.";
+          mid.classList.add("is-invalid");
+          mid.classList.remove("is-valid");
+          checkMsg.className = "text-danger small";
+          return;
+        }
+        $.ajax({
+          url: "/member/idCheck",
+          type: "post",
+          data: { mid: mid.value.trim() },
+          success: function (response) {
+            if (response == "Y") {
+              mid.classList.add("is-valid");
+              mid.classList.remove("is-invalid");
+              checkMsg.innerHTML = "사용 가능한 아이디입니다.";
+              checkMsg.className = "text-success small";
+              isDuplicated = true;
+            } else if (response == "N") {
+              mid.classList.add("is-invalid");
+              mid.classList.remove("is-valid");
+              checkMsg.innerHTML = "사용할 수 없는 아이디입니다.";
+              checkMsg.className = "text-danger small";
+              isDuplicated = false;
+            }
+          },
+        });
+      }
+    </script>
+    <script>
+      function execDaumPostcode() {
+        new daum.Postcode({
+          oncomplete: function (data) {
+            var fullAddr = data.roadAddress
+              ? data.roadAddress
+              : data.jibunAddress;
+            if (!fullAddr) fullAddr = data.address;
+            document.getElementById("maddress").value = fullAddr;
+          },
+        }).open();
+      }
 
-			var isValid = true;
-			// 에러 메시지 초기화
-			var checkMsg = document.getElementById("checkMsg");
-			checkMsg.innerText = "";
-			checkMsg.classList.remove("text-danger", "small");
-			document.getElementById("mpwError").innerText = "";
-			document.getElementById("mnameError").innerText = "";
-			document.getElementById("mphoneError").innerText = "";
-			document.getElementById("maddressError").innerText = "";
+      document.getElementById("nextBtn1").onclick = function () {
+        // 필수 입력값 개별 유효성 검사 (이메일은 선택)
+        var mid = document.getElementById("mid").value.trim();
+        var mpw = document.getElementById("mpw").value.trim();
+        var mname = document.getElementById("mname").value.trim();
+        var mphone = document.getElementById("mphone").value.trim();
+        var maddress = document.getElementById("maddress").value.trim();
 
-			if (!mid) {
-				checkMsg.innerText = "아이디를 입력해주세요.";
-				checkMsg.classList.remove("text-green");
-				checkMsg.classList.add("text-danger", "small");
-				isValid = false;
-			}
-			if (!mpw) {
-				document.getElementById("mpwError").innerText =
-					"비밀번호를 입력해주세요.";
-				isValid = false;
-			}
-			if (!mname) {
-				document.getElementById("mnameError").innerText =
-					"이름을 입력해주세요.";
-				isValid = false;
-			}
-			if (!mphone) {
-				document.getElementById("mphoneError").innerText =
-					"연락처를 입력해주세요.";
-				isValid = false;
-			}
-			if (!maddress) {
-				document.getElementById("maddressError").innerText =
-					"주소를 입력해주세요.";
-				isValid = false;
-			}
-			if (!isValid) {
-				return;
-			}
-			document.getElementById("step1").style.display = "none";
-			document.getElementById("step2").style.display = "block";
-			document.getElementById("step3").style.display = "none";
-			document.getElementById("step-indicator-1").classList.remove("active");
-			document.getElementById("step-indicator-2").classList.add("active");
-			document.getElementById("step-indicator-3").classList.remove("active");
-			// 혹시 step2 진입 시 step3가 보이는 경우를 방지
-			setTimeout(function () {
-				document.getElementById("step2").style.display = "block";
-				document.getElementById("step3").style.display = "none";
-			}, 10);
-		};
-		document.getElementById("nextBtn2").onclick = function () {
-			document.getElementById("step2").style.display = "none";
-			document.getElementById("step3").style.display = "block";
-			document.getElementById("step-indicator-2").classList.add("active");
-			document.getElementById("step-indicator-3").classList.add("active");
-		};
-		// 입력 시 에러 메시지 즉시 제거 (아이디 제외, 아이디는 checkMsg로 처리)
-		document.getElementById("mpw").addEventListener("input", function () {
-			document.getElementById("mpwError").innerText = "";
-		});
-		document.getElementById("mname").addEventListener("input", function () {
-			document.getElementById("mnameError").innerText = "";
-		});
-		document.getElementById("mphone").addEventListener("input", function () {
-			document.getElementById("mphoneError").innerText = "";
-		});
-		document
-			.getElementById("maddress")
-			.addEventListener("input", function () {
-				document.getElementById("maddressError").innerText = "";
-			});
-		document.querySelector("form").onsubmit = function (e) {
-			if (document.getElementById("step3").style.display !== "block") {
-				e.preventDefault();
-				return false;
-			}
-			return true;
-		};
+        var isValid = true;
+        // 에러 메시지 초기화
+        var checkMsg = document.getElementById("checkMsg");
+        checkMsg.innerText = "";
+        checkMsg.classList.remove("text-danger", "small");
+        document.getElementById("mpwError").innerText = "";
+        document.getElementById("mnameError").innerText = "";
+        document.getElementById("mphoneError").innerText = "";
+        document.getElementById("maddressError").innerText = "";
 
-		document.getElementById("myForm").addEventListener("submit", function (e) {
-			const checkboxes = document.querySelectorAll("input[name='minterests']");
-			let checked = false;
+        if (!mid) {
+          checkMsg.innerText = "아이디를 입력해주세요.";
+          checkMsg.classList.remove("text-green");
+          checkMsg.classList.add("text-danger", "small");
+          isValid = false;
+        }
+        if (!mpw) {
+          document.getElementById("mpwError").innerText =
+            "비밀번호를 입력해주세요.";
+          isValid = false;
+        }
+        if (!mname) {
+          document.getElementById("mnameError").innerText =
+            "이름을 입력해주세요.";
+          isValid = false;
+        }
+        if (!mphone) {
+          document.getElementById("mphoneError").innerText =
+            "연락처를 입력해주세요.";
+          isValid = false;
+        }
+        if (!maddress) {
+          document.getElementById("maddressError").innerText =
+            "주소를 입력해주세요.";
+          isValid = false;
+        }
+        if (!isValid) {
+          return;
+        }
+        document.getElementById("step1").style.display = "none";
+        document.getElementById("step2").style.display = "block";
+        document.getElementById("step3").style.display = "none";
+        document.getElementById("step-indicator-1").classList.remove("active");
+        document.getElementById("step-indicator-2").classList.add("active");
+        document.getElementById("step-indicator-3").classList.remove("active");
+        // 혹시 step2 진입 시 step3가 보이는 경우를 방지
+        setTimeout(function () {
+          document.getElementById("step2").style.display = "block";
+          document.getElementById("step3").style.display = "none";
+        }, 10);
+      };
+      document.getElementById("nextBtn2").onclick = function () {
+        document.getElementById("step2").style.display = "none";
+        document.getElementById("step3").style.display = "block";
+        document.getElementById("step-indicator-2").classList.add("active");
+        document.getElementById("step-indicator-3").classList.add("active");
+      };
+      // 입력 시 에러 메시지 즉시 제거 (아이디 제외, 아이디는 checkMsg로 처리)
+      document.getElementById("mpw").addEventListener("input", function () {
+        document.getElementById("mpwError").innerText = "";
+      });
+      document.getElementById("mname").addEventListener("input", function () {
+        document.getElementById("mnameError").innerText = "";
+      });
+      document.getElementById("mphone").addEventListener("input", function () {
+        document.getElementById("mphoneError").innerText = "";
+      });
+      document
+        .getElementById("maddress")
+        .addEventListener("input", function () {
+          document.getElementById("maddressError").innerText = "";
+        });
+      document.querySelector("form").onsubmit = function (e) {
+        if (document.getElementById("step3").style.display !== "block") {
+          e.preventDefault();
+          return false;
+        }
+        return true;
+      };
 
-			for (const checkbox of checkboxes) {
-				if (checkbox.checked) {
-					checked = true;
-					break;
-				}
-			}
+      document
+        .getElementById("myForm")
+        .addEventListener("submit", function (e) {
+          const checkboxes = document.querySelectorAll(
+            "input[name='minterests']"
+          );
+          let checked = false;
 
-			if (!checked) {
-				e.preventDefault();
-				alert("선호 시설을 최소 하나 이상 선택해주세요.");
-			}
-		});
-	</script>
-</body>
+          for (const checkbox of checkboxes) {
+            if (checkbox.checked) {
+              checked = true;
+              break;
+            }
+          }
 
+          if (!checked) {
+            e.preventDefault();
+            alert("선호 시설을 최소 하나 이상 선택해주세요.");
+          }
+        });
+    </script>
+  </body>
 </html>

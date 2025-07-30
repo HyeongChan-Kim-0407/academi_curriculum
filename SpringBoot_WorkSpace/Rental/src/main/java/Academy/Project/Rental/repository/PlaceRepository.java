@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import Academy.Project.Rental.domain.Member;
 import Academy.Project.Rental.domain.Place;
 
 public interface PlaceRepository extends JpaRepository<Place, Long> {
@@ -12,4 +13,6 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
 
 	List<Place> findByPtitleContainingAndPtypeContainingAndPlocationContaining(String ptitle, String ptype,
 			String plocation);
+
+	List<Place> findByPmember(Member member);
 }

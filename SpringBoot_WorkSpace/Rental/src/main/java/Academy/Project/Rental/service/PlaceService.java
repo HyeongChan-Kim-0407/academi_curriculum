@@ -114,4 +114,9 @@ public class PlaceService {
 		return dtoList;
 	}
 
+	public List<Place> getPlaceByMember(Member member) {
+		 return placerepository.findByPmember(member);
+	}
+
+
 }

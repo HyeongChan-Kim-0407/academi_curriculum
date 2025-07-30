@@ -122,8 +122,9 @@ public class RequestService {
 
 	}
 
-	public List<Request> getRequestsByMember(Member member) {
-		return requestrepository.findByMember(member);
+	public List<RequestAccept> getRequestsByMember(Member member) {
+		
+		return requestAcceptRepository.findByMember(member);
 	}
 
 	public ArrayList<RequestAcceptDto> findByBdateAndPid(LocalDate bdate, Long pId) {
@@ -141,9 +142,15 @@ public class RequestService {
 		return raList;
 	}
 
-	public Request getEntityById(Long id) {
-	    return requestrepository.findById(id)
-	        .orElseThrow(() -> new IllegalArgumentException("해당 예약 정보가 없습니다."));
+	public RequestAccept getEntityById(Long placeId, Long memberId) {
+	    
+		Place place = placerepository.findById(placeId)
+				.orElseThrow(() -> new IllegalArgumentException("해당 장소가 없습니다."));
+		Member member = memberrepository.findById(memberId).orElse(null);
+		
+		RequestAccept requestAccept = requestAcceptRepository.findByPlaceAndMember(place, member);
+		
+		return requestAccept;
 	}
 
 }

@@ -39,6 +39,8 @@ public class RequestAccept {
 	private String r21_23; // 21시 ~ 23시
 	
 	private LocalDate adate; // 수락일
+	
+	private String replyStatus; // 댓글 작성 여부 (리뷰작성, 작성완료)
 
 	public RequestAccept() {
 
@@ -52,9 +54,10 @@ public class RequestAccept {
 		this.r13_15 = request.getR13_15();
 		this.r15_17 = request.getR15_17();
 		this.r17_19 = request.getR17_19();
-		this.r19_21 = request.getR19_21();
+		this.r19_21 = request.getR19_21(); 
 		this.r21_23 = request.getR21_23();
 		this.adate = LocalDate.now(); // 현재 날짜로 수락일 설정
+		this.replyStatus = "작성전";
 	}
 
 }

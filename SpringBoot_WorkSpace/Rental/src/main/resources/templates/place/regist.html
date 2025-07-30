@@ -18,11 +18,16 @@
 </head>
 
 	<style>
-	  input:focus {
-		outline: none !important;
-		box-shadow: none !important;
-		border-color: #ff6f0f !important;
-	  }
+  input:focus, textarea:focus, select:focus {
+	outline: none !important;
+	box-shadow: none !important;
+	border-color: #ff6f0f !important;
+  }
+  input[type="file"]:focus {
+	outline: none !important;
+	box-shadow: none !important;
+	border-color: #ff6f0f !important;
+  }
 	  .card {
 		border: none;
 	  }
@@ -42,9 +47,9 @@
 		  <label for="ptitle" class="form-label">장소 이름</label>
 		  <input type="text" class="form-control mb-3" style="border-radius: 16px" th:field="*{ptitle}" th:classappend="${#fields.hasErrors('ptitle')}? 'is-invalid'" />
 		  <p class="invalid-feedback" th:if="${#fields.hasErrors('ptitle')}" th:errors="*{ptitle}"></p>
-		  <label for="pinfo" class="form-label">내용</label>
-		  <input type="text" class="form-control mb-3" style="border-radius: 16px" th:field="*{pinfo}" th:classappend="${#fields.hasErrors('pinfo')}? 'is-invalid'" />
-		  <p class="invalid-feedback" th:if="${#fields.hasErrors('pinfo')}" th:errors="*{pinfo}"></p>
+	  <label for="pinfo" class="form-label">내용</label>
+	  <textarea class="form-control mb-3" style="border-radius: 16px; min-height: 120px; resize: none;" th:field="*{pinfo}" th:classappend="${#fields.hasErrors('pinfo')}? 'is-invalid'" rows="4"></textarea>
+	  <p class="invalid-feedback" th:if="${#fields.hasErrors('pinfo')}" th:errors="*{pinfo}"></p>
 		  <label for="pfiles" class="form-label">사진</label>
 		  <input type="file" id="pfiles" name="pfiles" multiple="multiple" required class="form-control mb-3" style="border-radius: 16px">
 		  <label for="pprice" class="form-label">가격</label>
@@ -78,6 +83,10 @@
 			<input class="form-check-input" type="radio" name="ptype" id="hotel" value="hotel" />
 			<label class="form-check-label" for="hotel">숙소</label>
 		  </div>
+		  <div class="form-check">
+					<input class="form-check-input" type="radio" name="ptype" id="practice" value="parctice" />
+					<label class="form-check-label" for="hotel">연습실</label>
+				  </div>
 		</div>
 	  </div>
 		  <button type="submit" class="btn w-100 mt-4" style="background: #ff6f0f; color: #fff; font-size: 1.08rem; font-weight: bold; border-radius: 20px;">글등록</button>

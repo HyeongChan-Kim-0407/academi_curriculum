@@ -1,122 +1,433 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>예약 내역</title>
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
-	rel="stylesheet" crossorigin="anonymous">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-	crossorigin="anonymous"></script>
-<style>
-.card-container {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-	gap: 1.5rem;
-	padding: 2rem;
-}
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>마이페이지</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <style>
+      body {
+        background: #fafbfc;
+      }
+      .my-container {
+        min-height: 100vh;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 40px;
+        padding-top: 48px;
+      }
+      .profile-card {
+        width: 340px;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        background: #fff;
+        padding: 32px 24px 24px 24px;
+        text-align: center;
+      }
+      .profile-card img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 16px;
+      }
+      .profile-nick {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      .profile-info {
+        color: #888;
+        font-size: 1rem;
+        margin-bottom: 16px;
+      }
+      .profile-btn {
+        border-radius: 8px;
+        margin-bottom: 18px;
+      }
+      .profile-stats {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 18px;
+      }
+      .profile-stats div {
+        text-align: center;
+      }
+      .profile-stats i {
+        font-size: 1.3rem;
+        margin-bottom: 2px;
+      }
+      .profile-stats span {
+        display: block;
+        font-size: 0.95rem;
+      }
+      .profile-stats .fw-bold {
+        font-size: 1.05rem;
+      }
+      .dashboard-btn {
+        border-radius: 8px;
+        width: 100%;
+      }
+      .main-content {
+        flex: 1;
+        min-width: 600px;
+      }
+      .nav-tabs {
+        font-size: 1.15rem;
+        border-bottom: 2px solid #f2f2f2;
+      }
+      .nav-tabs .nav-link.active {
+        color: #ff6f0f !important;
+        border-bottom: 2px solid #ff6f0f !important;
+        background: #fff !important;
+        font-weight: bold;
+      }
+      .nav-tabs .nav-link {
+        color: #888;
+        border: none;
+        background: #fff;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .nav-tabs .nav-link:hover,
+      .nav-tabs .nav-link:focus {
+        color: #ff6f0f !important;
+      }
+      .section-box {
+        margin-bottom: 40px;
+      }
+      .section-title {
+        font-size: 1.15rem;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      .dashed-box {
+        border: 2px dashed #ddd;
+        border-radius: 12px;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+        font-size: 1.08rem;
+        background: #fff;
+      }
+      .dashed-box i {
+        margin-right: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="d-flex justify-content-between align-items-center px-5 pt-4"
+      style="background: #fff"
+    >
+      <div class="d-flex align-items-center">
+        <div class="d-flex flex-column align-items-start">
+          <a
+            href="/"
+            class="fw-bold"
+            style="
+              font-size: 2rem;
+              color: #ff6f0f;
+              line-height: 1.1;
+              text-decoration: none !important;
+            "
+            >PROJECT</a
+          >
+          <span
+            class="ms-1"
+            style="
+              font-size: 0.95rem;
+              color: #444;
+              font-weight: 500;
+              line-height: 1.1;
+              margin-top: 2px;
+              margin-bottom: 0;
+            "
+            >공간 대여 플랫폼</span
+          >
+        </div>
+      </div>
+    </div>
 
-.card {
-	border: 1px solid #ddd;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-	transition: transform 0.2s ease;
-}
-
-.card:hover {
-	transform: translateY(-5px);
-}
-
-.card-title {
-	color: #ff6f0f;
-	font-weight: 600;
-}
-
-.card-body span {
-	display: inline-block;
-	margin-right: 0.5rem;
-	font-weight: 500;
-}
-</style>
-</head>
-<body>
-
-	<!-- 상단 네비 -->
-	<div
-		class="d-flex justify-content-between align-items-center px-5 pt-4 bg-white">
-		<div class="d-flex align-items-center">
-			<a href="/" style="text-decoration: none">
-				<div class="d-flex flex-column align-items-start">
-					<span class="fw-bold" style="font-size: 2rem; color: #ff6f0f;">PROJECT</span>
-					<span class="ms-1"
-						style="font-size: 0.95rem; color: #444; font-weight: 500;">공간
-						대여 플랫폼</span>
-				</div>
-			</a>
-		</div>
-	</div>
-
-	<!-- 제목 -->
-	<h2 class="text-center mt-4">예약 정보</h2>
-
-	<!-- 카드 리스트 -->
-	<div class="container" style="max-width: 700px; min-width: 400px">
-		<!-- 페이지 컨텐츠 -->
-		<div class="mt-5 p-5 bg-body-tertiary rounded-3">
-			<h2 class="fw-bold mb-4">
-				My 페이지 <span th:text="${requests.size()}"></span>
-				</pan>
-			</h2>
-			<div class="row my-3">
-				<!-- 반복 시작 -->
-				<div class="col-sm-6 mb-3 p-2" th:each="req : ${requests}">
-					<div class="card shadow-sm">
-						<!-- 상품 대표 이미지 0번 이미지 -->
-						<img class="img-fluid object-fit-contain"
-							style="height: 200px; cursor: pointer"
-							th:src="${req.place.imageList.get(0).getPfilename}" />
-
-						<!-- 상품 정보 출력 -->
-						<div class="card-body">
-							<div class="card-text" th:text="${req.place.ptitle}"
-								style="text-decoration: none; color: inherit"></div>
-							<div class="d-flex justify-content-between align-items-center">
-								<div>
-									<small class="text-body-secondary" th:text="${req.place.ptype}"></small>
-									<p class="card-text">
-										<strong>예약일:</strong> <span th:text="${req.bdate}">2025-07-30</span>
-									</p>
-									<p class="card-text">
-										<strong>예약 시간:</strong> <span th:if="${req.r11_13 != null}">11~13
-										</span> <span th:if="${req.r13_15 != null}">13~15 </span> <span
-											th:if="${req.r15_17 != null}">15~17 </span> <span
-											th:if="${req.r17_19 != null}">17~19 </span> <span
-											th:if="${req.r19_21 != null}">19~21 </span> <span
-											th:if="${req.r21_23 != null}">21~23 </span>
-									</p>
-									<div th:if="${req.bdate.isBefore(today)}">
-									<p class="card-text">
-										<strong>예약 상태:</strong><span >지난 예약</span>>
-										<a class="btn"th:href="@{/member/reviewWrite(requestId=${req.id})}">리뷰작성<</a>
-									</p>
-									</div>
-									<div th:if="${req.bdate.isAfter(today)}">
-									<p class="card-text">
-										<strong>예약 상태:</strong><span >예정된 예약</span>
-									</p>
-									</div>
-									
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
-
-</body>
+    <div class="my-container">
+      <!-- 프로필 카드 -->
+      <div class="profile-card">
+        <i
+          class="bi bi-person-circle"
+          style="font-size: 120px; color: #ddd; margin-bottom: 16px"
+        ></i>
+        <div class="profile-nick" th:text="${member.mname}"></div>
+        <div class="profile-info">
+          공간 등록 <span th:text="${places.size()}"></span>개 | 예약
+          <span th:text="${requestAccepts.size()}"></span>개
+        </div>
+        <a href="/member/edit" class="btn btn-outline-secondary profile-btn"
+          >설정</a
+        >
+        <div class="profile-stats"></div>
+      </div>
+      <!-- 메인 컨텐츠 -->
+      <div class="main-content">
+        <!-- 탭 메뉴 -->
+        <ul class="nav nav-tabs mb-4">
+          <li class="nav-item">
+            <a class="nav-link active" href="#" data-target="all">모두보기</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-target="reservation">예약현황</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-target="place">공간등록</a>
+          </li>
+        </ul>
+        <!-- 예약 박스 -->
+        <div class="section-box" id="reservation-section">
+          <div class="section-title">
+            예약현황
+            <span
+              style="color: #ff6f0f; font-weight: bold"
+              th:text="${requestAccepts.size()}"
+            ></span>
+          </div>
+          <div class="row">
+            <div
+              style="max-height: 650px; overflow-y: auto; padding-bottom: 8px"
+            >
+              <div class="row flex-nowrap" style="min-width: 100%">
+                <th:block th:each="ra : ${requestAccepts}">
+                  <div class="col-md-4 mb-3 p-2" >
+                    <div class="card rounded-5 h-100 shadow-sm overflow-hidden">
+                      <div
+                        style="
+                          width: 100%;
+                          height: 200px;
+                          background: #fff;
+                          border-top-left-radius: 2rem;
+                          border-top-right-radius: 2rem;
+                          overflow: hidden;
+                        "
+                      >
+                        <a
+                          th:href="@{/place/view/{id}(id=${ra.place.id})}"
+                          style="width: 100%; height: 100%; display: block"
+                        >
+                          <img
+                            th:src="${ra.place.imageList.get(0).getPfilename}"
+                            style="
+                              width: 100%;
+                              height: 100%;
+                              object-fit: cover;
+                              display: block;
+                            "
+                          />
+                        </a>
+                      </div>
+                      <div class="card-body">
+                        <a
+                          th:href="@{/place/view/{id}(id=${ra.place.id})}"
+                          class="card-text fw-bold fs-5"
+                          th:text="${ra.place.ptitle}"
+                          style="text-decoration: none; color: inherit"
+                        ></a>
+                        <div>
+                          <p class="text-body-secondary mb-1">
+                            <i
+                              class="bi bi-geo-alt-fill"
+                              style="font-size: 1rem; margin-right: 4px"
+                            ></i>
+                            <span th:text="${ra.place.plocation}"></span>
+                          </p>
+                          <p class="mb-1">
+                            <span
+                              class="fw-bold fs-6"
+                              style="color: #ff6f0f"
+                              th:text="${#numbers.formatInteger(ra.place.pprice, 3, 'COMMA')}"
+                            ></span>
+                            <span style="font-size: 0.95em">원/시간</span>
+                          </p>
+                          <p class="mb-1">
+                            <span
+                              class="badge bg-dark text-white"
+                              th:text="${ra.place.ptype}"
+                            ></span>
+                            <span
+                              class="badge bg-secondary"
+                              th:text="${ra.bdate}"
+                            ></span>
+                            <span class="badge bg-warning text-dark">
+                              <span th:if="${ra.r11_13 == 'O'}">11~13 </span>
+                              <span th:if="${ra.r13_15 == 'O'}">13~15 </span>
+                              <span th:if="${ra.r15_17 == 'O'}">15~17 </span>
+                              <span th:if="${ra.r17_19 == 'O'}">17~19 </span>
+                              <span th:if="${ra.r19_21 == 'O'}">19~21 </span>
+                              <span th:if="${ra.r21_23 == 'O'}">21~23 </span>
+                            </span>
+                            <span
+                              class="badge bg-success text-white"
+                              th:if="${ra.bdate.isBefore(T(java.time.LocalDate).now())}"
+                              >지난 예약</span
+                            >
+                            <span
+                              class="badge bg-success"
+                              th:if="${ra.bdate.isAfter(T(java.time.LocalDate).now())}"
+                              >예정된 예약</span
+                            >
+                          </p>
+                          <div
+                            th:if="${ra.bdate.isBefore(T(java.time.LocalDate).now())}"
+                          >
+                          <div th:if="${ra.replyStatus == '작성전'}">
+                            <a
+                              class="btn btn-md fw-bold mt-2"
+                              style="
+                                background: #ff6f0f;
+                                color: #fff;
+                                border: 2px solid #ff6f0f;
+                                box-shadow: 0 2px 8px rgba(255, 111, 15, 0.12);
+                              "
+                              th:href="@{/member/reviewWrite(placeId=${ra.place.id}, memberId=${ra.member.id})}"
+                              >리뷰작성</a
+                            >
+                            </div>
+                            <div th:if="${ra.replyStatus != '작성전'}">
+                            	<button disabled
+                              class="btn btn-md fw-bold mt-2"
+                              style="
+                                background: #ff6f0f;
+                                color: #fff;
+                                border: 2px solid #ff6f0f;
+                                box-shadow: 0 2px 8px rgba(255, 111, 15, 0.12);
+                              "
+                              
+                              >작성완료</button
+                            >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </th:block>
+              </div>
+            </div>
+            <div th:if="${requestAccepts.size()} == 0" class="dashed-box">
+              <i class="bi bi-plus-lg"></i> 첫 번째 예약을 올려보세요.
+            </div>
+          </div>
+        </div>
+        <!-- 공간 박스 -->
+        <div class="section-box" id="place-section">
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              const tabs = document.querySelectorAll(".nav-tabs .nav-link");
+              const reservationBox = document.getElementById(
+                "reservation-section"
+              );
+              const placeBox = document.getElementById("place-section");
+              // 기타 섹션은 필요시 추가
+              tabs.forEach((tab) => {
+                tab.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  tabs.forEach((t) => t.classList.remove("active"));
+                  this.classList.add("active");
+                  const target = this.getAttribute("data-target");
+                  if (target === "all") {
+                    reservationBox.style.display = "";
+                    placeBox.style.display = "";
+                  } else if (target === "reservation") {
+                    reservationBox.style.display = "";
+                    placeBox.style.display = "none";
+                  } else if (target === "place") {
+                    reservationBox.style.display = "none";
+                    placeBox.style.display = "";
+                  } else {
+                    reservationBox.style.display = "none";
+                    placeBox.style.display = "none";
+                  }
+                });
+              });
+            });
+          </script>
+          <div class="section-title">
+            공간 등록
+            <span
+              style="color: #ff6f0f; font-weight: bold"
+              th:text="${places.size()}"
+            ></span>
+          </div>
+          <div class="row">
+            <th:block th:each="place : ${places}">
+              <div class="col-md-4 mb-3 p-2">
+                <div class="card rounded-5 h-100 shadow-sm overflow-hidden">
+                  <div
+                    style="
+                      width: 100%;
+                      height: 200px;
+                      background: #fff;
+                      border-top-left-radius: 2rem;
+                      border-top-right-radius: 2rem;
+                      overflow: hidden;
+                    "
+                  >
+                    <a
+                      th:href="@{/place/view/{id}(id=${place.id})}"
+                      style="width: 100%; height: 100%; display: block"
+                    >
+                      <img
+                        th:src="${place.imageList.get(0).pfilename}"
+                        style="
+                          width: 100%;
+                          height: 100%;
+                          object-fit: cover;
+                          display: block;
+                        "
+                      />
+                    </a>
+                  </div>
+                  <div class="card-body">
+                    <a
+                      th:href="@{/place/view/{id}(id=${place.id})}"
+                      class="card-text fw-bold fs-5"
+                      th:text="${place.ptitle}"
+                      style="text-decoration: none; color: inherit"
+                    ></a>
+                    <div>
+                      <p class="text-body-secondary mb-1">
+                        <i
+                          class="bi bi-geo-alt-fill"
+                          style="font-size: 1rem; margin-right: 4px"
+                        ></i>
+                        <span th:text="${place.plocation}"></span>
+                      </p>
+                      <p class="mb-1">
+                        <span
+                          class="fw-bold fs-6"
+                          style="color: #ff6f0f"
+                          th:text="${#numbers.formatInteger(place.pprice, 3, 'COMMA')}"
+                        ></span>
+                        <span style="font-size: 0.95em">원/시간</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </th:block>
+            <div th:if="${places.size()} == 0" class="dashed-box">
+              <i class="bi bi-plus-lg"></i> 첫 번째 공간을 올려보세요
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

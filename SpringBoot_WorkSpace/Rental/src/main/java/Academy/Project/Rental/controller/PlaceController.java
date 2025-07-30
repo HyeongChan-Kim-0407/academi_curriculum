@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import Academy.Project.Rental.dto.PlaceDto;
 import Academy.Project.Rental.dto.PlaceForm;
+import Academy.Project.Rental.dto.ReplyDto;
 import Academy.Project.Rental.dto.RequestDto;
 import Academy.Project.Rental.service.PlaceService;
+import Academy.Project.Rental.service.ReplyService;
 import Academy.Project.Rental.service.RequestService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -33,6 +35,9 @@ public class PlaceController {
 
 	@Autowired
 	private RequestService requestService;
+	
+	@Autowired
+	private ReplyService replyservice;
 
 	@GetMapping("/regist")
 	public String registPage(Model model) {
@@ -84,11 +89,16 @@ public class PlaceController {
 		System.out.println("시설 목록 상세 페이지 이동 요청");
 
 		PlaceDto placeDto = placeService.findPlaceById(id);
-
+		
+		List<ReplyDto> replyDto = replyservice.findReviewById(id);
+		
 		List<RequestDto> rdList = requestService.findRequestByPlaceId(id);
-
+		
+		
+				
 		model.addAttribute("placeDto", placeDto);
 		model.addAttribute("rdList", rdList);
+		model.addAttribute("review", replyDto);
 		return "place/view";
 	}
 
