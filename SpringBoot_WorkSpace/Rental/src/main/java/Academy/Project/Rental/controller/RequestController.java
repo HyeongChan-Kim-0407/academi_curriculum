@@ -58,7 +58,7 @@ public class RequestController {
 
 		ra.addFlashAttribute("msg", "대여 요청이 승인되었습니다.");
 
-		return "redirect:/place/view" + pId;
+		return "redirect:/place/view/" + pId;
 	}
 
 	@GetMapping("/rejectOrder")
@@ -76,7 +76,7 @@ public class RequestController {
 			return "redirect:/place/view/" + pId;
 		}
 		ra.addFlashAttribute("msg", "대여 요청이 거절되었습니다.");
-		return "redirect:/place/view" + pId;
+		return "redirect:/place/view/" + pId;
 	}
 
 	@GetMapping("/getBdate")
