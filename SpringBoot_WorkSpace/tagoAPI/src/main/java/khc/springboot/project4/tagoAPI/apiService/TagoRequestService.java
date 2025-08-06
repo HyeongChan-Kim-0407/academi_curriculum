@@ -61,5 +61,49 @@ public class TagoRequestService {
 			return null;
 		}
 	}
+	public String getRouteInfoByRouteId(String cityCode, String routeId) {
+		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+		    ClassicHttpRequest httpGet = ClassicRequestBuilder.get("http://apis.data.go.kr/1613000/BusRouteInfoInqireService/getRouteAcctoThrghSttnList")
+		    		.addParameter("serviceKey", DPKEY)
+		    		.addParameter("numOfRows", "300")
+		    		.addParameter("_type", "json")
+		    		.addParameter("cityCode", cityCode)
+		    		.addParameter("routeId", routeId)
+		            .build();
+		    String data = httpclient.execute(httpGet, response -> {
+		        System.out.println(response.getCode() + " " + response.getReasonPhrase());
+		        final HttpEntity entity1 = response.getEntity();
+		        String resData = EntityUtils.toString(entity1);
+		        EntityUtils.consume(entity1);
+		        return resData;
+		    });
+		    return data;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public String getBusLocationByCityCodeAndRouteId(String cityCode, String routeId) {
+		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+		    ClassicHttpRequest httpGet = ClassicRequestBuilder.get("http://apis.data.go.kr/1613000/BusLcInfoInqireService/getRouteAcctoBusLcList")
+		    		.addParameter("serviceKey", DPKEY)
+		    		.addParameter("numOfRows", "300")
+		    		.addParameter("_type", "json")
+		    		.addParameter("cityCode", cityCode)
+		    		.addParameter("routeId", routeId)
+		            .build();
+		    String data = httpclient.execute(httpGet, response -> {
+		        System.out.println(response.getCode() + " " + response.getReasonPhrase());
+		        final HttpEntity entity1 = response.getEntity();
+		        String resData = EntityUtils.toString(entity1);
+		        EntityUtils.consume(entity1);
+		        return resData;
+		    });
+		    return data;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 }

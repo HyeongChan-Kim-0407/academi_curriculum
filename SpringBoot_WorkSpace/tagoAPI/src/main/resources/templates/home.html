@@ -13,6 +13,9 @@
 	integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
 	crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<!-- Font Awesome 6 최신 버전 CDN -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -22,40 +25,106 @@
 			<!-- 정류소 목록 -->
 			<div class="col-3">
 				<div class="list-group" id="stationList">
-					<!-- <button type="button" class="list-group-item list-group-item-action" data-bs-toggle="list" >정류소 1</button>
-					<button type="button" class="list-group-item list-group-item-action" data-bs-toggle="list" >정류소 2</button>
-					<button type="button" class="list-group-item list-group-item-action" data-bs-toggle="list" >정류소 3</button>
-					<button type="button" class="list-group-item list-group-item-action" data-bs-toggle="list" >정류소 4</button>
-					<button type="button" class="list-group-item list-group-item-action" data-bs-toggle="list" >정류소 5</button> -->
 				</div>
 			</div>
 			<!-- 선택된 정류소를 경유하는 노선 정보 출력 -->
-			<div class="col-4">
+			<div class="col-3">
 				<div class="list-group" id="busList">
-					<!-- <button type="button" class="list-group-item list-group-item-action" >버스 1</button>
-					<button type="button" class="list-group-item list-group-item-action" >버스 2</button>
-					<button type="button" class="list-group-item list-group-item-action" >버스 3</button>
-					<button type="button" class="list-group-item list-group-item-action" >버스 4</button>
-					<button type="button" class="list-group-item list-group-item-action" >버스 5</button> -->
+					
 				</div>
 			</div>
-			
-			<div id="">
-			
+			<!-- 카카오 지도 -->
+			<div class="col-6">
+				<div id="map" style="width:100%;height:500px;">
+				
+				</div>
 			</div>
 			
 		</div>
 	</div>
 	
+	<!-- Modal -->
+	<div class="modal fade " id="busInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					  <div class="modal-dialog modal-dialog-centered">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+					        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					      </div>
+					      <div class="modal-body list-group" id="modalBody" style="max-height: 500px; overflow-y: auto;">
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					        <button type="button" class="btn btn-primary" >Save changes</button>
+					      </div>
+					    </div>
+					  </div>
+					</div>
+	
+	
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c3ec81508dcff4566dc45c56c8a1ee46"></script>
+	
 	<script type="text/javascript">
-		let gpsLati = "37.455706";
-		let gpsLong = "126.705759";
+		var container = document.getElementById('map'); // 지도를 담을 영역
+		var options = { // 지도를 생성할 때 필요한 기본 옵션
+			center: new kakao.maps.LatLng(37.475174, 126.631160), // 지도의 중심좌표
+			level: 3 // 지도의 확대 레벨
+		};
+
+		var map = new kakao.maps.Map(container, options); // 지도를 생성 및 객체 리턴
 		
-		function getStationList(){
+		
+		kakao.maps.event.addListener(map, 'click', function(mouseEvent) {        
+		    
+	    	// 클릭한 위도, 경도 정보를 가져옵니다 
+	    	var latlng = mouseEvent.latLng;
+	    	
+	    	getStationList(latlng.getLat(), latlng.getLng());
+	    	
+		});
+		
+		let marker = null;
+		function setMarker (lat, lng){
+		
+		if(marker != null){				
+			// 아래 코드는 지도 위의 마커를 제거하는 코드입니다
+			marker.setMap(null);
+		}
+			
+		// 마커가 표시될 위치입니다 
+		var markerPosition  = new kakao.maps.LatLng(lat, lng); 
+
+		// 마커를 생성합니다
+		marker = new kakao.maps.Marker({
+		    position: markerPosition
+		});
+
+		// 마커가 지도 위에 표시되도록 설정합니다
+		marker.setMap(map);
+		
+		// 이동할 위도 경도 위치를 생성합니다 
+	    var moveLatLon = new kakao.maps.LatLng(lat, lng);
+	    
+	    // 지도 중심을 부드럽게 이동시킵니다
+	    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+	    map.panTo(moveLatLon);
+		
+		}
+		
+	</script>
+	
+	<script type="text/javascript">
+	
+		
+		
+		//let gpsLati = "37.455706";
+		//let gpsLong = "126.705759";
+		
+		function getStationList(lat, lng){
 			$.ajax({
 				type: "get",
 				url: "/getStationList",
-				data: {'lat' : gpsLati, 'lng' : gpsLong},
+				data: {'lat' : lat, 'lng' : lng},
 				dataType: "json",
 				success: function(response){
 					console.log(response.response.body.items.item);
@@ -71,13 +140,14 @@
 			for(let st of sttnList){
 				console.log(st.nodenm);
 				stationListBox.innerHTML += 
-					`<button type="button" class="list-group-item list-group-item-action" data-bs-toggle="list" onclick="getBusList('${st.citycode}', '${st.nodeid}')">${st.nodenm}</button>`;
+					`<button type="button" class="list-group-item list-group-item-action" data-bs-toggle="list" onclick="getBusList('${st.citycode}', '${st.nodeid}', '${st.gpslati}', '${st.gpslong}' )">${st.nodenm}</button>`;
 			}
 		}
 		
-		function getBusList(citycode, nodeid){
+		function getBusList(citycode, nodeid, lat, lng){
 			console.log("도시코드 : " + citycode);
 			console.log("노드아이디 : " + nodeid);
+			setMarker(lat, lng);
 			$.ajax({
 				type: "get",
 				url: "/getBusList",
@@ -85,22 +155,69 @@
 				dataType: "json",
 				success: function(response){
 					console.log(response);
-					showBusList(response.response.body.items.item);
+					showBusList(response.response.body.items.item, citycode);
 				},
 			});
 		}
 		
 		const busListBox = document.getElementById("busList");
 		
-		function showBusList(busList){
+		function showBusList(busList, citycode){
             busListBox.innerHTML = ""; // 기존 목록 초기화
+            
+            if(!Array.isArray(busList)){
+            	let arrtime = Math.round(busList.arrtime / 60);
+                // 단일 버스 정보 처리
+            	busListBox.innerHTML += 
+                    `<button type="button" onclick="getBusInfo('${citycode}','${busList.routeid}, '${busList.nodeid}')" data-bs-toggle="modal" data-bs-target="#busInfoModal" class="list-group-item list-group-item-action">${busList.routeno}번 ${busList.routetp} ${busList.arrprevstationcnt}개전 ${arrtime}분</button>`;
+                    return;
+            }
+            
             for(let bus of busList){
             	let arrtime = Math.round(bus.arrtime / 60);
                 console.log(bus.routeno);
                 busListBox.innerHTML += 
-                    `<button type="button" class="list-group-item list-group-item-action">${bus.routeno}번 ${bus.routetp} ${bus.arrprevstationcnt}개전 ${arrtime}분</button>`;
+                    `<button type="button" onclick="getRouteInfo('${citycode}','${bus.routeid}', '${bus.nodeid}')" data-bs-toggle="modal" data-bs-target="#busInfoModal" class="list-group-item list-group-item-action">${bus.routeno}번 ${bus.routetp} ${bus.arrprevstationcnt}개전 ${arrtime}분</button>`;
             }
         }
+		const modalBodyEl = document.getElementById('modalBody');
+		function getRouteInfo(citycode, routeid, nodeid){
+			
+			$.ajax({
+				type: "get",
+				url: "/getRouteInfo",
+				data: {'cityCode': citycode, 'routeId': routeid},
+			    dataType: "json",
+			    success: function(res){
+			    	console.log(res);
+			    	showRouteInfo(res, nodeid);
+			    },
+			});
+			
+		}
+		
+		function showRouteInfo(routeList, nodeid){
+			
+			modalBodyEl.innerHTML = ""; // 기존 내용 초기화
+			
+			for(let route of routeList){
+				if(route.true){
+					modalBodyEl.innerHTML += `<div id="${route.nodeid}" class="btn list-group-item list-group-item-action" tabindex="0"> <i class="fa-solid fa-bus-simple"></i> ${route.nodenm}</div>`;
+				}else{
+					modalBodyEl.innerHTML += `<div id="${route.nodeid}" class="btn list-group-item list-group-item-action" tabindex="0">${route.nodenm}</div>`;
+				}
+				if(route.nodeid == nodeid){
+                    const focusEl = document.getElementById(route.nodeid);
+                    focusEl.classList.add("active");
+        			focusEl.focus();
+        			focusEl.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+			}
+			
+		}
 		
 	</script>
 	
