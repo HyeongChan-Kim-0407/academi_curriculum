@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpSession;
 import khc.springboot.project4.tagoAPI.apiService.TagoRequestService;
 import khc.springboot.project4.tagoAPI.dto.BusRouteDto;
 import khc.springboot.project4.tagoAPI.service.TagoService;
@@ -22,6 +24,9 @@ public class TagoController {
 	
 	@Autowired
 	private TagoService tagoService;
+	
+	@Autowired
+	private HttpSession session;
 	
 	@GetMapping("/")
 	public String home() {
@@ -53,6 +58,33 @@ public class TagoController {
 		List<BusRouteDto> data = tagoService.findBusRouteList(cityCode, routeId);
 		
 		return data;
+	}
+	
+	@GetMapping("/logout")
+	public String logout() {
+		System.out.println("로그아웃 요청");
+		// 세션 초기화
+		session.removeAttribute("loginUser");
+		return "redirect:/";
+	}
+	
+	@PostMapping("/addFavorite")
+	@ResponseBody
+	public String addFavorite(@RequestParam("nodeid") String nodeid, @RequestParam("citycode") String citycode,
+							@RequestParam("gpslati") String gpslati, @RequestParam("gpslong") String gpslong) {
+		System.out.println("TagoController - 즐겨찾기 추가 요청");
+		String loginUser = (String) session.getAttribute("loginId");
+		
+		return tagoService.addFavorite(nodeid, citycode, gpslati, gpslong, loginUser);
+	}
+	
+	@PostMapping("/removeFavorite")
+	@ResponseBody
+	public String removeFavorite(@RequestParam("nodeid") String nodeid, @RequestParam("citycode") String citycode) {
+		System.out.println("TagoController - 즐겨찾기 삭제 요청");
+		String loginUser = (String) session.getAttribute("loginId");
+		
+		return tagoService.removeFavorite(nodeid, citycode, loginUser);
 	}
 	
 }
