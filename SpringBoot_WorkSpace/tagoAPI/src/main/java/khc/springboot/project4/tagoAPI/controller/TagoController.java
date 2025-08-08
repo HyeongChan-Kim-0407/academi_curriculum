@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.servlet.http.HttpSession;
 import khc.springboot.project4.tagoAPI.apiService.TagoRequestService;
 import khc.springboot.project4.tagoAPI.dto.BusRouteDto;
+import khc.springboot.project4.tagoAPI.dto.FavoriteDto;
 import khc.springboot.project4.tagoAPI.service.TagoService;
 
 
@@ -29,7 +31,15 @@ public class TagoController {
 	private HttpSession session;
 	
 	@GetMapping("/")
-	public String home() {
+	public String home(Model model) {
+		
+		if(session.getAttribute("loginUser") != null) {
+			String loginUser = (String) session.getAttribute("loginId");
+			List<FavoriteDto> favoriteList = tagoService.getFavoriteList(loginUser);
+			if(favoriteList != null) {
+				model.addAttribute("favoriteList", favoriteList);
+			}
+		}
 		return "home";
 	}
 	
@@ -71,11 +81,11 @@ public class TagoController {
 	@PostMapping("/addFavorite")
 	@ResponseBody
 	public String addFavorite(@RequestParam("nodeid") String nodeid, @RequestParam("citycode") String citycode,
-							@RequestParam("gpslati") String gpslati, @RequestParam("gpslong") String gpslong) {
+							@RequestParam("gpslati") String gpslati, @RequestParam("gpslong") String gpslong, @RequestParam("nodenm") String nodenm) {
 		System.out.println("TagoController - 즐겨찾기 추가 요청");
 		String loginUser = (String) session.getAttribute("loginId");
 		
-		return tagoService.addFavorite(nodeid, citycode, gpslati, gpslong, loginUser);
+		return tagoService.addFavorite(citycode, nodeid, nodenm, gpslati, gpslong, loginUser);
 	}
 	
 	@PostMapping("/removeFavorite")

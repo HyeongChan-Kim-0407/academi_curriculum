@@ -62,12 +62,14 @@
 			<!-- 정류소 목록 -->
 			<div class="col-3">
 				<div class="list-group" id="stationList">
+					<div th:if="${session.loginUser != null}" th:each="st : ${favoriteList}">
+						<button type="button" class="list-group-item list-group-item-action d-flex" th:attr="data-nodeid=${st.nodeid}, data-nodenm=${st.nodenm}, data-citycode=${st.citycode}, data-gpslati=${st.gpslati}, data-gpslong=${st.gpslong}"  onclick="getBusList(this); activateButton(this);"> <span th:text="${st.nodenm}"></span> <i class="fa-solid fa-star ms-auto my-auto favorite-icon active" onclick="toggleStar(this); event.stopPropagation(); "></i> </button>
+					</div>
 				</div>
 			</div>
 			<!-- 선택된 정류소를 경유하는 노선 정보 출력 -->
 			<div class="col-3">
 				<div class="list-group" id="busList">
-					
 				</div>
 			</div>
 			<!-- 카카오 지도 -->
@@ -105,7 +107,7 @@
 	<script type="text/javascript">
 		var container = document.getElementById('map'); // 지도를 담을 영역
 		var options = { // 지도를 생성할 때 필요한 기본 옵션
-			center: new kakao.maps.LatLng(37.475174, 126.631160), // 지도의 중심좌표
+			center: new kakao.maps.LatLng(37.455479, 126.705705), // 지도의 중심좌표
 			level: 3 // 지도의 확대 레벨
 		};
 
@@ -183,11 +185,16 @@
 				}
 				console.log(st.nodenm);
 				stationListBox.innerHTML += 
-					`<button type="button" class="list-group-item list-group-item-action d-flex" onclick="getBusList('${st.citycode}', '${st.nodeid}', '${st.gpslati}', '${st.gpslong}'); activateButton(this);">${st.nodenm} ${star} </button>`;
+					`<button type="button" class="list-group-item list-group-item-action d-flex" data-nodeid="${st.nodeid}" data-nodenm="${st.nodenm}" data-citycode="${st.citycode}" data-gpslati="${st.gpslati}" data-gpslong="${st.gpslong}" onclick="getBusList(this); activateButton(this);">${st.nodenm} ${star} </button>`;
 			}
 		}
 		
-		function getBusList(citycode, nodeid, lat, lng){
+		function getBusList(btn){
+			const citycode = btn.dataset.citycode;
+			const nodeid = btn.dataset.nodeid;
+			const lat = btn.dataset.gpslati;
+			const lng = btn.dataset.gpslong;
+			const nodenm = btn.dataset.nodenm;
 			console.log("도시코드 : " + citycode);
 			console.log("노드아이디 : " + nodeid);
 			setMarker(lat, lng);
@@ -274,12 +281,17 @@
             
             const button = element.closest('button');
             
-            console.log("button: ", button);
+            const nodeid = button.dataset.nodeid;
+            const citycode = button.dataset.citycode;
+            const gpslati = button.dataset.gpslati;
+            const gpslong = button.dataset.gpslong;
+            const nodenm = button.dataset.nodenm;
             
-            console.log("nodeid: " + button.dataset.nodeid);
-            console.log("citycode: " + button.dataset.citycode);
-            console.log("gpslati: " + button.dataset.gpslati);
-            console.log("gpslong: " + button.dataset.gpslong);
+            console.log(nodeid);
+            console.log(citycode);
+            console.log(gpslati);
+            console.log(gpslong);
+            console.log(nodenm);
             
             if(isActive){
             	console.log("즐겨찾기 추가");
@@ -287,10 +299,11 @@
             		url: "/addFavorite",
             		type: "POST",
             		data: { 
-            			'nodeid': button.dataset.nodeid,
-            			'citycode': button.dataset.citycode,
-            			'gpslati': button.dataset.gpslati,
-            			'gpslong': button.dataset.gpslong
+            			'nodeid': nodeid,
+            			'citycode': citycode,
+            			'gpslati': gpslati,
+            			'gpslong': gpslong,
+            			'nodenm': nodenm
             		},
             		success: function(response){
             			if(response == 'Y'){
@@ -308,8 +321,8 @@
             		url: "/removeFavorite",
             		type: "POST",
             		data: { 
-            			'nodeid': element.parentElement.getAttribute("data-nodeid"),
-            			'citycode': element.parentElement.getAttribute("data-citycode")
+            			'nodeid': nodeid,
+            			'citycode': citycode
             		},
             		success: function(response){
             			if(response == 'Y'){

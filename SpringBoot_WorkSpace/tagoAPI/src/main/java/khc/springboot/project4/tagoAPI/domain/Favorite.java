@@ -17,6 +17,8 @@ public class Favorite {
 	
 	private String nodeid;
 	
+	private String nodenm;
+	
 	private String gpslati;
 	
 	private String gpslong;
@@ -27,9 +29,10 @@ public class Favorite {
 		// 기본 생성자
 	}
 	
-	public Favorite(String citycode, String nodeid, String gpslati, String gpslong, String kakaoid) {
+	public Favorite(String citycode, String nodeid, String nodenm, String gpslati, String gpslong, String kakaoid) {
 		this.citycode = citycode;
 		this.nodeid = nodeid;
+		this.nodenm = nodenm;
 		this.gpslati = gpslati;
 		this.gpslong = gpslong;
 		this.kakaoid = kakaoid;

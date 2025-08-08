@@ -16,6 +16,7 @@ import khc.springboot.project4.tagoAPI.apiService.TagoRequestService;
 import khc.springboot.project4.tagoAPI.domain.BusRoute;
 import khc.springboot.project4.tagoAPI.domain.Favorite;
 import khc.springboot.project4.tagoAPI.dto.BusRouteDto;
+import khc.springboot.project4.tagoAPI.dto.FavoriteDto;
 import khc.springboot.project4.tagoAPI.repository.BusRouteRepository;
 import khc.springboot.project4.tagoAPI.repository.FavoriteRepository;
 
@@ -88,10 +89,10 @@ public class TagoService {
 		return busRouteDtoList;
 	}
 
-	public String addFavorite(String nodeid, String citycode, String gpslati, String gpslong, String loginUser) {
+	public String addFavorite(String citycode, String nodeid, String nodenm, String gpslati, String gpslong, String loginUser) {
 		System.out.println("TagoService - 즐겨찾기 추가 요청");
 		System.out.println("nodeid: " + nodeid + ", citycode: " + citycode + ", gpslati: " + gpslati + ", gpslong: " + gpslong + ", loginUser: " + loginUser);
-		Favorite favorite = new Favorite(citycode, nodeid, gpslati, gpslong, loginUser);
+		Favorite favorite = new Favorite(citycode, nodeid, nodenm, gpslati, gpslong, loginUser);
 
 		try {
 			favoriteRepository.save(favorite);
@@ -103,7 +104,35 @@ public class TagoService {
 	}
 
 	public String removeFavorite(String nodeid, String citycode, String loginUser) {
-		// TODO Auto-generated method stub
+		System.out.println("TagoService - 즐겨찾기 삭제 요청");
+		System.out.println("nodeid: " + nodeid + ", citycode: " + citycode + ", loginUser: " + loginUser);
+		try {
+			Favorite favorite = favoriteRepository.findByNodeidAndCitycodeAndKakaoid(nodeid, citycode, loginUser);
+			if (favorite != null) {
+				favoriteRepository.delete(favorite);
+				return "Y";
+			} else {
+				return "N"; // 즐겨찾기가 존재하지 않음
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "N"; // 예외 발생 시 실패 처리
+		}
+		
+	}
+
+	public List<FavoriteDto> getFavoriteList(String loginUser) {
+		System.out.println("TagoService - 즐겨찾기 목록 조회 요청");
+		
+		List<Favorite> favoriteList = favoriteRepository.findByKakaoid(loginUser);
+		List<FavoriteDto> favoriteDtoList = new ArrayList<>();
+		if(!favoriteList.isEmpty()) {
+			for (Favorite favorite : favoriteList) {
+				FavoriteDto dto = new FavoriteDto(favorite);
+				favoriteDtoList.add(dto);
+			}
+			return favoriteDtoList;
+		}
 		return null;
 	}
 
