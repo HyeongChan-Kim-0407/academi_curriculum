@@ -20,10 +20,12 @@ public class ChatController {
 	@MessageMapping("/chatMsg")
 	public void sendMessage(MessageDto msgDto) {
 		System.out.println("/chatMsg");
-		System.out.println("msg : " + msgDto);
+		
 		System.out.println(msgDto.getType());
 		System.out.println(msgDto.getContent());
-		msgDto.setSender("송신자"); // Session에서 사용자 ID를 가져와서 메시지 전송자 설정 (현재는 임의값 사용)
+		System.out.println(msgDto.getSender());
+//		msgDto.setSender(sender); // Session에서 사용자 ID를 가져와서 메시지 전송자 설정 (현재는 임의값 사용)
+		System.out.println("msg : " + msgDto);
 		// 서버가 접속중인 모든 클라이언트에게 메시지를 전파
 		messagingTemplate.convertAndSend("/ServerToClient/publicMsg", msgDto);
 	}

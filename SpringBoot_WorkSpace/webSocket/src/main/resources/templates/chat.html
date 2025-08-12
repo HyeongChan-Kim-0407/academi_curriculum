@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+<title>CHAT</title>
+<style type="text/css">
+	#chatBox{
+	    width: 500px;
+		height: 700px;
+		background-color: lightgray;
+		padding: 10px;
+	}
+	.msgContent{
+		display: inline-block;
+		padding: 5px;
+		border-radius: 10px;
+	}
+	.reciveMsg .msgContent{
+		background-color: white;
+	}
+	.sendMsg .msgContent{
+		background-color: yellow;
+	}
+	.sendMsg{
+        text-align: end;
+    }
+    #span{
+    	font-size: 8px;
+    }
+    .inoutMsg{
+        display: inline-block;
+        padding: 10px 15px;
+        color: white;
+        background-color: gray;
+        font-size: 12px;
+        border-radius: 10px;
+    }
+</style>
+</head>
+<body>
+	
+	<div class="container mx-auto mt-5">
+		<div class="rounded-4" id="chatBox">
+			<!-- 입퇴장 메시지 -->
+			<div class="text-center my-2">
+				<div class="inoutMsg">
+					닉네임 이/가 (입장/퇴장)했습니다.
+				</div>
+			</div>
+			<!-- 받은 메시지 -->
+			<div class="reciveMsg">
+				<div>닉네임</div>
+				<div>
+					<div class="msgContent">메시지 내용</div>
+					<span class="mb-auto">시간</span>
+				</div>
+			</div>
+			
+			<!-- 내가 보낸 메시지 -->
+			<div class="sendMsg">
+				<div>
+					<span class="mb-auto">시간</span>
+					<div class="msgContent">메시지 내용</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="input-group mb-3" style="width: 500px;">
+			<input type="text" class="form-control" id="inputText">
+			<button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="sendMessage()">전송</button>
+		</div>
+		
+	</div>
+	
+	
+
+	
+<script type="text/javascript" src="/webjars/sockjs-client/1.5.1/sockjs.js"></script>	
+<script type="text/javascript" src="/webjars/stomp-websocket/2.3.4/stomp.js"></script>
+<script type="text/javascript">
+
+	let username = "[[${session.username}]]";
+/* WebSocket에 연결 (접속요청) */
+
+	const chatSocket = new SockJS("/ws-chatin");
+	const chatClient = Stomp.over(chatSocket);
+	
+	chatClient.connect({}, function(frame){
+		console.log("chatSocket 연결 확인");
+		console.log(frame);
+		
+		/* 서버에서 전송되는 메시지의 종류 구분 (구독) */
+		chatClient.subscribe("/ServerToClient/publicMsg", function(msg){
+			console.log("/serverToClient/publicMsg 구독"); 
+			showMsg(msg.body);
+		});
+		
+		chatClient.subscribe("/ServerToClient/ChatInOut", function(msg){
+			console.log("/ServerToClient/ChatInOut 구독");
+			inOutMsg(msg.body);
+		});		
+	});
+
+
+/* 클라이언트에서 서버에게 메시지를 전송하는 기능 */
+	const inputEl = document.getElementById("inputText");
+	function sendMessage(){
+		const msgObject = { "type" : "text", "content" : inputEl.value, "sender" : username }; // "파라미터이름" : "파라미터값"
+		// input 태그에 입력한 값을 WebSocket 서버에 전송
+		chatClient.send("/ClientToServer/chatMsg", // 서버에 보내는 주소
+				{},
+				JSON.stringify(msgObject)); // 보내는 메시지 object >> JSON 형태의 String
+	}
+	/* 서버에서 받은 메시지를 출력하는 기능 */
+	const chatBoxEl = document.getElementById("chatBox"); // 채팅 출력 박스 선택
+	function showMsg(msg){ // 메시지 출력
+		let msgObj = JSON.parse(msg); // JSON 형태의 String을 Object로 변환
+		if(msgObj.sender == username){
+		chatBoxEl.innerHTML += `<p style="text-align:end"> ${msgObj.sender} : ${msgObj.content}</p>`;
+		}else {
+		chatBoxEl.innerHTML += `<p> ${msgObj.sender} : ${msgObj.content}</p>`;
+		}
+	}
+	
+	function inOutMsg(msg){
+		console.log(msg);
+		chatBoxEl.innerHTML += `<div class="text-center my-2">
+				<div class="inoutMsg">
+			 		${msg}
+				</div>
+			</div>`;
+	}
+	
+	
+</script>
+</body>
+</html>
