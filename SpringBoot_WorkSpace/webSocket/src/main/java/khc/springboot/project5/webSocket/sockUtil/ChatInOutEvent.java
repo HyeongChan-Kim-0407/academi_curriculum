@@ -21,6 +21,9 @@ public class ChatInOutEvent {
 	@Autowired
 	private ChatRepository chatRepository;
 	
+	@Autowired
+	private ConnectUser connectUser;
+	
 	@EventListener
 	public void chatConnect(SessionConnectEvent connectEvent) {
 		System.out.println("WebSocket 접속");
@@ -34,6 +37,15 @@ public class ChatInOutEvent {
 		Message msg = new Message(msgDto);
 		chatRepository.save(msg);
 		messagingTemplate.convertAndSend("/ServerToClient/ChatInOut", msgDto);
+		
+		// 전체 접속자 명단 전송
+		// 세션 ID 확인
+		String sessionid = accessor.getSessionId();
+		System.out.println("입장한 세션 id : " + sessionid);
+		// 접속 목록에 추가
+		connectUser.addUser(sessionid, username);
+		// 접속 목록을 전송
+		messagingTemplate.convertAndSend("/ServerToClient/userList", connectUser.getConnectList().values() );
 	}
 	
 	@EventListener
@@ -48,6 +60,14 @@ public class ChatInOutEvent {
 		Message msg = new Message(msgDto);
 		chatRepository.save(msg);
 		messagingTemplate.convertAndSend("/ServerToClient/ChatInOut", msgDto);
+
+		// 전체 접속자 명단 전송
+		String sessionid = accessor.getSessionId();
+		System.out.println("퇴장한 세션 id : " + sessionid);	
+		// 접속 목록에서 삭제
+		connectUser.removeUser(sessionid);
+		// 접속 목록을 전송
+		messagingTemplate.convertAndSend("/ServerToClient/userList", connectUser.getConnectList().values() );
 	}
 	
 }
