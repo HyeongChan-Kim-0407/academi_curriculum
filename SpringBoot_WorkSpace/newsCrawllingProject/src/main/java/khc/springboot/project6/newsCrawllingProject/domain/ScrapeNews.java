@@ -21,6 +21,13 @@ public class ScrapeNews {
 	@Column(unique = true)
 	private String linkUrl;
 	
+	private String section; // 정치 : 100, 경제 : 101...
+	
+	private String newsTime;
+	
+	@Column(length = 10000) // 긴 뉴스 내용 저장을 위해 길이 지정
+	private String newsContent;
+	
 	public ScrapeNews() {
 		
 	}
@@ -29,6 +36,9 @@ public class ScrapeNews {
 		this.title = scrapeNewsDto.getTitle();
 		this.imgUrl = scrapeNewsDto.getImgUrl();
 		this.linkUrl = scrapeNewsDto.getLinkUrl();
+		this.section = scrapeNewsDto.getSection();
+		this.newsTime = scrapeNewsDto.getNewsTime();
+		this.newsContent = scrapeNewsDto.getNewsContent();
 	}
 	
 }
