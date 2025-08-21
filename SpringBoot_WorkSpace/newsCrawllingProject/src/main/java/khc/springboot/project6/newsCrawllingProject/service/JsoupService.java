@@ -44,7 +44,6 @@ public class JsoupService {
 			for(Element headLine : headLineList) {
 				
 				String linkUrl = headLine.select("a.sa_text_title").attr("href");
-				System.out.println("링크 URL : " + linkUrl);
 				linkUrlList.add(linkUrl);
 				
 			}
@@ -60,7 +59,6 @@ public class JsoupService {
 				Document detailDoc = Jsoup.connect(linkUrl).get();
 				
 				String titleEl = detailDoc.select("#title_area > span").text();
-				System.out.println("제목 : " + titleEl);
 				dto.setTitle(titleEl);
 				
 				String imgUrl = detailDoc.select("#img1").attr("data-src");
@@ -73,7 +71,7 @@ public class JsoupService {
 				
 				detailCt.select("span").remove();
 				String newsContent = detailCt.select("#dic_area").text();
-				dto.setNewsContent(newsContent);
+				dto.setNewsContent(newsContent); 
 				
 				//상세 페이지 URL에서 언론사 분류 코드 추출 후 저장 (article 이후에 추출 or 뒤에서부터 추출)
 				//String journal
