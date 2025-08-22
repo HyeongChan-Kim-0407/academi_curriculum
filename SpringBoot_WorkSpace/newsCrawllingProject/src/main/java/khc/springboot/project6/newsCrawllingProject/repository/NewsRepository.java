@@ -13,8 +13,13 @@ public interface NewsRepository extends JpaRepository<ScrapeNews, Long> {
 
 	List<ScrapeNews> findBySection(String sectionNumber);
 	
-	@Query("SELECT n.linkUrl FROM ScrapeNews n")
-	List<String> findAllLinkUrl();
+	@Query("SELECT n.linkUrl FROM ScrapeNews n WHERE n.portal = 'naver'")
+	List<String> findAllNaverLinkUrl();
+
+	List<ScrapeNews> findBySectionAndPortal(String sectionNumber, String portal);
+	
+	@Query("SELECT n.linkUrl FROM ScrapeNews n WHERE n.portal = 'daum'")
+	List<String> findAllDaumLinkUrl();
 	
 	
 	

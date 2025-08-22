@@ -29,17 +29,17 @@ public class HomeController {
 	
 	@GetMapping("/scrapeNews")
 	@ResponseBody
-	public String scrapeNews(@RequestParam("sectionNumber") String sectionNumber) {
+	public String scrapeNews(@RequestParam("section") String section, @RequestParam("portal") String portal) {
 		// 정치 : 100, 경제 : 101, 사회 : 102, 생활/문화 : 103, 세계 : 104, IT/과학 : 105
-		int result = newsService.findNewsList(sectionNumber);
+		int result = newsService.findNewsList(section, portal);
 		return result + "개의 뉴스가 수집되었습니다.";
 	}
 	
 	@GetMapping("/showNews")
 	@ResponseBody
-	public List<ScrapeNewsDto> showNews(@RequestParam("sectionNumber") String sectionNumber){
+	public List<ScrapeNewsDto> showNews(@RequestParam("section") String sectionNumber, @RequestParam("portal") String portal){
 		System.out.println("뉴스 조회 기능 호출");
-		List<ScrapeNewsDto> newsList = newsService.getNewsBySection(sectionNumber);
+		List<ScrapeNewsDto> newsList = newsService.getNewsBySection(sectionNumber, portal);
 		
 		if(newsList == null) {
 			System.out.println("해당 섹션의 뉴스가 없습니다.");

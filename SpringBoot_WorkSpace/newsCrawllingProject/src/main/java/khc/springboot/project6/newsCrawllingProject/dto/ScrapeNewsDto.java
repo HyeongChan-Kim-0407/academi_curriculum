@@ -13,6 +13,8 @@ public class ScrapeNewsDto {
 	private String section;
 	private String newsTime;
 	private String newsContent;
+	private String journal;
+	private String portal;
 	public ScrapeNewsDto() {
 		// 기본 생성자
 	}
@@ -23,5 +25,7 @@ public class ScrapeNewsDto {
 		this.section = scrapeNews.getSection();
 		this.newsTime = scrapeNews.getNewsTime();
 		this.newsContent = scrapeNews.getNewsContent();
+		this.journal = scrapeNews.getJournal();
+		this.portal = scrapeNews.getPortal();
 	}
 }

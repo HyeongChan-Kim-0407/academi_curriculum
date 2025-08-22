@@ -22,12 +22,17 @@ public class NewsService {
 	@Autowired
 	private NewsRepository newsRepository;
 
-	public int findNewsList(String sectionNumber) {
+	public int findNewsList(String section, String portal) {
 		// 네이버 뉴스 카테고리 하나 선정
 		// 뉴스 목록 수집
 		List<ScrapeNews> newsList = new ArrayList<>();
-		List<ScrapeNewsDto> dtoList = jsoupService.scrapeNaverNews(sectionNumber);
-		
+		List<ScrapeNewsDto> dtoList = new ArrayList<>();
+		if (portal.equals("naver")) {
+			dtoList = jsoupService.scrapeNaverNews(section, portal);
+		}
+		if( portal.equals("daum")) {
+			dtoList = jsoupService.scrapeDaumNews(section, portal);
+		}
 		int count = 0;
 		for (ScrapeNewsDto dto : dtoList) {
 			String link = dto.getLinkUrl();
@@ -51,9 +56,9 @@ public class NewsService {
 		return newsList.size();
 	}
 
-	public List<ScrapeNewsDto> getNewsBySection(String sectionNumber) {
+	public List<ScrapeNewsDto> getNewsBySection(String sectionNumber, String portal) {
 
-		List<ScrapeNews> newsList = newsRepository.findBySection(sectionNumber);
+		List<ScrapeNews> newsList = newsRepository.findBySectionAndPortal(sectionNumber, portal);
 		List<ScrapeNewsDto> dtoList = new ArrayList<>();
 		if (newsList != null) {
 			for (ScrapeNews news : newsList) {

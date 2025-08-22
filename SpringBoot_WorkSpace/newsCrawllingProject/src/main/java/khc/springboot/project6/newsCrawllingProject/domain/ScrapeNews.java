@@ -28,6 +28,10 @@ public class ScrapeNews {
 	@Column(length = 10000) // 긴 뉴스 내용 저장을 위해 길이 지정
 	private String newsContent;
 	
+	private String journal;
+	
+	private String portal;
+	
 	public ScrapeNews() {
 		
 	}
@@ -39,6 +43,8 @@ public class ScrapeNews {
 		this.section = scrapeNewsDto.getSection();
 		this.newsTime = scrapeNewsDto.getNewsTime();
 		this.newsContent = scrapeNewsDto.getNewsContent();
+		this.journal = scrapeNewsDto.getJournal();
+		this.portal = scrapeNewsDto.getPortal();
 	}
 	
 }

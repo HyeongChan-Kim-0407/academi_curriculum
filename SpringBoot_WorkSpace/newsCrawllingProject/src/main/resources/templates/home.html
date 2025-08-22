@@ -8,13 +8,13 @@
 </head>
 <body>
 <h1>뉴스 스크랩</h1>
+<select id="selectPortal">
+    <option value="">-선택-</option>
+	<option value="naver">네이버</option>
+	<option value="daum">다음</option>
+</select>
 <select id="selectSection">
-	<option value="100">정치</option>
-	<option value="101">경제</option>
-	<option value="102">사회</option>
-	<option value="103">생활/문화</option>
-	<option value="105">IT/과학</option>
-	<option value="104">세계</option>
+	<option value="">포털 사이트를 먼저 선택해주십시오.</option>
 </select>
 <button class="btn btn-primary" id="scrapeNewsBtn">뉴스 수집</button>
 <button class="btn btn-success" id="showNewsBtn">뉴스 조회</button>
@@ -23,8 +23,12 @@
 	<thead>
 		<tr>
 		    <th>기사번호</th>
+		    <th>포털</th>
 			<th>카테고리</th>
+			<th>언론사</th>
 			<th>기사제목</th>
+			<th>기재시간</th>
+			<th>기사요약</th>
 		</tr>
 	</thead>
 	<tbody id="tableBody">		
@@ -58,12 +62,16 @@
 	scrapeNewsBtn.addEventListener("click", function() {
         // 카테고리 선택 값
 		const category = document.getElementById("selectSection");
+		const portal = document.getElementById("selectPortal");
+		
+		
         console.log("선택한 수집 카테고리 값: " + category.value);
+        console.log("선택한 수집 포털 값: " + portal.value);
 		// ajax로 선택한 카테고리의 뉴스 수집 요청
 		$.ajax({
 			url: "/scrapeNews",
 			type: "get",
-			data: {"sectionNumber": category.value},
+			data: {"section": category.value, "portal": portal.value},
 			success: function(res){
 				toastBodyEl.innerHTML = res;
 				toastBootStrap.show();
@@ -81,6 +89,10 @@
 	showNewsBtn.addEventListener("click", function(){
 		
 		const category = document.getElementById("selectSection");
+		const portal = document.getElementById("selectPortal");
+		
+		const portalValue = portal.value; // 선택된 도메인의 value
+		
 		const categoryValue = category.value; // 선택된 카테고리의 value
 		const categoryName = category.options[category.selectedIndex].text;
 		console.log("선택한 출력 카테고리 값: " + categoryValue);
@@ -88,7 +100,7 @@
 		$.ajax({
 			url: "/showNews",
 			type: "get",
-			data: {"sectionNumber": categoryValue},
+			data: {"section": categoryValue, "portal": portalValue},
 			dataType: "json",
 			success: function(res){
 				tableBodyEl.innerHTML = ""; // 기존 데이터 초기화
@@ -102,11 +114,25 @@
                         <td>${categoryName}</td>
                         <td><a href="${news.linkUrl}">${news.title}</a></td>`;
 				} */
+				/* 
+				<tr>
+				    <th>기사번호</th>
+					<th>카테고리</th>
+					<th>언론사</th>
+					<th>기사제목</th>
+					<th>기재시간</th>
+					<th>기사요약</th>
+				</tr>
+				*/
 				res.forEach((news,index) => {
                     tableBodyEl.innerHTML += `<tr>
                         <td>${++index}</td>
+                        <td>${news.portal}</td>
                         <td>${categoryName}</td>
+                        <td>${news.journal}</td>
                         <td><a href="${news.linkUrl}" target="_blank">${news.title}</a></td>
+                        <td><small>${news.newsTime}</small></td>
+                        <td>${news.newsContent}</td>
                     </tr>`;
                 });
 				toastBodyEl.innerHTML = `${res.length}개의 뉴스가 조회되었습니다.`;
@@ -116,6 +142,40 @@
 		
 	});
 	
+	const options = {
+		naver: [{value: "section/100", text: "정치"},
+                {value: "section/101", text: "경제"},
+                {value: "section/102", text: "사회"},
+                {value: "section/103", text: "생활/문화"},
+                {value: "section/105", text: "IT/과학"},
+                {value: "section/104", text: "세계"}],
+	    daum:  [{value: "climate", text: "기후/환경"},
+                {value: "society", text: "사회"},
+                {value: "economy", text: "경제"},
+                {value: "politics", text: "정치"},
+                {value: "world", text: "세계"},
+                {value: "culture", text: "문화"},
+                {value: "tech", text: "IT/과학"},
+                {value: "people", text: "인물"},
+                {value: "understanding", text: "지식/칼럼"}]
+	};
+	
+	const portalSelector = document.getElementById("selectPortal");
+	const sectionSelector = document.getElementById("selectSection");
+	
+	portalSelector.addEventListener("change", function(){
+		const selected = this.value;
+		sectionSelector.innerHTML = ""; // 기존 옵션 초기화
+		
+		if (options[selected]) {
+		      options[selected].forEach(opt => {
+		        const optionEl = document.createElement("option");
+		        optionEl.value = opt.value;
+		        optionEl.textContent = opt.text;
+		        sectionSelector.appendChild(optionEl);
+		      });
+		    }
+	});
 	
 </script>
 </body>
