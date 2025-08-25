@@ -1,0 +1,76 @@
+Spring Boot 정리
+
+** dependency (의존성) - 라이브러리
+
+프로젝트 생성시 선택 가능
+
+- Spring Boot Dev Tools < 코드 수정사항 자동 감지 후 서버에 반영(restart)
+- Lombok < 생성자, Getter, Setter 등 어노테이션 입력시 자동 생성
+
+- spring web < 웹 개발시 필수
+- thymeleaf < 웹 개발시 준 필수 STS-4(SpringBoot) 에서는 공식적으로 thymeleaf 사용을 권장
+-Validation < 유효성 검사 시 사용
+
+- oracle driver < oracle DB 사용시 필요한 드라이버
+- spring data Jpa < Jpa를 사용한 쿼리 사용시 필요 Jpa가 아닌 mybatis 등의 다른 라이브러리를 사용할 시 다른 라이브러리 사용
+
+- websocket < 채팅방 등 서버에서 요청 없이 임의로 응답을 보내줘야할 때 사용
+
+mavenRepository 등 별도로 추가 필요
+
+- httpclient < API 요청시 사용
+- Gson < API 요청 후 Json 응답 데이터를 변환하기 위해 사용
+
+========application properties========
+
+#Port
+server.port=사용할 포트번호
+
+#Oracle DB
+spring.datasource.url=jdbc:oracle:thin:@호스트:포트번호/xe
+spring.datasource.username=아이디
+spring.datasource.password=비밀번호
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+
+#JPA
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.show_sql=true
+
+spring.servlet.multipart.max-file-size=10MB
+
+** 브라우저에 프로젝트 주소 (http://localhost:포트번호) 입력하여 접속 후
+Whitelabel Error Page 확인 - 프로젝트는 제대로 실행되었으나 응답을 보낼 수 없어 브라우저에서 띄우는 오류 메시지
+
+** 프로젝트 패키지 생성 (MVC 패턴) - Model(데이터) View(페이지) Controller(동작)
+src/main/java
+>> Group명.Artifact명.Name 초기 패키지
+ex) khc.arranged.dependency
+
+controller, service, domain, repository 패키지 
+- khc.arranged.dependency.controller
+컨트롤러 클래스
+- khc.arranged.dependency.service
+서비스 클래스
+- khc.arranged.dependency.domain
+Entity 클래스
+- khc.arranged.dependency.repository
+JpaRepository
+
+** Controller - (Client의 요청에 응답)
+- @Controller < Spring에서 관리하는 Controller 클래스임을 명시
+* Controller에 아무 메소드도 없을 때 src/main/resource/static 폴더에 index.html이 있으면 index.html을 반환
+* 404, 500 같은 error가 발생했을 때 static의 error 폴더에 에러코드.html을 만들면 에러 발생시 해당 에러코드.html 반환
+
+- @GetMapping("요청URL") 리턴타입 메소드() {}
+- @PostMapping("요청URL") 리턴타입 메소드() {}
+
+@GetMapping("/") - / 이라는 주소로 요청이 들어왔을 때 home.html을 응답
+public String home() { 
+  return "home"; // src/main/resource/templet/home.html
+}
+
+** Service - (직접적인 기능을 구현하는 클래스)
+- @Service < Spring에서 관리하는 Service 클래스임을 명시
+
+
