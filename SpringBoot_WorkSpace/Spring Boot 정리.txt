@@ -72,5 +72,41 @@ public String home() {
 
 ** Service - (직접적인 기능을 구현하는 클래스)
 - @Service < Spring에서 관리하는 Service 클래스임을 명시
+- 리턴타입 메소드이름(매개변수, ...){실행코드}
 
+** Entity - (연결된 DB의 내용을 선언하는 클래스)
+- @Entity < Spring에서 관리하는 Entity 클래스임을 명시
+- @Getter,@Setter (Getter는 보편적으로 들어가나 Setter는 보안을 위해 비사용 권장)
+- 기본생성자 필수
+
+** Repository interface - (DB에 CRUD 처리를 위한 메소드를 선언하는 클래스)
+public interface 인터페이스명 extends JpaRepository<Entity클래스명, Id컬럼 타입>
+
+** 페이지(view)
+src/main/resources/templates(동적페이지),static(정적페이지)
+- 파일명.html
+- 폴더/파일명.html
+
+
+-- js 파일, css 파일...
+src/main/resources/static
+- 파일명.js, 파일명.css
+- /js/파일명.js
+- /css/파일명.css
+
+** html 문서
+- 공식 홈페이지 http://www.thymeleaf.org
+- <html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+	
+	</head>
+	<body>
+		// 브라우저에 출력되는 부분
+		// 컨트롤러에서 model.addAttribute로 담은 데이터
+		<태그 th:속성="${key}"></태그>
+		<p th:text="${key}"></p> -> <p>data</p>
+		<img th:src="${key}"> -> <img src="data">
+	</body>
+</html>
 

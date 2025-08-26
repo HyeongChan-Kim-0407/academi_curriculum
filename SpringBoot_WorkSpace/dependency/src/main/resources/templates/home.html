@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
 <h1>home.html</h1>
+
+<h2 th:text="${data1}"></h2>
+
+<a href="/requestURL">컨트롤러 페이지 이동요청</a>
+<br>
+<a href="/requestParameter?pname=pvalue">컨트롤러에 페이지 이동요청</a>
 </body>
 </html>

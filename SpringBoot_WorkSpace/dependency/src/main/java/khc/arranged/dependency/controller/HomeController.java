@@ -9,10 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import khc.arranged.dependency.service.ServiceClass;
 
-@Controller
+
 public class HomeController {
 	
 //	@RequiredArgsConstructor // 클래스에 생성된 모든 필드를 매개변수로 하는 생성자를 자동으로 생성
@@ -40,6 +41,11 @@ public class HomeController {
 		String data = sc.method2(); // 서비스 클래스 메소드 호출
 		model.addAttribute("data", data); // 응답데이터 저장
 		return "페이지명"; // 응답 페이지 지정
+	}
+	
+	@GetMapping("/userRequest")
+	public String redirectMethod() { // redirect에선 Model 사용 불가 데이터 전달 시 RedirectAttributes 사용
+		return "redirect:/요청URL"; // /요청URL로 재요청 명령
 	}
 	
 	@GetMapping("/")
