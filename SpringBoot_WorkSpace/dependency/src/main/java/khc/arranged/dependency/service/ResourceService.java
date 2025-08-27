@@ -20,5 +20,6 @@ public class ResourceService {
 		// 조회결과 반환
 		return ecList;
 	}
-
+	
+	
 }
