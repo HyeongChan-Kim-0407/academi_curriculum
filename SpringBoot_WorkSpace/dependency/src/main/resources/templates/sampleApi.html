@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	body{
+		background-color: grey;
+	}
+</style>
+</head>
+<body>
+	<h1>list.html</h1>
+	<p>조회된 entityList를 출력할 태그 작성</p>
+
+	<table>
+		<thead>
+			<tr>
+				<th>cityCode</th>
+				<th>cityName</th>
+			</tr>
+		</thead>
+		<tbody>
+		    <!-- 목록 출력 -->
+			<tr th:each="city : ${cityList}">
+				<td th:text="${city.cityCode}"></td>
+				<td th:text="${city.cityName}"></td>
+			</tr>
+			<!-- 목록 출력 -->
+		</tbody>
+	</table>
+
+</body>
+</html>

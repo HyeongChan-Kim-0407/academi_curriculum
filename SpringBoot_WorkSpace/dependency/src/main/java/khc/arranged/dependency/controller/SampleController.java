@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import khc.arranged.dependency.domain.SampleEntity;
+import khc.arranged.dependency.dto.City;
 import khc.arranged.dependency.service.SampleService;
 
 @Controller
@@ -51,6 +52,13 @@ public class SampleController {
 		List<SampleEntity> entityList = sampleService.searchMethod(searchName);
 		model.addAttribute("entityList", entityList);
 		return "list";
+	}
+	
+	@GetMapping("/sampleApi")
+	public String sampleApi(Model model) {
+		List<City> cityList = sampleService.getCityCodeList();
+		model.addAttribute("cityList", cityList);
+		return "sampleApi";
 	}
 	
 }
