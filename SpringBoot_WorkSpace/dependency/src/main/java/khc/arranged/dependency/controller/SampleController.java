@@ -3,6 +3,7 @@ package khc.arranged.dependency.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ public class SampleController {
 	// 2. "/sample" (get) 요청을 응답하는 메소드 작성
 	@GetMapping("/sample")
 	public String sampleGet() {
+		
 		return "sample";
 	}
 	
@@ -60,5 +62,16 @@ public class SampleController {
 		model.addAttribute("cityList", cityList);
 		return "sampleApi";
 	}
+	
+	@GetMapping("/user")
+	public String userGet() {
+		return "user";
+	}
+	
+	@GetMapping("/admin")
+	public String adminGet() {
+		return "admin";
+	}
+	
 	
 }

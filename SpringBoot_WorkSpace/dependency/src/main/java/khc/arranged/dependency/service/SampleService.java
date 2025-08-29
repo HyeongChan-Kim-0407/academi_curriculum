@@ -11,6 +11,7 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonArray;
@@ -28,6 +29,9 @@ public class SampleService {
     @Autowired
     private SampleRepository sampleRepository;
 	
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    
 	// 기능 메소드 작성
 	public void sampleMethod(String username, String userpass) {
 		System.out.println("8. 서비스의 기능 메소드 작성");
@@ -35,6 +39,7 @@ public class SampleService {
 		SampleEntity sampleEntity = new SampleEntity(username, userpass);
 		// 10. Entity 객체를 Repository에 save
 		sampleRepository.save(sampleEntity);
+		messagingTemplate.convertAndSend("/ServerToClient/sampleSub", "새로운 데이터 입력");
 	}
 
 	// 목록을 조회하고 반환하는 메소드

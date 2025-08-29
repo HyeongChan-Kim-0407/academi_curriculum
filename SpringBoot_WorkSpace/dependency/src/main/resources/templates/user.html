@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>UserPage(BG)</title>
+<style type="text/css">
+	.bg-sky{
+		background-color: skyblue;
+	}
+	.bg-lgrey{
+        background-color: lightgrey;
+    }
+</style>
+</head>
+<body id="body" class="bg-sky">
+	<h1>유저페이지(배경변환)</h1>
+	
+	
+	<!-- sockjs -->
+	<script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
+	<script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+	
+	<!-- 메시지 수신 only -->
+	<script type="text/javascript">
+		// 설정된 주소로 웹소켓 연결
+		let sampleSocket = new SockJS("/ws-connect"); // WebSocketConfig클래스에서 설정한 웹소켓 연결 주소(EndPoint)
+		// STOMP 
+		let sampleStomp = Stomp.over(sampleSocket);
+		
+		// 서버에서 받을 메시지 구독
+		sampleStomp.connect({}, function(){
+			/* 구독 */
+			sampleStomp.subscribe("/ServerToClient/bg-lgrey",function(msg){ // 서버가 클라이언트에게 메시지를 보낼 주소("/ServerToClient/subURL")
+				document.getElementById("body").classList.remove("bg-sky");
+				document.getElementById("body").classList.add("bg-lgrey");
+			});
+			
+			sampleStomp.subscribe("/ServerToClient/bg-sky",function(msg){ // 서버가 클라이언트에게 메시지를 보낼 주소("/ServerToClient/subURL")
+				document.getElementById("body").classList.remove("bg-lgrey");
+				document.getElementById("body").classList.add("bg-sky");
+			});
+			
+			
+		});
+		
+		
+	</script>
+</body>
+</html>

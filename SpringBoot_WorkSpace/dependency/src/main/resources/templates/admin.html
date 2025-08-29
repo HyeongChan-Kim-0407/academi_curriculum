@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AdminPage(Switch)</title>
+</head>
+<body>
+	<h1>관리자페이지(스위치작동)</h1>
+	<button onclick="changeLGrey()">lightGrey</button>
+	<button onclick="changeSkyBlue()">skyBlue</button>
+	
+	
+	<!-- sockjs -->
+	<script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
+	<script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+	
+	<!-- 메시지 전송 only -->
+	<script type="text/javascript">
+		// 설정된 주소로 웹소켓 연결
+		let sampleSocket = new SockJS("/ws-connect"); // WebSocketConfig클래스에서 설정한 웹소켓 연결 주소(EndPoint)
+		// STOMP 
+		let sampleStomp = Stomp.over(sampleSocket);
+		
+		function changeLGrey(){
+			sampleStomp.send("/ClientToServer/changeLGrey", {}, "bg-lgrey로 변경");
+		}
+		
+		function changeSkyBlue(){
+			sampleStomp.send("/ClientToServer/changeSky", {}, "bg-sky로 변경");
+		}
+		
+	</script>
+</body>
+</html>
