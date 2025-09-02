@@ -3,29 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <title>Home</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+	crossorigin="anonymous">
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+	crossorigin="anonymous"></script>
 <script th:inline="javascript">
-      const msg = /*[[${msg != null ? msg : 'null'}]]*/ null;
-      if (msg != null && msg != 'null') {
-        alert(msg);
-      }          
-    </script>
+	const msg = /*[[${msg != null ? msg : 'null'}]]*/null;
+	if (msg != null && msg != 'null') {
+		alert(msg);
+	}
+</script>
 </head>
 <body>
 	<nav class="navbar bg-primary">
 		<div class="container-fluid">
 			<a class="navbar-brand text-light">HOME</a>
 			<div class="d-flex">
-				<p th:text="${session.loginUser}" class="d-flex align-items-center me-3 mb-0 text-light"></p>
-				<a th:if="${session.loginUser == null}" href="/member/login" class="btn btn-outline-light me-2" type="button">로그인</a>
-				<a th:if="${session.loginUser != null}" href="/member/login" class="btn btn-danger me-2" type="button">로그아웃</a>
-				<a href="/member/join" class="btn btn-success" type="submit">회원가입</a>
+				<p th:text="${session.loginUser}"
+					class="d-flex align-items-center me-3 mb-0 text-light"></p>
+				<a th:if="${session.loginUser == null}" href="/member/login"
+					class="btn btn-outline-light me-2" type="button">로그인</a> <a
+					th:if="${session.loginUser == null}" href="/member/join"
+					class="btn btn-success" type="button">회원가입</a> <a
+					th:if="${session.loginUser != null}" href="/member/join"
+					class="btn btn-success" type="button">회원정보</a> <a
+					th:if="${session.loginUser != null}" href="/member/login"
+					class="btn btn-danger me-2" type="button">로그아웃</a>
 			</div>
 		</div>
 	</nav>
-	
-	
+
+	<a href="/apiTest" class="btn btn-primary mt-3 ms-2">날씨정보 조회 테스트</a>
+
+	<div class="container mt-3">
+	<div class="row g-2">
+		<div th:each="weather : ${weatherList}" class="col-6 col-md-3">
+		<div class="card h-100">
+			<div class="card-body p-2">
+				<h5 class="card-title text-center" th:text="${weather.dataType}"></h5>
+				<p class="card-text mb-1">baseDate: <span th:text="${weather.baseDate}"></span></p>
+				<p class="card-text mb-1">baseTime: <span th:text="${weather.baseTime}"></span></p>
+				<p class="card-text mb-1">category: <span th:text="${weather.category}"></span></p>
+				<p class="card-text mb-1">fcstDate: <span th:text="${weather.fcstDate}"></span></p>
+				<p class="card-text mb-1">fcstTime: <span th:text="${weather.fcstTime}"></span></p>
+				<p class="card-text mb-1">fcstValue: <span th:text="${weather.fcstValue}"></span></p>
+				<p class="card-text mb-1">nx: <span th:text="${weather.nx}"></span></p>
+				<p class="card-text mb-1">ny: <span th:text="${weather.ny}"></span></p>
+				<p class="card-text mb-0">obsrValue: <span th:text="${weather.obsrValue}"></span></p>
+			</div>
+			</div>
+		</div>
+		</div>
+	</div>
 
 
 </body>

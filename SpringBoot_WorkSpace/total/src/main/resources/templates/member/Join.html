@@ -24,10 +24,11 @@
         <div class="mb-3">
           <label for="mid" class="form-label">아이디</label>
           	<div class="input-group">
-          		<input type="text" th:classappend="${#fields.hasErrors('mid')}? 'is-invalid'" class="form-control" th:field="*{mid}" placeholder="아이디를 입력하세요">
-          		<button type="button" class="btn btn-primary text-light" onclick="checkDuplId()" >중복확인</button>
+          		<input type="text" th:classappend="${#fields.hasErrors('mid')}? 'is-invalid'" class="form-control" th:field="*{mid}" placeholder="아이디를 입력하세요" onchange="checkDuplId()">
+          		<!-- <button type="button" class="btn btn-primary text-light" onclick="checkDuplId()" >중복확인</button> -->
           	</div>
-          	<small id="checkIdMsg" th:if="${#fields.hasErrors('mid')}" th:errors="*{mid}"></small>
+          	<small id="checkIdMsg"></small>
+          	<small th:if="${#fields.hasErrors('mid')}" th:errors="*{mid}"></small>
         </div>
         <!-- 비밀번호 -->
         <div class="mb-3">
@@ -68,7 +69,7 @@
 			
 			if(!duplCheck){
 				document.getElementById("checkIdMsg").innerText = "아이디 중복확인을 진행해주십시오.";
-				return false;	
+				return false;
 			}
 			return true;
 		}
