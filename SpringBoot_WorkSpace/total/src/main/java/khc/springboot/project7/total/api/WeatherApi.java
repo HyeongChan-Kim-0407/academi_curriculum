@@ -1,7 +1,9 @@
 package khc.springboot.project7.total.api;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -23,7 +25,7 @@ import khc.springboot.project7.total.dto.WeatherDto;
 public class WeatherApi {
 	
 	
-	public List<WeatherDto> apiTest(String baseDate) {
+	public Map<String, List<WeatherDto>> apiTest(String baseDate) {
 		System.out.println("WeatherApi.apiTest() 호출");
 		List<WeatherDto> weatherList = new ArrayList<>();
 		try {
@@ -32,14 +34,21 @@ public class WeatherApi {
 			String ultraSrtNcst = SSWeather("/getUltraSrtNcst", baseDate);
 			System.out.println("초단기 실황");
 //			System.out.println(ultraSrtNcst);
-			weatherList = jsonToDto(ultraSrtNcst, "초단기 실황");
+//			jsonToDto(ultraSrtNcst, "초단기 실황");
 			
 			// 초단기 예보 호출
 			// /getUltraSrtFcst
 			String ultraSrtFcst = SSWeather("/getUltraSrtFcst", baseDate);
 			System.out.println("초단기 예보");
 //			System.out.println(ultraSrtFcst);
-//			jsonToDto(ultraSrtFcst, "초단기 예보");
+			
+			// JSON > DtoList
+			weatherList = jsonToDto(ultraSrtFcst, "초단기 예보");
+			
+			// 날짜 + 시간 별로 정렬
+			Map<String, List<WeatherDto>> weatherMap = collectByDate(weatherList);
+			
+			System.out.println(new Gson().toJson(weatherMap)); // 데이터 변환 확인을 위해 JSON 형태로 출력
 			// 단기 예보 호출
 			// /getVilageFcst
 			String VilageFcst = SSWeather("/getVilageFcst", baseDate);
@@ -47,11 +56,34 @@ public class WeatherApi {
 //			System.out.println(VilageFcst);
 //			jsonToDto(VilageFcst, "단기 예보");
 			
-			
+			return weatherMap;
 			} catch (Exception e) {
+				return null;
 		}
-		return weatherList;
+		
 	}
+	
+	/* 초단기, 단기 예보 데이터 변환 Method */
+	private Map<String, List<WeatherDto> > collectByDate(List<WeatherDto> list) {
+		//  key   , value
+		// { "name" : "ABCD", "address" : "인천" } << JSON 형태
+		Map<String, List<WeatherDto>> weatherMap = new LinkedHashMap<>();
+		for(WeatherDto dto : list) {
+			String mapKey = dto.getFcstDate() + dto.getFcstTime(); // 예측일자 + 예측시간 : key
+//			System.out.println(mapKey);
+			List<WeatherDto> dateList; // 날씨별로 정리할 날씨정보 목록
+			if(weatherMap.containsKey(mapKey)) { // key가 존재하면 true 없으면 false 반환
+				dateList = weatherMap.get(mapKey);
+			}else {
+				dateList = new ArrayList<>();
+			}
+			dateList.add(dto); // key에 해당하는 날씨정보 추가
+			
+			weatherMap.put(mapKey, dateList); // map에 key와 value 추가 (덮어쓰기)
+		}
+		return weatherMap;
+	}
+	
 	
 	private List<WeatherDto> jsonToDto(String jsonData, String dataType) {
 		List<WeatherDto> weatherList = new ArrayList<>();
@@ -64,6 +96,7 @@ public class WeatherApi {
 		for(JsonElement item : items) {
 			WeatherDto dto = gson.fromJson(item, WeatherDto.class);
 			dto.setDataType(dataType);
+			dto.codeToName(dto.getCategory(), dto.getFcstValue());
 			weatherList.add(dto);
 		}
 		return weatherList;

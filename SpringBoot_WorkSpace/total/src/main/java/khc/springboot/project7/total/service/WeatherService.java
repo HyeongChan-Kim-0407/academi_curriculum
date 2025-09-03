@@ -3,6 +3,7 @@ package khc.springboot.project7.total.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,17 +23,12 @@ public class WeatherService {
 	@Autowired
 	private WeatherApi weatherApi;
 	
-	public List<WeatherDto> apiTest() {
+	public Map<String, List<WeatherDto>> apiTest() {
 		System.out.println("WeatherService.apiTest() 호출");
-		List<WeatherDto> weatherList = new ArrayList<>();
 		LocalDate now = LocalDate.now();
 		String baseDate = now.toString().replace("-", "");
-		try {
-			weatherList = weatherApi.apiTest(baseDate);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return weatherList;
+		Map<String, List<WeatherDto>> weatherMap = weatherApi.apiTest(baseDate);
+		return weatherMap;
 		
 	}
 	

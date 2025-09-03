@@ -38,29 +38,71 @@
 		</div>
 	</nav>
 
-	<a href="/apiTest" class="btn btn-primary mt-3 ms-2">날씨정보 조회 테스트</a>
+	<button onclick="apiTest()" class="btn btn-primary mt-3 ms-2">날씨정보 조회 테스트</button>
 
 	<div class="container mt-3">
-	<div class="row g-2">
-		<div th:each="weather : ${weatherList}" class="col-6 col-md-3">
-		<div class="card h-100">
-			<div class="card-body p-2">
+	<div class="row g-2" id="cardContent">
+		<!-- <div class="col-6 col-md-3" >
+		<div class="card h-100" >
+			 <div class="card-body p-2">
 				<h5 class="card-title text-center" th:text="${weather.dataType}"></h5>
-				<p class="card-text mb-1">baseDate: <span th:text="${weather.baseDate}"></span></p>
-				<p class="card-text mb-1">baseTime: <span th:text="${weather.baseTime}"></span></p>
-				<p class="card-text mb-1">category: <span th:text="${weather.category}"></span></p>
-				<p class="card-text mb-1">fcstDate: <span th:text="${weather.fcstDate}"></span></p>
-				<p class="card-text mb-1">fcstTime: <span th:text="${weather.fcstTime}"></span></p>
-				<p class="card-text mb-1">fcstValue: <span th:text="${weather.fcstValue}"></span></p>
-				<p class="card-text mb-1">nx: <span th:text="${weather.nx}"></span></p>
-				<p class="card-text mb-1">ny: <span th:text="${weather.ny}"></span></p>
-				<p class="card-text mb-0">obsrValue: <span th:text="${weather.obsrValue}"></span></p>
-			</div>
+				<p th:if="${weather.baseDate != null}" class="card-text mb-1">baseDate: <span th:text="${weather.baseDate}"></span></p>
+				<p th:if="${weather.baseTime != null}" class="card-text mb-1">baseTime: <span th:text="${weather.baseTime}"></span></p>
+				<p th:if="${weather.category != null}" class="card-text mb-1">category: <span th:text="${weather.category}"></span></p>
+				<p th:if="${weather.fcstDate != null}" class="card-text mb-1">fcstDate: <span th:text="${weather.fcstDate}"></span></p>
+				<p th:if="${weather.fcstTime != null}" class="card-text mb-1">fcstTime: <span th:text="${weather.fcstTime}"></span></p>
+				<p th:if="${weather.fcstValue != null}" class="card-text mb-1">fcstValue: <span th:text="${weather.fcstValue}"></span></p>
+				<p th:if="${weather.nx != null}" class="card-text mb-1">nx: <span th:text="${weather.nx}"></span></p>
+				<p th:if="${weather.ny != null}" class="card-text mb-1">ny: <span th:text="${weather.ny}"></span></p>
+				<p th:if="${weather.obsrValue != null}" class="card-text mb-0">obsrValue: <span th:text="${weather.obsrValue}"></span></p>
 			</div>
 		</div>
-		</div>
+	</div>  -->
+	</div>
 	</div>
 
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		const cardContent = document.getElementById("cardContent");
+		cardContent.innerHTML = "";
+		function apiTest(){
+			$.ajax({
+				url: "/apiTest",
+				type: "get",
+				dataType: "json",
+				success: function(res){
+					showWeather(res) // 날씨 출력 기능 호출
+				}
+			});
+		}
+		
+		function showWeather(weatherList){
+			//console.log(weatherList);
+			let keys = Object.keys(weatherList);
+			for(let dateTime of keys){
+				let infoList = weatherList[dateTime];
+				let timeInfoList = [];
+				timeInfoList.push(dateTime);
+				for(let info of infoList){
+					timeInfoList.push(info.category +  " : " + info.fcstValue);
+				}
+				printMethod(timeInfoList);
+			}
+		}
+		
+		function printMethod(list){
+			let html = `<div class="col-6 col-md-3" >
+				<div class="card" >
+				<div class="card-body p-2">
+				<h5 class="card-title text-center"></h5>`;
+				for(const item of list){
+				html += `<p class="card-text mb-1"><span>${item}</span></p>`;
+				}
+			html += `</div></div></div>`;
+			
+			cardContent.innerHTML += html;
+		}
+	
+	</script>
 </body>
 </html>
