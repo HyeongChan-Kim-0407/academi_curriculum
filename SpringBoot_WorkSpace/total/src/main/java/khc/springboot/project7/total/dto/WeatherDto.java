@@ -25,6 +25,40 @@ public class WeatherDto {
 	public void codeToName(String code, String value) {
 		String name = code;
 		switch (code) {
+		case "TMX":
+			name = "일최고기온";
+			value = value + " ℃";
+			break;
+		case "TMN":
+			name = "일최저기온";
+			value = value + " ℃";
+			break;
+		case "TMP":
+			name = "1시간 기온";
+			value = value + " ℃";
+			break;
+		case "WAV":
+			name = "파고";
+			if(!value.equals("-999")) {
+				value = value + " m";
+			}else {
+				value = "측정불가";
+			}
+			break;
+		case "PCP":
+			name = "1시간 강수량";
+			break;
+		case "SNO":
+			name = "1시간 신적설";
+			if(!value.equals("적설없음")) {
+			value = value + " cm";
+			}
+			break; 
+		case "POP":
+			name = "강수확률";
+			value = value + " %";
+			break;
+			
 		case "T1H":
 			name = "기온";
 			value = value + " ℃";
@@ -62,6 +96,7 @@ public class WeatherDto {
 			case "1" : value = "비"; break;
 			case "2" : value = "비/눈"; break;
 			case "3" : value = "눈"; break;
+			case "4" : value = "소나기"; break;
 			case "5" : value = "빗방울"; break;
 			case "6" : value = "빗방울눈날림"; break;
 			case "7" : value = "눈날림"; break;

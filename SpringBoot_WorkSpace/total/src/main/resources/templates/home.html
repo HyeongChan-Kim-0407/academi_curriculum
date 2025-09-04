@@ -39,9 +39,11 @@
 	</nav>
 
 	<button onclick="apiTest()" class="btn btn-primary mt-3 ms-2">날씨정보 조회 테스트</button>
-
-	<div class="container mt-3">
-	<div class="row g-2" id="cardContent">
+	
+	<div class="row">
+	<div class="container mt-3 overflow-auto col-10" style="max-height: 700px;"> 
+	<h1 class="text-center">인천일보 아카데미</h1>
+	<div class="gap-4 d-flex flex-nowrap" id="AcademyContent"  >
 		<!-- <div class="col-6 col-md-3" >
 		<div class="card h-100" >
 			 <div class="card-body p-2">
@@ -60,23 +62,70 @@
 	</div>  -->
 	</div>
 	</div>
+	
+	<div class="container mt-3 overflow-auto col-5" style="max-height: 700px;">
+	<h1 class="text-center">동인천동</h1>
+	<div class="gap-4 d-flex flex-nowrap" id="firstContent"  >
+	</div>
+	</div>
+	
+	<div class="container mt-3 overflow-auto col-5" style="max-height: 700px;">
+	<h1 class="text-center">영종동</h1>
+	<div class="gap-4 d-flex flex-nowrap" id="secondContent"  >
+	</div>
+	</div>
+	
+	</div>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 	<script type="text/javascript">
-		const cardContent = document.getElementById("cardContent");
-		cardContent.innerHTML = "";
 		function apiTest(){
+		const academyContent = document.getElementById("AcademyContent");
+		academyContent.innerHTML = "";
 			$.ajax({
 				url: "/apiTest",
 				type: "get",
+				data: {nx: "54", ny: "124"},
 				dataType: "json",
 				success: function(res){
-					showWeather(res) // 날씨 출력 기능 호출
+					showWeather(res, academyContent) // 날씨 출력 기능 호출
 				}
 			});
+			firstWeather();
+			secondWeather();
 		}
 		
-		function showWeather(weatherList){
+		function firstWeather(){
+			const firstContent = document.getElementById("firstContent");
+			firstContent.innerHTML = "";
+				$.ajax({
+					url: "/firstWeather",
+					type: "get",
+					data: {nx: "54", ny: "125"},
+					dataType: "json",
+					success: function(res){
+						showWeather(res, firstContent) // 날씨 출력 기능 호출
+					}
+				});
+			}
+		
+		
+		function secondWeather(){
+			const secondContent = document.getElementById("secondContent");
+			secondContent.innerHTML = "";
+				$.ajax({
+					url: "/secondWeather",
+					type: "get",
+					data: {nx: "52", ny: "125"},
+					dataType: "json",
+					success: function(res){
+						showWeather(res, secondContent) // 날씨 출력 기능 호출
+					}
+				});
+			}
+		
+		
+		function showWeather(weatherList, Content){
 			//console.log(weatherList);
 			let keys = Object.keys(weatherList);
 			for(let dateTime of keys){
@@ -86,13 +135,13 @@
 				for(let info of infoList){
 					timeInfoList.push(info.category +  " : " + info.fcstValue);
 				}
-				printMethod(timeInfoList);
+				printMethod(timeInfoList, Content);
 			}
 		}
 		
-		function printMethod(list){
-			let html = `<div class="col-6 col-md-3" >
-				<div class="card" >
+		function printMethod(list, Content){
+			let html = `<div class="flex-shrink-0 w-auto" >
+				<div class="card " >
 				<div class="card-body p-2">
 				<h5 class="card-title text-center"></h5>`;
 				for(const item of list){
@@ -100,7 +149,7 @@
 				}
 			html += `</div></div></div>`;
 			
-			cardContent.innerHTML += html;
+			Content.innerHTML += html;
 		}
 	
 	</script>
