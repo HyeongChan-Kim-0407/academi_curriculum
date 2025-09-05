@@ -13,6 +13,8 @@ import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -25,6 +27,27 @@ import khc.springboot.project7.total.dto.WeatherDto;
 
 @Component
 public class WeatherApi {
+	
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
+	
+	private void sample() {
+		messagingTemplate.convertAndSend("/주소", "메시지");
+	}
+	
+	// 학원 날씨 조회 기능 메소드
+	public Map<String, List<WeatherDto>> findDefaultWeather() throws Exception {
+		// 단기 예보 조회 요청
+		Map<String, List<WeatherDto>> weatherMap = getFcstInfo("55", "127");
+		// key : 202509051800 value : List<WeatherDto>
+		// 초단기 실황 조회 요청
+		List<WeatherDto> ncstData = getNcstInfo("55", "127");
+		
+		weatherMap.put("ncstData", ncstData);
+		// key : ncstData value : List<WeatherDto> ncstData
+		
+		return weatherMap;
+	}
 	
 	
 	public Map<String, List<WeatherDto>> apiTest(String requestType, String nx, String ny) throws Exception {
@@ -68,6 +91,7 @@ public class WeatherApi {
 		
 	}
 	
+	// 초단기 실황 데이터를 반환하는 메소드
 	public List<WeatherDto> getNcstInfo(String nx, String ny) throws Exception {
 		System.out.println("WeatherApi.apiTest() 호출");
 		String requestUrl = "/getUltraSrtNcst";
@@ -160,7 +184,9 @@ public class WeatherApi {
 		for(JsonElement item : items) {
 			WeatherDto dto = gson.fromJson(item, WeatherDto.class);
 			dto.setDataType(dataType);
+			if(!dataType.equals("초단기 실황")) {
 			dto.codeToName(dto.getCategory(), dto.getFcstValue());
+			}
 			weatherList.add(dto);
 		}
 		return weatherList;

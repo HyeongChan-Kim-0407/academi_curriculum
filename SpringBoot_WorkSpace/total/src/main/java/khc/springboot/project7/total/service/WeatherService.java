@@ -32,6 +32,19 @@ public class WeatherService {
 		return weatherMap;
 		
 	}
+
+	public Map<String, List<WeatherDto>> getDefaultWeather() {
+		
+		try {
+			Map<String, List<WeatherDto>> weatherMap = weatherApi.findDefaultWeather();
+			return weatherMap;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
 	
 	
 	

@@ -78,6 +78,67 @@
 	</div>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<!-- sockjs -->
+	<script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
+	<!-- Stomp -->
+	<script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+	
+	<script type="text/javascript">
+		// 웹소켓 연결
+		const weatherSocket = new SockJS("/ws-weather");
+		const weatherStomp = Stomp.over(weatherSocket);
+		
+		const sampleSub = ["/동인천날씨", "/영종날씨"];
+		
+		weatherStomp.connect({}, function(){
+			
+			weatherStomp.subscribe( "/ServerToClient/default" , function(msg){ 
+				// msg.body : 화면에 출력할 날씨 데이터
+				// 학원 날씨 출력 function(msg.body) 호출
+				defaultWeather(msg.body);
+			});
+			
+			/* 회원별 구독 */
+			for(let sub of sampleSub){
+				weatherStomp.subscribe( sub, function(msg){ 
+					// msg.body : 화면에 출력할 날씨 데이터
+					// 날씨 출력 function(msg.body) 호출
+					
+				});
+			}
+			
+		});
+		
+		function defaultWeather(weatherData){
+			console.log("학원 주변 날씨")
+			console.log(weatherData);
+			
+		}
+		requestWeather();
+		function requestWeather(){
+			$.ajax({
+				url: "/getWeatherData",
+				type: "get",
+				dataType: "json",
+				success: function(res){
+					// defaultWeather(res); // 날씨 출력 기능 호출
+					let ncstData = res.ncstData;
+					
+					delete res.ncstData;
+					
+					console.log(ncstData);
+					console.log(res);
+					// 초단기 실황 출력 function(ncstData);
+					// 단기예보 출력 function(res);
+					
+				}
+			});
+		}
+		
+		
+		
+	</script>
+	
 	<script type="text/javascript">
 		function apiTest(){
 		const academyContent = document.getElementById("AcademyContent");
