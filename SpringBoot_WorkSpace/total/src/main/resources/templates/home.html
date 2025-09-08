@@ -24,15 +24,15 @@
 		<div class="container-fluid">
 			<a class="navbar-brand text-light">HOME</a>
 			<div class="d-flex">
-				<p th:text="${session.loginUser}"
+				<p th:if="${session.loginUser != null}" th:text="${session.loginUser.mname}"
 					class="d-flex align-items-center me-3 mb-0 text-light"></p>
 				<a th:if="${session.loginUser == null}" href="/member/login"
-					class="btn btn-outline-light me-2" type="button">로그인</a> <a
-					th:if="${session.loginUser == null}" href="/member/join"
-					class="btn btn-success" type="button">회원가입</a> <a
-					th:if="${session.loginUser != null}" href="/member/join"
-					class="btn btn-success" type="button">회원정보</a> <a
-					th:if="${session.loginUser != null}" href="/member/login"
+					class="btn btn-outline-light me-2" type="button">로그인</a>
+				<a th:if="${session.loginUser == null}" href="/member/join"
+					class="btn btn-success" type="button">회원가입</a>
+				<a th:if="${session.loginUser != null}" href="/member/info"
+					class="btn btn-success me-2" type="button">회원정보</a>
+				<a th:if="${session.loginUser != null}" href="/member/logout"
 					class="btn btn-danger me-2" type="button">로그아웃</a>
 			</div>
 		</div>
@@ -63,17 +63,19 @@
 	</div>
 	</div>
 	
-	<div class="container mt-3 overflow-auto col-5" style="max-height: 700px;">
-	<h1 class="text-center">동인천동</h1>
-	<div class="gap-4 d-flex flex-nowrap" id="firstContent"  >
+
+	<div class="container mt-3 overflow-auto col-5" style="max-height: 700px;" th:if="${loginUser != null}" th:each="loc : ${loginUser.locations}" >
+	<h1 class="text-center" th:text="${loc.locationName}"></h1>
+	<div class="gap-4 d-flex flex-nowrap" th:id="${loc.locationName}"  >
 	</div>
 	</div>
+
 	
-	<div class="container mt-3 overflow-auto col-5" style="max-height: 700px;">
-	<h1 class="text-center">영종동</h1>
+	<!-- <div class="container mt-3 overflow-auto col-5" style="max-height: 700px;">
+	<h1 class="text-center" id="2ndLocation"></h1>
 	<div class="gap-4 d-flex flex-nowrap" id="secondContent"  >
 	</div>
-	</div>
+	</div> -->
 	
 	</div>
 
@@ -83,12 +85,12 @@
 	<!-- Stomp -->
 	<script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
 	
-	<script type="text/javascript">
+	<script th:inline="javascript" type="text/javascript">
 		// 웹소켓 연결
 		const weatherSocket = new SockJS("/ws-weather");
 		const weatherStomp = Stomp.over(weatherSocket);
 		
-		const sampleSub = ["/동인천날씨", "/영종날씨"];
+		const sampleSub = /*[[${loginUser.locations}]]*/ [];
 		
 		weatherStomp.connect({}, function(){
 			
@@ -100,7 +102,7 @@
 			
 			/* 회원별 구독 */
 			for(let sub of sampleSub){
-				weatherStomp.subscribe( sub, function(msg){ 
+				weatherStomp.subscribe( "/ServerToClient/" + sub.locationName, function(msg){ 
 					// msg.body : 화면에 출력할 날씨 데이터
 					// 날씨 출력 function(msg.body) 호출
 					

@@ -1,8 +1,10 @@
 package khc.springboot.project7.total.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
+import khc.springboot.project7.total.domain.Location;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,6 +25,15 @@ public class MemberForm {
 	
 	public MemberForm() {
 		
+	}
+	
+	public MemberForm(MemberDto memberDto) {
+		this.mid = memberDto.getMid();
+		this.mpw = memberDto.getMpw();
+		this.mname = memberDto.getMname();
+		this.memail = memberDto.getMemail();
+		this.mjoindate = memberDto.getMjoindate();
+		this.mroute = memberDto.getMroute();
 	}
 	
 }

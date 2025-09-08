@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Info</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</head>
+<body>
+	<nav class="navbar bg-primary">
+		<div class="container-fluid">
+			<a class="navbar-brand text-light">Info</a>
+			<div class="d-flex">
+				<p class="d-flex align-items-center me-3 mb-0 text-light" th:text="${session.loginUser.mname}"></p>
+				<a href="" class="btn btn-success me-2" type="button">회원정보</a>
+				<a href="/member/logout" class="btn btn-danger me-2" type="submit">로그아웃</a>
+			</div>
+		</div>
+	</nav>
+	<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 rounded-4" style="max-width: 400px; width: 100%;">
+      <h3 class="text-center mb-4">회원정보</h3>
+      <form action="/member/info" method="POST">
+        <!-- 아이디 -->
+        <div class="mb-3">
+          <label for="mid" class="form-label">아이디</label>
+          	<div class="input-group">
+          		<input type="text" class="form-control" th:value="${loginUser.mid}" disabled>
+          		<!-- <button type="button" class="btn btn-primary text-light" onclick="checkDuplId()" >중복확인</button> -->
+          	</div>
+        </div>
+        <!-- 비밀번호 -->
+        <div class="mb-3">
+          <label for="mpw" class="form-label">비밀번호</label>
+          <input type="password" class="form-control" th:value="${loginUser.mpw}" readonly>
+        </div>
+        <!-- 이름 -->
+        <div class="mb-3">
+          <label for="mname" class="form-label">이름</label>
+          <input type="text"class="form-control" th:value="${loginUser.mname}" readonly>
+        </div>
+        <!-- 이메일 -->
+        <div class="mb-3">
+          <label for="memail" class="form-label">이메일</label>
+          <input type="email" class="form-control" th:value="${loginUser.memail}" readonly>
+        </div>
+        <!-- 지역 -->
+        <div class="mb-3">
+          <label class="form-label">지역</label>
+          <button type="button" class="btn btn-primary" onclick="addLocation()">지역 추가</button>
+          <div id="locationDiv">
+          <select th:each="loc : ${loginUser.locations}" class="form-select mt-2">
+              <option value="">장소를 선택하세요</option>
+              <option th:value="${loc.locationName}" th:text="${loc.locationName}" th:selected="${loc.locationName}"></option>
+          </select>
+          <select th:if="${loginUser.locations == null}" id="locations" name="locations" class="form-select mt-2" >
+          	<option value="">장소를 선택하세요</option>
+          	<option value="서울">서울</option>
+          	<option value="인천">인천</option>
+          	<option value="부천">부천</option>
+          </select>
+          </div>
+         </div>
+        <!-- 버튼 -->
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary rounded-3">수정하기</button>
+        </div>
+        </form>
+    </div>
+  </div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		
+	function addLocation(){
+        const locationDiv = document.getElementById("locationDiv");
+        const newSelect = document.createElement("select");
+        newSelect.className = "form-select mt-2";
+        newSelect.name = "locations";
+        newSelect.innerHTML = `
+          	<option value="">장소를 선택하세요</option>
+          	<option value="서울">서울</option>
+        	<option value="인천">인천</option>
+        	<option value="부천">부천</option>
+        `;
+        locationDiv.appendChild(newSelect);
+        
+    }		
+	</script>
+</body>
+</html>

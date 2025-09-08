@@ -1,5 +1,7 @@
 package khc.springboot.project7.total.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,12 +74,38 @@ public class MemberController {
 		MemberDto memberDto = memberService.memberLogin(mid, mpw);
 		if(memberDto != null) {
 			System.out.println("로그인 성공");
-			httpSession.setAttribute("loginUser", memberDto.getMname());
+			httpSession.setAttribute("loginUser", memberDto);
 			ra.addFlashAttribute("msg", "로그인 성공");
 			return "redirect:/";
 		}
 		ra.addFlashAttribute("msg", "로그인 실패");
 		return "redirect:/";
 	}
+	
+	@GetMapping("/info")
+	public String memberInfo(Model model) {
+		System.out.println("MemberController.memberInfo() 호출");
+		MemberDto loginUser = (MemberDto) httpSession.getAttribute("loginUser");
+		model.addAttribute("loginUser", loginUser);
+		
+		return "member/info";
+	}
+	
+	@PostMapping("/info")
+	public String memberInfoPost(@RequestParam("locations") List<String> locations) {
+		System.out.println("MemberController.memberInfoPost() 호출");
+		System.out.println("locations: " + locations);
+		MemberDto loginUser = (MemberDto) httpSession.getAttribute("loginUser");
+		memberService.updateMemberLocations(locations, loginUser);
+		
+		return "redirect:/member/info";
+	}
+	
+	@GetMapping("/logout")
+	public String logout() {
+		httpSession.removeAttribute("loginUser");
+		return "redirect:/";
+	}
+	
 	
 }
