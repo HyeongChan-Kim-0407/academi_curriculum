@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +18,15 @@ import khc.springboot.project7.total.dto.MemberDto;
 import khc.springboot.project7.total.dto.WeatherDto;
 import khc.springboot.project7.total.service.WeatherService;
 
+
 @Controller
 public class HomeController {
 	
 	@Autowired
 	private WeatherService weatherService;
+	
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
 	
 	@Autowired
 	private HttpSession httpSession;
@@ -29,6 +36,8 @@ public class HomeController {
 		if(httpSession.getAttribute("loginUser") != null) {
 			MemberDto loginUser = (MemberDto)httpSession.getAttribute("loginUser");
 			model.addAttribute("loginUser", loginUser);
+		}else {
+			model.addAttribute("loginUser", null);
 		}
 		return "home";
 	}
@@ -67,8 +76,31 @@ public class HomeController {
 //			weatherData.put("subData", null);
 			
 		}
+		defaultWeather();
 		
 		return weatherData;
 	}
+	// 매 정각마다 실행
+	@Scheduled(cron = "0 0/33 * * * * ")
+	public void defaultWeather(){
+		Map<String, List<WeatherDto>> weatherData = weatherService.getDefaultWeather();
+		messagingTemplate.convertAndSend("/ServerToClient/default", weatherData);
+	}
+	@Scheduled(cron = "0 0/33 * * * * ")
+	public void seoulWeather() {
+		Map<String, List<WeatherDto>> weatherData = weatherService.apiTest("61", "125");
+		messagingTemplate.convertAndSend("/ServerToClient/서울", weatherData);
+	}
+	@Scheduled(cron = "0 0/33 * * * * ")
+	public void incheonWeather() {
+		Map<String, List<WeatherDto>> weatherData = weatherService.apiTest("54", "125");
+		messagingTemplate.convertAndSend("/ServerToClient/인천", weatherData);
+	}
+	@Scheduled(cron = "0 0/33 * * * * ")
+	public void bucheonWeather() {
+		Map<String, List<WeatherDto>> weatherData = weatherService.apiTest("57", "125");
+		messagingTemplate.convertAndSend("/ServerToClient/부천", weatherData);
+	}
+	
 	
 }

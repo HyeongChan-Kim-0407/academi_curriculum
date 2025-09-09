@@ -99,7 +99,7 @@ public class WeatherApi {
 		
 		LocalDateTime now = LocalDateTime.now();
 		String baseDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		String baseTime = now.format(DateTimeFormatter.ofPattern("HHmm"));
+		
 			// 초단기 실황 호출
 			// /getUltraSrtNcst
 			String ultraSrtNcst = SSWeather("/getUltraSrtNcst", baseDate, nx, ny);
@@ -184,8 +184,10 @@ public class WeatherApi {
 		for(JsonElement item : items) {
 			WeatherDto dto = gson.fromJson(item, WeatherDto.class);
 			dto.setDataType(dataType);
-			if(!dataType.equals("초단기 실황")) {
-			dto.codeToName(dto.getCategory(), dto.getFcstValue());
+			if(dataType.equals("초단기 실황")) {
+				dto.ncstCodeToName(dto.getCategory(), dto.getObsrValue());
+			}else {
+				dto.fcstCodeToName(dto.getCategory(), dto.getFcstValue());
 			}
 			weatherList.add(dto);
 		}
@@ -194,13 +196,22 @@ public class WeatherApi {
 	
 	public String SSWeather(String url, String baseDate, String nx, String ny) throws Exception{
 		String result = "";
+		String baseTime = "0500";
+		if(url.equals("/getUltraSrtNcst")) {
+			LocalDateTime now = LocalDateTime.now();
+			if(now.getMinute() < 10) {
+				baseTime = now.minusHours(1).format(DateTimeFormatter.ofPattern("HH")) + "00";
+			}else {
+			baseTime = now.format(DateTimeFormatter.ofPattern("HH")) + "00";
+			}
+		}
 		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
 		    ClassicHttpRequest httpGet = ClassicRequestBuilder.get("https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0" + url)
 		            .addParameter("pageNo", "1")
 		            .addParameter("numOfRows", "1000")
 		            .addParameter("dataType", "JSON")
 		            .addParameter("base_date", baseDate)
-		            .addParameter("base_time", "0500")
+		            .addParameter("base_time", baseTime)
 		            .addParameter("nx", nx)
 		            .addParameter("ny", ny)
 		            .addParameter("authKey", "UjSqsQsvS0C0qrELL8tAYQ")
@@ -214,6 +225,19 @@ public class WeatherApi {
 		    });
 		}
 		return result;
+	}
+
+	public Map<String, List<WeatherDto>> findLocationWeather(String nx, String ny) throws Exception {
+		// 단기 예보 조회 요청
+				Map<String, List<WeatherDto>> weatherMap = getFcstInfo(nx, ny);
+				// key : 202509051800 value : List<WeatherDto>
+				// 초단기 실황 조회 요청
+				List<WeatherDto> ncstData = getNcstInfo(nx, ny);
+				
+				weatherMap.put("ncstData", ncstData);
+				// key : ncstData value : List<WeatherDto> ncstData
+				
+				return weatherMap;
 	}
 	
 }

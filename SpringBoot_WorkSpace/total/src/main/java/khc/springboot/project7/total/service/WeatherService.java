@@ -21,15 +21,14 @@ public class WeatherService {
 	public Map<String, List<WeatherDto>> apiTest(String nx, String ny) {
 		System.out.println("WeatherService.apiTest() 호출");
 		
-		
-		Map<String, List<WeatherDto>> weatherMap = new LinkedHashMap<>();
 		try {
-			weatherMap = weatherApi.getFcstInfo(nx, ny);
+			Map<String, List<WeatherDto>> weatherMap = weatherApi.findLocationWeather(nx, ny);
+			return weatherMap;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
-		return weatherMap;
 		
 	}
 

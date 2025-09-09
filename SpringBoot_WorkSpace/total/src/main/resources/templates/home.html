@@ -41,8 +41,10 @@
 	<button onclick="apiTest()" class="btn btn-primary mt-3 ms-2">날씨정보 조회 테스트</button>
 	
 	<div class="row">
-	<div class="container mt-3 overflow-auto col-10" style="max-height: 700px;"> 
-	<h1 class="text-center">인천일보 아카데미</h1>
+	<div class="container mt-3 overflow-auto col-10" style="max-height: 700px;" id="AcademyContainer"> 
+	<h3 class="text-center">인천일보 아카데미</h3>
+	<h2 class="text-center"></h2>
+	<p class="text-center"></p>
 	<div class="gap-4 d-flex flex-nowrap" id="AcademyContent"  >
 		<!-- <div class="col-6 col-md-3" >
 		<div class="card h-100" >
@@ -63,13 +65,15 @@
 	</div>
 	</div>
 	
-
-	<div class="container mt-3 overflow-auto col-5" style="max-height: 700px;" th:if="${loginUser != null}" th:each="loc : ${loginUser.locations}" >
-	<h1 class="text-center" th:text="${loc.locationName}"></h1>
+	<div th:if="${loginUser != null}" class = "row">
+	<div class="container mt-3 overflow-auto col-5" style="max-height: 700px;" th:each="loc : ${loginUser.locations}" th:id="${loc.locationName}+'Container'">
+	<h3 class="text-center" th:text="${loc.locationName}"></h3>
+	<h2 class="text-center"></h2>
+	<p class="text-center"></p>
 	<div class="gap-4 d-flex flex-nowrap" th:id="${loc.locationName}"  >
 	</div>
 	</div>
-
+	</div>
 	
 	<!-- <div class="container mt-3 overflow-auto col-5" style="max-height: 700px;">
 	<h1 class="text-center" id="2ndLocation"></h1>
@@ -90,14 +94,16 @@
 		const weatherSocket = new SockJS("/ws-weather");
 		const weatherStomp = Stomp.over(weatherSocket);
 		
-		const sampleSub = /*[[${loginUser.locations}]]*/ [];
+		const sampleSub = /*[[${loginUser != null ? loginUser.locations : {}}]]*/ [];
 		
 		weatherStomp.connect({}, function(){
 			
 			weatherStomp.subscribe( "/ServerToClient/default" , function(msg){ 
 				// msg.body : 화면에 출력할 날씨 데이터
 				// 학원 날씨 출력 function(msg.body) 호출
-				defaultWeather(msg.body);
+				const container = document.getElementById("AcademyContainer");
+				const content = document.getElementById("AcademyContent");
+				defaultWeather(msg.body, container, content );
 			});
 			
 			/* 회원별 구독 */
@@ -105,18 +111,25 @@
 				weatherStomp.subscribe( "/ServerToClient/" + sub.locationName, function(msg){ 
 					// msg.body : 화면에 출력할 날씨 데이터
 					// 날씨 출력 function(msg.body) 호출
-					
+					const container = document.getElementById(sub.locationName + "Container");
+				    const content = document.getElementById(sub.locationName);
+					defaultWeather(msg.body, container, content );
 				});
 			}
 			
 		});
 		
-		function defaultWeather(weatherData){
-			console.log("학원 주변 날씨")
-			console.log(weatherData);
-			
-		}
-		requestWeather();
+		function defaultWeather(weatherData, container, content){
+            const data = JSON.parse(weatherData);
+            let ncstData = data.ncstData;
+            
+            delete data.ncstData;
+            // 초단기 실황 출력 function(ncstData);
+            showNcst(ncstData, container);
+            // 단기예보 출력 function(res);
+            showWeather(data, content);
+            }
+		//requestWeather();
 		function requestWeather(){
 			$.ajax({
 				url: "/getWeatherData",
@@ -128,10 +141,10 @@
 					
 					delete res.ncstData;
 					
-					console.log(ncstData);
-					console.log(res);
 					// 초단기 실황 출력 function(ncstData);
+					showNcst(ncstData, document.getElementById("AcademyContainer"));
 					// 단기예보 출력 function(res);
+					showWeather(res, document.getElementById("AcademyContent"));
 					
 				}
 			});
@@ -144,6 +157,7 @@
 	<script type="text/javascript">
 		function apiTest(){
 		const academyContent = document.getElementById("AcademyContent");
+		const academyContainer = document.getElementById("AcademyContainer");
 		academyContent.innerHTML = "";
 			$.ajax({
 				url: "/apiTest",
@@ -151,16 +165,20 @@
 				data: {nx: "54", ny: "124"},
 				dataType: "json",
 				success: function(res){
-					showWeather(res, academyContent) // 날씨 출력 기능 호출
+					// defaultWeather(res); // 날씨 출력 기능 호출
+					let ncstData = res.ncstData;
+					
+					delete res.ncstData;
+					
+					// 초단기 실황 출력 function(ncstData);
+					showNcst(ncstData, academyContainer);
+					// 단기예보 출력 function(res);
+					showWeather(res, academyContent);
 				}
 			});
-			firstWeather();
-			secondWeather();
 		}
 		
 		function firstWeather(){
-			const firstContent = document.getElementById("firstContent");
-			firstContent.innerHTML = "";
 				$.ajax({
 					url: "/firstWeather",
 					type: "get",
@@ -174,8 +192,6 @@
 		
 		
 		function secondWeather(){
-			const secondContent = document.getElementById("secondContent");
-			secondContent.innerHTML = "";
 				$.ajax({
 					url: "/secondWeather",
 					type: "get",
@@ -187,32 +203,52 @@
 				});
 			}
 		
-		
-		function showWeather(weatherList, Content){
-			//console.log(weatherList);
-			let keys = Object.keys(weatherList);
-			for(let dateTime of keys){
-				let infoList = weatherList[dateTime];
-				let timeInfoList = [];
-				timeInfoList.push(dateTime);
-				for(let info of infoList){
-					timeInfoList.push(info.category +  " : " + info.fcstValue);
-				}
-				printMethod(timeInfoList, Content);
-			}
+		function getHourlyTemp(lines){
+			const line = lines.find(s => /^1시간\s*기온\s*:/.test(s));
+			if (!line) return null;
+			
+			const m = line.match(/:\s*([-\d.]+)\s*℃?/);
+			return m ? m[1] : line.split(':')[1]?.trim();
 		}
 		
-		function printMethod(list, Content){
+		function showWeather(weatherList, Content){
+			console.log(weatherList);
+			const weatherData = {};
+			for (const [fcstTime, arr] of Object.entries(weatherList)) {
+				weatherData[fcstTime] = {};
+				
+				arr.forEach(item => {
+					weatherData[fcstTime][item.category] = item.fcstValue;
+					
+				});
+				printMethod(weatherData, Content);
+			}
+				
+			
+		}
+		
+		function printMethod(obj, Content){
+			// for문 사용 예정
 			let html = `<div class="flex-shrink-0 w-auto" >
 				<div class="card " >
 				<div class="card-body p-2">
 				<h5 class="card-title text-center"></h5>`;
-				for(const item of list){
-				html += `<p class="card-text mb-1"><span>${item}</span></p>`;
+				for(const [key,value] of Object.entries(obj)){
+				html += `<p class="card-text mb-1"><span>${key}: ${value}</span></p>`;
 				}
 			html += `</div></div></div>`;
 			
 			Content.innerHTML += html;
+		}
+		
+		function showNcst(ncstData, container){
+			const TempEl = container.querySelector("h2");
+			const HumidityEl = container.querySelector("p");
+			const data = Object.fromEntries(ncstData.map(item => [item.category, item]));
+			let temp = data["기온"] ? "기온 : " + data["기온"].obsrValue : "정보없음";
+			let humidity = data["습도"] ? "습도 : " + data["습도"].obsrValue : "정보없음";
+			TempEl.innerText = temp;
+			HumidityEl.innerText = humidity;
 		}
 	
 	</script>
