@@ -41,11 +41,11 @@
 	<button onclick="apiTest()" class="btn btn-primary mt-3 ms-2">날씨정보 조회 테스트</button>
 	
 	<div class="row">
-	<div class="container mt-3 overflow-auto col-10" style="max-height: 700px;" id="AcademyContainer"> 
+	<div class="container mt-3 col-10" style="max-height: 700px;" id="AcademyContainer"> 
 	<h3 class="text-center">인천일보 아카데미</h3>
 	<h2 class="text-center"></h2>
 	<p class="text-center"></p>
-	<div class="gap-4 d-flex flex-nowrap" id="AcademyContent"  >
+	<div class="gap-4 d-flex flex-nowrap overflow-auto" id="AcademyContent"  >
 		<!-- <div class="col-6 col-md-3" >
 		<div class="card h-100" >
 			 <div class="card-body p-2">
@@ -66,11 +66,11 @@
 	</div>
 	
 	<div th:if="${loginUser != null}" class = "row">
-	<div class="container mt-3 overflow-auto col-5" style="max-height: 700px;" th:each="loc : ${loginUser.locations}" th:id="${loc.locationName}+'Container'">
+	<div class="container mt-3 col-5" style="max-height: 700px;" th:each="loc : ${loginUser.locations}" th:id="${loc.locationName}+'Container'">
 	<h3 class="text-center" th:text="${loc.locationName}"></h3>
 	<h2 class="text-center"></h2>
 	<p class="text-center"></p>
-	<div class="gap-4 d-flex flex-nowrap" th:id="${loc.locationName}"  >
+	<div class="gap-4 d-flex flex-nowrap overflow-auto" th:id="${loc.locationName} + 'Content'"  >
 	</div>
 	</div>
 	</div>
@@ -103,7 +103,7 @@
 				// 학원 날씨 출력 function(msg.body) 호출
 				const container = document.getElementById("AcademyContainer");
 				const content = document.getElementById("AcademyContent");
-				defaultWeather(msg.body, container, content );
+				Weather(msg.body, container, content );
 			});
 			
 			/* 회원별 구독 */
@@ -112,14 +112,14 @@
 					// msg.body : 화면에 출력할 날씨 데이터
 					// 날씨 출력 function(msg.body) 호출
 					const container = document.getElementById(sub.locationName + "Container");
-				    const content = document.getElementById(sub.locationName);
-					defaultWeather(msg.body, container, content );
+				    const content = document.getElementById(sub.locationName + "Content");
+				    Weather(msg.body, container, content );
 				});
 			}
 			
 		});
 		
-		function defaultWeather(weatherData, container, content){
+		function Weather(weatherData, container, content){
             const data = JSON.parse(weatherData);
             let ncstData = data.ncstData;
             
@@ -129,22 +129,13 @@
             // 단기예보 출력 function(res);
             showWeather(data, content);
             }
-		//requestWeather();
+		requestWeather();
 		function requestWeather(){
 			$.ajax({
 				url: "/getWeatherData",
 				type: "get",
 				dataType: "json",
 				success: function(res){
-					// defaultWeather(res); // 날씨 출력 기능 호출
-					let ncstData = res.ncstData;
-					
-					delete res.ncstData;
-					
-					// 초단기 실황 출력 function(ncstData);
-					showNcst(ncstData, document.getElementById("AcademyContainer"));
-					// 단기예보 출력 function(res);
-					showWeather(res, document.getElementById("AcademyContent"));
 					
 				}
 			});
@@ -178,43 +169,13 @@
 			});
 		}
 		
-		function firstWeather(){
-				$.ajax({
-					url: "/firstWeather",
-					type: "get",
-					data: {nx: "54", ny: "125"},
-					dataType: "json",
-					success: function(res){
-						showWeather(res, firstContent) // 날씨 출력 기능 호출
-					}
-				});
-			}
-		
-		
-		function secondWeather(){
-				$.ajax({
-					url: "/secondWeather",
-					type: "get",
-					data: {nx: "52", ny: "125"},
-					dataType: "json",
-					success: function(res){
-						showWeather(res, secondContent) // 날씨 출력 기능 호출
-					}
-				});
-			}
-		
-		function getHourlyTemp(lines){
-			const line = lines.find(s => /^1시간\s*기온\s*:/.test(s));
-			if (!line) return null;
-			
-			const m = line.match(/:\s*([-\d.]+)\s*℃?/);
-			return m ? m[1] : line.split(':')[1]?.trim();
-		}
 		
 		function showWeather(weatherList, Content){
-			console.log(weatherList);
-			const weatherData = {};
+			//console.log(weatherList);
+			
 			for (const [fcstTime, arr] of Object.entries(weatherList)) {
+				const weatherData = {};
+				
 				weatherData[fcstTime] = {};
 				
 				arr.forEach(item => {
@@ -227,17 +188,21 @@
 			
 		}
 		
-		function printMethod(obj, Content){
-			// for문 사용 예정
-			let html = `<div class="flex-shrink-0 w-auto" >
+		function printMethod(weatherList, Content){
+			//console.log(weatherList);
+			let html = "";
+			// for문 사용
+			for(const [fcstTime, obj] of Object.entries(weatherList)){
+			html += `<div class="flex-shrink-0 w-auto" >
 				<div class="card " >
 				<div class="card-body p-2">
-				<h5 class="card-title text-center"></h5>`;
+				<h5 class="card-title text-center">${fcstTime}</h5>`;
 				for(const [key,value] of Object.entries(obj)){
 				html += `<p class="card-text mb-1"><span>${key}: ${value}</span></p>`;
 				}
 			html += `</div></div></div>`;
 			
+		}
 			Content.innerHTML += html;
 		}
 		

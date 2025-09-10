@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import khc.springboot.project7.total.domain.Location;
 import khc.springboot.project7.total.domain.Member;
 import khc.springboot.project7.total.dto.LocationDto;
 import khc.springboot.project7.total.dto.MemberDto;
 import khc.springboot.project7.total.dto.MemberForm;
+import khc.springboot.project7.total.repository.LocationRepository;
 import khc.springboot.project7.total.repository.MemberRepository;
 
 @Service
@@ -19,6 +21,9 @@ public class MemberService {
 	
 	@Autowired
 	private MemberRepository memberRepository;
+	
+	@Autowired
+	private LocationRepository locationRepository;
 	
 	public void memgerJoin(MemberForm memberForm) throws Exception {
 		System.out.println("MemberService.memberJoin() 호출");
@@ -51,31 +56,35 @@ public class MemberService {
 		
 		return null;
 	}
-
+	
+	
+	@Transactional
 	public void updateMemberLocations(List<String> locationNames, MemberDto loginUser) {
 		System.out.println("MemberService.updateMemberLocations() 호출");
 		String loginId = loginUser.getMid();
 		List<Location> locations = new ArrayList<>();
 		List<LocationDto> dtoList = new ArrayList<>();
+		if(locationNames != null) {
 		for(String loc : locationNames) {
 			LocationDto locationDto = new LocationDto();
 			if(loc.equals("서울")) {
-				locationDto.setLocationName("Seoul");
+				locationDto.setLocationName("서울");
 				locationDto.setNx("61");
 				locationDto.setNy("125");
 				locationDto.setMid(loginId);
 			}else if(loc.equals("인천")) {
-				locationDto.setLocationName("Incheon");
+				locationDto.setLocationName("인천");
 				locationDto.setNx("54");
 				locationDto.setNy("125");
 				locationDto.setMid(loginId);
 			}else if(loc.equals("부천")) {
-				locationDto.setLocationName("Bucheon");
+				locationDto.setLocationName("부천");
 				locationDto.setNx("57");
 				locationDto.setNy("125");
 				locationDto.setMid(loginId);
 			}
 			dtoList.add(locationDto);
+		}
 		}
 		
 		if(dtoList.size() > 0) {
@@ -86,7 +95,8 @@ public class MemberService {
 				locations.add(loc);
 			}
 		}
-		
+		int delResult = locationRepository.deleteByMember_Id(loginUser.getId());
+		System.out.println("delResult: " + delResult);
 		Member member = new Member(loginUser, locations);
 		memberRepository.save(member);
 		

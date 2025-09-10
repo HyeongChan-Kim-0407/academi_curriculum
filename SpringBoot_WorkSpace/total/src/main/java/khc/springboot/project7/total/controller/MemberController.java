@@ -92,13 +92,13 @@ public class MemberController {
 	}
 	
 	@PostMapping("/info")
-	public String memberInfoPost(@RequestParam("locations") List<String> locations) {
+	public String memberInfoPost(@RequestParam(value = "locations", required = false) List<String> locations) {
 		System.out.println("MemberController.memberInfoPost() 호출");
 		System.out.println("locations: " + locations);
 		MemberDto loginUser = (MemberDto) httpSession.getAttribute("loginUser");
 		memberService.updateMemberLocations(locations, loginUser);
 		
-		return "redirect:/member/info";
+		return "redirect:/";
 	}
 	
 	@GetMapping("/logout")

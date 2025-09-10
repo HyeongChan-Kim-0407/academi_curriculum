@@ -76,31 +76,17 @@ public class HomeController {
 //			weatherData.put("subData", null);
 			
 		}
-		defaultWeather();
+		sendWeather();
 		
 		return weatherData;
 	}
 	// 매 정각마다 실행
 	@Scheduled(cron = "0 0/33 * * * * ")
-	public void defaultWeather(){
-		Map<String, List<WeatherDto>> weatherData = weatherService.getDefaultWeather();
-		messagingTemplate.convertAndSend("/ServerToClient/default", weatherData);
+	public void sendWeather(){
+		messagingTemplate.convertAndSend("/ServerToClient/default", weatherService.getDefaultWeather());
+		messagingTemplate.convertAndSend("/ServerToClient/서울", weatherService.apiTest("61", "125"));
+		messagingTemplate.convertAndSend("/ServerToClient/인천", weatherService.apiTest("54", "125"));
+		messagingTemplate.convertAndSend("/ServerToClient/부천", weatherService.apiTest("57", "125"));
 	}
-	@Scheduled(cron = "0 0/33 * * * * ")
-	public void seoulWeather() {
-		Map<String, List<WeatherDto>> weatherData = weatherService.apiTest("61", "125");
-		messagingTemplate.convertAndSend("/ServerToClient/서울", weatherData);
-	}
-	@Scheduled(cron = "0 0/33 * * * * ")
-	public void incheonWeather() {
-		Map<String, List<WeatherDto>> weatherData = weatherService.apiTest("54", "125");
-		messagingTemplate.convertAndSend("/ServerToClient/인천", weatherData);
-	}
-	@Scheduled(cron = "0 0/33 * * * * ")
-	public void bucheonWeather() {
-		Map<String, List<WeatherDto>> weatherData = weatherService.apiTest("57", "125");
-		messagingTemplate.convertAndSend("/ServerToClient/부천", weatherData);
-	}
-	
 	
 }
